@@ -8,4 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class Thread extends Model
 {
     use HasFactory;
+
+    public function replies()
+    {
+        return $this->hasMany(Reply::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function addReply($reply)
+    {
+        if (is_array($reply)) {
+            return $this->replies()->create($reply);
+        }
+
+        if (is_object($reply) && method_exists($reply, 'toArray')) {
+            return $this->replies()->create($reply->toArray());
+        }
+    }
 }
