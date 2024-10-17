@@ -23,6 +23,8 @@ class RepliesController extends Controller
             'user_id' => auth()->id()
         ]);
 
+        $reply->load('user');
+
         return response()->json($reply, 201);
     }
 }

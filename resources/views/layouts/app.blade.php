@@ -26,10 +26,10 @@
         </header>
     @endif
 
-    <!-- Page Content -->
-    <main>
+    <div id="app">
         @yield('content')
-    </main>
+    </div>
+    <script src="{{ mix('js/app.js') }}"></script>
 </div>
 
 @stack('scripts')

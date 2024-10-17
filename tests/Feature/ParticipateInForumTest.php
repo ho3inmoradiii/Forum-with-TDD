@@ -66,5 +66,12 @@ class ParticipateInForumTest extends TestCase
             'user_id' => $user->id,
             'thread_id' => $this->thread->id
         ]);
+
+        // Now, let's check if the user can see their reply on the thread page
+        $threadResponse = $this->get(route('threads.show', $this->thread));
+
+        $threadResponse->assertStatus(200)
+            ->assertSee($reply['body'])
+            ->assertSee($user->name);
     }
 }
