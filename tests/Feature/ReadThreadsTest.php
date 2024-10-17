@@ -63,7 +63,7 @@ class ReadThreadsTest extends TestCase
     public function thread_show_route_pass_correct_data_to_view()
     {
         $response = $this->get(route('threads.show', [
-            'channelId' => $this->channel->id,
+            'channel' => $this->channel->id,
             'thread' => $this->thread->id
         ]));
 
@@ -92,12 +92,12 @@ class ReadThreadsTest extends TestCase
 
         $response->assertSee($this->thread->title, false);
         $response->assertSee(route('threads.show', [
-            'channelId' => $this->channel->id,  // Assuming the thread belongs to a channel
+            'channel' => $this->channel->slug,  // Assuming the thread belongs to a channel
             'thread' => $this->thread->id  // Or whatever identifier you use for threads
         ]), false);
 
         $response = $this->get(route('threads.show', [
-            'channelId' => $this->channel->id,
+            'channel' => $this->channel->slug,
             'thread' => $this->thread->id
         ]));
         $response->assertStatus(200);
@@ -107,7 +107,7 @@ class ReadThreadsTest extends TestCase
     /** @test */
     public function guest_can_view_single_thread()
     {
-        $response = $this->get(route('threads.show', ['channelId' => $this->channel->id, 'thread' => $this->thread->id]));
+        $response = $this->get(route('threads.show', ['channel' => $this->channel->id, 'thread' => $this->thread->id]));
 
         $response->assertStatus(200)
             ->assertViewIs('threads.show')
@@ -119,7 +119,7 @@ class ReadThreadsTest extends TestCase
     /** @test */
     public function thread_page_displays_associated_replies()
     {
-        $response = $this->get(route('threads.show', ['channelId' => $this->channel->id, 'thread' => $this->thread->id]));
+        $response = $this->get(route('threads.show', ['channel' => $this->channel->id, 'thread' => $this->thread->id]));
         $response->assertStatus(200)
             ->assertSee($this->thread->title)
             ->assertSee($this->thread->body)

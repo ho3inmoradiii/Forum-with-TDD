@@ -30,6 +30,6 @@ Route::group(['prefix' => 'threads', 'middleware' => 'auth'], function () {
     Route::post('/', [ThreadsController::class, 'store'])->name('threads.store');
 });
 Route::get('/threads', [ThreadsController::class, 'index'])->name('threads.index');
-Route::get('/threads/{channelId}/{thread}', [ThreadsController::class, 'show'])->name('threads.show');
+Route::get('/threads/{channel}/{thread}', [ThreadsController::class, 'show'])->name('threads.show');
 
-Route::post('/threads/{thread}/replies', [RepliesController::class, 'store'])->name('replies.store');
+Route::post('/threads/{channel}/{thread}/replies', [RepliesController::class, 'store'])->name('replies.store');

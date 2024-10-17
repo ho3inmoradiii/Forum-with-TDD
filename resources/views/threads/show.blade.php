@@ -27,7 +27,7 @@
                 :thread-id="{{ $thread->id }}"
                 :user-id="{{ auth()->id() }}"
                 :is-authenticated="{{ json_encode(Auth::check()) }}"
-                submit-url="{{ route('replies.store', $thread) }}"
+                submit-url="{{ route('replies.store', [$thread->channel->slug, $thread]) }}"
             ></thread-replies>
         </div>
     </div>

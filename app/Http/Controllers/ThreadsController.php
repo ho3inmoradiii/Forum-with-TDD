@@ -16,7 +16,7 @@ class ThreadsController extends Controller
      */
     public function index()
     {
-        $threads = Thread::latest()->get();
+        $threads = Thread::with('channel')->latest()->get();
         return view('threads.index', compact('threads'));
     }
 
@@ -55,9 +55,9 @@ class ThreadsController extends Controller
      * @param  \App\Models\Thread  $thread
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
-    public function show($channelId, Thread $thread)
+    public function show($channel, Thread $thread)
     {
-        $thread->load('replies.user');
+        $thread->load(['channel', 'replies.user']);
         return view('threads.show', compact('thread'));
     }
 

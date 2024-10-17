@@ -43,7 +43,7 @@ class ParticipateInForumTest extends TestCase
     public function unauthenticated_user_may_not_add_reply()
     {
         $reply = ['body' => 'This is a reply'];
-        $response = $this->postJson(route('replies.store', $this->thread), $reply);
+        $response = $this->postJson(route('replies.store', ['channel' => $this->channel->slug, 'thread' => $this->thread]), $reply);
 
         $response->assertStatus(401);
     }
@@ -56,7 +56,7 @@ class ParticipateInForumTest extends TestCase
 
         // When the user adds a reply to the thread
         $reply = ['body' => 'This is a reply'];
-        $response = $this->postJson(route('replies.store', $this->thread), $reply);
+        $response = $this->postJson(route('replies.store', ['channel' => $this->channel->slug, 'thread' => $this->thread]), $reply);
 
         // Then the response should be successful and contain the reply data
         $response->assertStatus(201)
@@ -73,7 +73,7 @@ class ParticipateInForumTest extends TestCase
         ]);
 
         // Now, let's check if the user can see their reply on the thread page
-        $threadResponse = $this->get(route('threads.show', ['channelId' => $this->channel->slug, 'thread' => $this->thread]));
+        $threadResponse = $this->get(route('threads.show', ['channel' => $this->channel->slug, 'thread' => $this->thread]));
 
         $threadResponse->assertStatus(200)
             ->assertSee($reply['body'])

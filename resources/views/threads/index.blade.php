@@ -10,7 +10,7 @@
             @forelse ($threads as $thread)
                 <div>
                     <article>
-                        <a href="{{ route('threads.show', [$thread->channel->id, $thread]) }}" class="text-blue-600 hover:text-blue-800 font-semibold text-lg transition duration-300 ease-in-out">
+                        <a href="{{ route('threads.show', [$thread->channel->slug, $thread]) }}" class="text-blue-600 hover:text-blue-800 font-semibold text-lg transition duration-300 ease-in-out">
                             {{ $thread->title }}
                         </a>
                         <p>
