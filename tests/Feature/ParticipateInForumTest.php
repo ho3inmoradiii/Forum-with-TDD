@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Channel;
 use App\Models\Reply;
 use App\Models\Thread;
 use App\Models\User;
@@ -14,11 +15,15 @@ class ParticipateInForumTest extends TestCase
     use RefreshDatabase;
 
     protected $thread;
+    protected $channel;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->thread = Thread::factory()->create();
+        $this->channel = Channel::factory()->create();
+        $this->thread = Thread::factory()->create([
+            'channel_id' => $this->channel->id,
+        ]);
     }
 
     /** @test */
@@ -68,7 +73,7 @@ class ParticipateInForumTest extends TestCase
         ]);
 
         // Now, let's check if the user can see their reply on the thread page
-        $threadResponse = $this->get(route('threads.show', $this->thread));
+        $threadResponse = $this->get(route('threads.show', ['channelId' => $this->channel->slug, 'thread' => $this->thread]));
 
         $threadResponse->assertStatus(200)
             ->assertSee($reply['body'])
@@ -81,10 +86,11 @@ class ParticipateInForumTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $thread = [
-            'title' => 'Thread title',
-            'body' => 'Thread body'
-        ];
+        $channel = Channel::factory()->create();
+
+        $thread = Thread::factory()->raw([
+            'channel_id' => $channel->id
+        ]);
 
         $response = $this->postJson(route('threads.store'), $thread);
         $response->assertStatus(201)
@@ -102,6 +108,27 @@ class ParticipateInForumTest extends TestCase
 
         $threadResponse = $this->get(route('threads.index'));
         $threadResponse->assertSeeText([$thread['title'], $thread['body']]);
+    }
+
+    /** @test */
+    public function a_thread_requires_a_valid_channel_id()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $channel = Channel::factory()->create();
+
+        $thread = Thread::factory()->make(['channel_id' => null]);
+        $this->post(route('threads.store'), $thread->toArray())
+            ->assertSessionHasErrors('channel_id');
+
+        $thread = Thread::factory()->make(['channel_id' => 999]); // Non-existent channel id
+        $this->post(route('threads.store'), $thread->toArray())
+            ->assertSessionHasErrors('channel_id');
+
+        $thread = Thread::factory()->make(['channel_id' => $channel->id]);
+        $this->post(route('threads.store'), $thread->toArray())
+            ->assertSessionDoesntHaveErrors('channel_id');
     }
 
     /** @test */

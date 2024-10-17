@@ -36,12 +36,14 @@ class ThreadsController extends Controller
         $request->validate([
             'title' => ['required', 'string'],
             'body' => ['required', 'string'],
+            'channel_id' => ['required', 'exists:channels,id'],
         ]);
 
         $thread = Thread::create([
             'title' => $request->title,
             'body' => $request->body,
-            'user_id' => Auth::id()
+            'user_id' => Auth::id(),
+            'channel_id' => $request->channel_id
         ]);
 
         return response()->json($thread, 201);
@@ -53,7 +55,7 @@ class ThreadsController extends Controller
      * @param  \App\Models\Thread  $thread
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
-    public function show(Thread $thread)
+    public function show($channelId, Thread $thread)
     {
         $thread->load('replies.user');
         return view('threads.show', compact('thread'));

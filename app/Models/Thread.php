@@ -12,7 +12,8 @@ class Thread extends Model
     protected $fillable = [
         'title',
         'body',
-        'user_id'
+        'user_id',
+        'channel_id'
     ];
 
     public function replies()
@@ -34,5 +35,10 @@ class Thread extends Model
         if (is_object($reply) && method_exists($reply, 'toArray')) {
             return $this->replies()->create($reply->toArray());
         }
+    }
+
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class);
     }
 }

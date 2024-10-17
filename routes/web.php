@@ -25,11 +25,11 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
-Route::resource('threads', ThreadsController::class)->except(['edit', 'update', 'destroy']);
-
 Route::group(['prefix' => 'threads', 'middleware' => 'auth'], function () {
     Route::get('/create', [ThreadsController::class, 'create'])->name('threads.create');
     Route::post('/', [ThreadsController::class, 'store'])->name('threads.store');
 });
+Route::get('/threads', [ThreadsController::class, 'index'])->name('threads.index');
+Route::get('/threads/{channelId}/{thread}', [ThreadsController::class, 'show'])->name('threads.show');
 
 Route::post('/threads/{thread}/replies', [RepliesController::class, 'store'])->name('replies.store');

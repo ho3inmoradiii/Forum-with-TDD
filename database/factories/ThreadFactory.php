@@ -2,8 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Channel;
 use App\Models\Thread;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
 
 class ThreadFactory extends Factory
 {
@@ -14,7 +16,8 @@ class ThreadFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'body' => $this->faker->paragraph,
-            'user_id' => \App\Models\User::factory(),
+            'user_id' => User::factory(),
+            'channel_id' => Channel::factory(),
         ];
     }
 }
