@@ -113,4 +113,11 @@ class ParticipateInForumTest extends TestCase
 
         $response->assertStatus(401);
     }
+
+    /** @test  */
+    public function unauthenticated_user_can_not_see_thread_create_page()
+    {
+        $response = $this->get(route('threads.create'));
+        $response->assertRedirect(route('login'));
+    }
 }
