@@ -9,6 +9,12 @@ class Thread extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+        'body',
+        'user_id'
+    ];
+
     public function replies()
     {
         return $this->hasMany(Reply::class);

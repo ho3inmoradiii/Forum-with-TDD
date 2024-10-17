@@ -74,4 +74,43 @@ class ParticipateInForumTest extends TestCase
             ->assertSee($reply['body'])
             ->assertSee($user->name);
     }
+
+    /** @test */
+    public function an_authenticated_user_can_publish_a_thread()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $thread = [
+            'title' => 'Thread title',
+            'body' => 'Thread body'
+        ];
+
+        $response = $this->postJson(route('threads.store'), $thread);
+        $response->assertStatus(201)
+            ->assertJson([
+                'body' => $thread['body'],
+                'title' => $thread['title'],
+                'user_id' => $user->id
+            ]);
+
+        $this->assertDatabaseHas('threads', [
+            'body' => $thread['body'],
+            'title' => $thread['title'],
+            'user_id' => $user->id
+        ]);
+
+        $threadResponse = $this->get(route('threads.index'));
+        $threadResponse->assertSeeText([$thread['title'], $thread['body']]);
+    }
+
+    /** @test */
+    public function unauthenticated_user_can_not_publish_a_thread()
+    {
+        $thread = Thread::factory()->raw();
+
+        $response = $this->postJson(route('threads.store'), $thread);
+
+        $response->assertStatus(401);
+    }
 }

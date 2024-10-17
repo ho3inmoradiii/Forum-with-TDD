@@ -27,5 +27,6 @@ require __DIR__.'/auth.php';
 
 Route::get('/threads', [ThreadsController::class, 'index'])->name('threads.index');
 Route::get('/threads/{thread}', [ThreadsController::class, 'show'])->name('threads.show');
+Route::post('/threads', [ThreadsController::class, 'store'])->name('threads.store')->middleware('auth');
 
 Route::post('/threads/{thread}/replies', [RepliesController::class, 'store'])->name('replies.store');
