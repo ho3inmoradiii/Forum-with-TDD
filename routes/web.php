@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ThreadsController;
 use App\Http\Controllers\RepliesController;
+use App\Http\Controllers\ChannelsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +31,7 @@ Route::group(['prefix' => 'threads', 'middleware' => 'auth'], function () {
     Route::post('/', [ThreadsController::class, 'store'])->name('threads.store');
 });
 Route::get('/threads', [ThreadsController::class, 'index'])->name('threads.index');
+Route::get('/threads/{channel:slug}', [ChannelsController::class, 'show'])->name('channels.show');
 Route::get('/threads/{channel}/{thread}', [ThreadsController::class, 'show'])->name('threads.show');
 
 Route::post('/threads/{channel}/{thread}/replies', [RepliesController::class, 'store'])->name('replies.store');

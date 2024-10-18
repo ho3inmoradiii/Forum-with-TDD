@@ -38,6 +38,8 @@ class ReadThreadsTest extends TestCase
     public function a_thread_has_replies()
     {
         $this->assertInstanceOf(Collection::class, $this->thread->replies);
+        $this->assertEquals($this->thread->id, $this->reply->thread_id);
+        $this->assertTrue($this->thread->replies->contains($this->reply));
         $this->assertInstanceOf(Reply::class, $this->thread->replies->first());
     }
 
@@ -63,7 +65,7 @@ class ReadThreadsTest extends TestCase
     public function thread_show_route_pass_correct_data_to_view()
     {
         $response = $this->get(route('threads.show', [
-            'channel' => $this->channel->id,
+            'channel' => $this->channel->slug,
             'thread' => $this->thread->id
         ]));
 
@@ -107,7 +109,7 @@ class ReadThreadsTest extends TestCase
     /** @test */
     public function guest_can_view_single_thread()
     {
-        $response = $this->get(route('threads.show', ['channel' => $this->channel->id, 'thread' => $this->thread->id]));
+        $response = $this->get(route('threads.show', ['channel' => $this->channel->slug, 'thread' => $this->thread->id]));
 
         $response->assertStatus(200)
             ->assertViewIs('threads.show')
@@ -119,7 +121,7 @@ class ReadThreadsTest extends TestCase
     /** @test */
     public function thread_page_displays_associated_replies()
     {
-        $response = $this->get(route('threads.show', ['channel' => $this->channel->id, 'thread' => $this->thread->id]));
+        $response = $this->get(route('threads.show', ['channel' => $this->channel->slug, 'thread' => $this->thread->id]));
         $response->assertStatus(200)
             ->assertSee($this->thread->title)
             ->assertSee($this->thread->body)
@@ -130,8 +132,22 @@ class ReadThreadsTest extends TestCase
     /** @test */
     public function accessing_nonexistent_thread_returns_404()
     {
-        $response = $this->get('/threads/999999');
+        $response = $this->get(route('threads.show', ['channel' => $this->channel->slug, 'thread' => 999999999]));
 
         $response->assertStatus(404);
+    }
+
+    /** @test */
+    public function a_user_can_filter_threads_according_channel()
+    {
+        $threadInChannel = $this->thread;
+        $threadNotInChannel = Thread::factory()->create();
+
+        $reponse = $this->get(route('channels.show', $this->channel->slug))
+            ->assertSee($threadInChannel->title)
+            ->assertDontSee($threadNotInChannel->title);
+
+        $reponse = $this->get(route('channels.show', 'momoinm'))
+            ->assertStatus(404);
     }
 }
