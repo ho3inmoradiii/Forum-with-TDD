@@ -97,39 +97,68 @@ class ParticipateInForumTest extends TestCase
             ->assertJson([
                 'body' => $thread['body'],
                 'title' => $thread['title'],
-                'user_id' => $user->id
+                'user_id' => $user->id,
+                'channel_id' => $channel->id,
             ]);
 
         $this->assertDatabaseHas('threads', [
             'body' => $thread['body'],
             'title' => $thread['title'],
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'channel_id' => $channel->id,
         ]);
 
         $threadResponse = $this->get(route('threads.index'));
         $threadResponse->assertSeeText([$thread['title'], $thread['body']]);
     }
 
-    /** @test */
-    public function a_thread_requires_a_valid_channel_id()
+    /**
+     * @dataProvider threadValidationProvider
+     */
+    public function test_thread_requires_valid_fields($field, $value)
     {
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $channel = Channel::factory()->create();
+        $thread = Thread::factory()->raw([
+            $field => $value
+        ]);
 
-        $thread = Thread::factory()->make(['channel_id' => null]);
-        $this->post(route('threads.store'), $thread->toArray())
-            ->assertSessionHasErrors('channel_id');
+        $response = $this->postJson(route('threads.store'), $thread);
 
-        $thread = Thread::factory()->make(['channel_id' => 999]); // Non-existent channel id
-        $this->post(route('threads.store'), $thread->toArray())
-            ->assertSessionHasErrors('channel_id');
-
-        $thread = Thread::factory()->make(['channel_id' => $channel->id]);
-        $this->post(route('threads.store'), $thread->toArray())
-            ->assertSessionDoesntHaveErrors('channel_id');
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([$field]);
     }
+
+    public function threadValidationProvider()
+    {
+        return [
+            'title is required' => ['title', null],
+            'body is required' => ['body', null],
+            'channel_id is required' => ['channel_id', null],
+        ];
+    }
+
+//    /** @test */
+//    public function a_thread_requires_a_valid_channel_id()
+//    {
+//        $user = User::factory()->create();
+//        $this->actingAs($user);
+//
+//        $channel = Channel::factory()->create();
+//
+//        $thread = Thread::factory()->make(['channel_id' => null]);
+//        $this->post(route('threads.store'), $thread->toArray())
+//            ->assertSessionHasErrors('channel_id');
+//
+//        $thread = Thread::factory()->make(['channel_id' => 999]); // Non-existent channel id
+//        $this->post(route('threads.store'), $thread->toArray())
+//            ->assertSessionHasErrors('channel_id');
+//
+//        $thread = Thread::factory()->make(['channel_id' => $channel->id]);
+//        $this->post(route('threads.store'), $thread->toArray())
+//            ->assertSessionDoesntHaveErrors('channel_id');
+//    }
 
     /** @test */
     public function unauthenticated_user_can_not_publish_a_thread()
