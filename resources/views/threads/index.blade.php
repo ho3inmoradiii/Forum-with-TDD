@@ -4,7 +4,12 @@
 
 @section('content')
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-6 text-center">Forum threads</h1>
+        @if (session('message'))
+            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4">
+                {{ session('message') }}
+            </div>
+        @endif
+        <h1 class="text-3xl font-bold my-6 text-center">Forum threads</h1>
 
         <div class="bg-white shadow-md rounded-lg space-y-4 p-4">
             @forelse ($threads as $thread)

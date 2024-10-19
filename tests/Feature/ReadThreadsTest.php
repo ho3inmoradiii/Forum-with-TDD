@@ -150,4 +150,49 @@ class ReadThreadsTest extends TestCase
         $reponse = $this->get(route('channels.show', 'momoinm'))
             ->assertStatus(404);
     }
+
+    /** @test */
+    public function a_user_can_filter_threads_according_username()
+    {
+        $user = User::factory()->create([
+            'name' => 'حسین'
+        ]);
+        $this->actingAs($user);
+
+        $threadByUser1 = Thread::factory()->create([
+            'user_id' => $user->id,
+        ]);
+        $threadByUser2 = Thread::factory()->create();
+
+        $this->get(route('threads.index', ['by' => $user->name]))
+            ->assertStatus(200)
+            ->assertSeeText([$threadByUser1->title, $threadByUser1->body])
+            ->assertDontSeeText([$threadByUser2->title, $threadByUser2->body]);
+    }
+
+    /** @test */
+    public function it_shows_all_threads_when_username_not_found()
+    {
+        $user = User::factory()->create(['name' => 'حسین']);
+        $thread = Thread::factory()->create(['user_id' => $user->id]);
+
+        $response = $this->get(route('threads.index', ['by' => 'NonexistentUser123']));
+
+        $response->assertStatus(200);
+        $response->assertSee($thread->title);
+        $response->assertSee("User 'NonexistentUser123' not found. Showing all threads.");
+    }
+
+    /** @test */
+    public function it_shows_all_threads_when_no_username_provided()
+    {
+        $thread1 = Thread::factory()->create();
+        $thread2 = Thread::factory()->create();
+
+        $response = $this->get(route('threads.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee($thread1->title);
+        $response->assertSee($thread2->title);
+    }
 }
