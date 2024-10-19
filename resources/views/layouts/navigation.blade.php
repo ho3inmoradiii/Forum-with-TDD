@@ -15,6 +15,9 @@
                     <x-nav-link :href="route('threads.index')" :active="request()->routeIs('threads.index')">
                         All Threads
                     </x-nav-link>
+                    <x-nav-link :href="route('threads.create')" :active="request()->routeIs('threads.create')">
+                        New Thread
+                    </x-nav-link>
                     <div x-data="{ open: false }" class="relative inline-block text-left">
                         <div>
                             <button @click="open = !open" type="button" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500" id="channels-menu" aria-expanded="false" aria-haspopup="true">
