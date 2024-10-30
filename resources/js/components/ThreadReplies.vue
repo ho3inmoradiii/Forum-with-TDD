@@ -7,7 +7,7 @@
                 </div>
                 <div class="flex-grow">
                     <p class="text-gray-700">{{ reply.body }}</p>
-                    <div class="mt-2 text-sm text-gray-500">
+                    <div class="mt-2 text-sm text-gray-500 rtl">
                         Posted by
                         <a href="#" class="text-blue-600 hover:text-blue-800 font-semibold text-sm transition duration-300 ease-in-out">
                             {{ reply.user.name }}

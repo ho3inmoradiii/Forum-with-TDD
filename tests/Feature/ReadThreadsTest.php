@@ -130,6 +130,25 @@ class ReadThreadsTest extends TestCase
     }
 
     /** @test */
+    public function thread_page_displays_associated_replies_and_count()
+    {
+        Reply::factory()->count(2)->create([
+            'thread_id' => $this->thread->id,
+        ]);
+
+        $response = $this->get(route('threads.show', ['channel' => $this->channel->slug, 'thread' => $this->thread->id]));
+
+        $response->assertStatus(200)
+            ->assertSee($this->thread->title)
+            ->assertSee($this->thread->body)
+            ->assertSee($this->reply->body)
+            ->assertSee($this->user->name)
+            ->assertSee('replies: 3')
+            ->assertSee('3')
+            ->assertSee($this->thread->created_at->diffForHumans());
+    }
+
+    /** @test */
     public function accessing_nonexistent_thread_returns_404()
     {
         $response = $this->get(route('threads.show', ['channel' => $this->channel->slug, 'thread' => 999999999]));

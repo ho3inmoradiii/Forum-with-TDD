@@ -25590,7 +25590,7 @@ var _hoisted_5 = {
   "class": "text-gray-700"
 };
 var _hoisted_6 = {
-  "class": "mt-2 text-sm text-gray-500"
+  "class": "mt-2 text-sm text-gray-500 rtl"
 };
 var _hoisted_7 = {
   href: "#",

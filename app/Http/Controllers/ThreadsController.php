@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ThreadFilters;
 use App\Models\Channel;
 use App\Models\Thread;
 use App\Models\User;
@@ -16,24 +17,9 @@ class ThreadsController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, ThreadFilters $filters)
     {
-        $query = Thread::query()->with('channel');
-
-        if ($request->has('by')) {
-            $username = $request->by;
-            $user = User::where('name', $username)->first();
-
-            if ($user) {
-                $query->where('user_id', $user->id);
-            } else {
-                // User not found, but we'll still show all threads
-                // You might want to add a flash message here to inform the user
-                session()->flash('message', "User '{$username}' not found. Showing all threads.");
-            }
-        }
-
-        $threads = $query->latest()->get();
+        $threads = Thread::with('channel')->filter($filters)->latest()->get();
         return view('threads.index', compact('threads'));
     }
 
@@ -75,7 +61,7 @@ class ThreadsController extends Controller
      */
     public function show($channel, Thread $thread)
     {
-        $thread->load(['channel', 'replies.user']);
+        $thread->load(['channel', 'replies.user'])->loadCount('replies');
         return view('threads.show', compact('thread'));
     }
 

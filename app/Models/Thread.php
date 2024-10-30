@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filters\ThreadFilter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,6 +16,11 @@ class Thread extends Model
         'user_id',
         'channel_id'
     ];
+
+    public function scopeFilter($query, ThreadFilter $filters)
+    {
+        return $filters->apply($query);
+    }
 
     public function replies()
     {

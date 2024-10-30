@@ -3,7 +3,7 @@
 @section('title', 'Forum threads')
 
 @section('content')
-    <div class="container mx-auto px-4 py-8">
+    <div class="max-w-7xl container mx-auto px-4 py-8">
         @if (session('message'))
             <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4">
                 {{ session('message') }}
