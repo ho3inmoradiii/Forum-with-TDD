@@ -35,8 +35,8 @@ Forum With TDD is a community-driven platform where users can:
 
 1. Clone the repository
 ```
-git clone <your-repository-url>
-cd forum-with-tdd
+git clone https://github.com/ho3inmoradiii/Forum-with-TDD.git
+cd Forum-with-TDD
 ```
 
 2. Install PHP dependencies
