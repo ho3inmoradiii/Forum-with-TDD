@@ -39,7 +39,7 @@
             <div class="lg:w-2/5 mt-8 lg:mt-0">
                 <div class="bg-white shadow-md rounded-lg p-4">
                     <h3 class="text-lg font-semibold mb-4">Thread Info</h3>
-                    <p>{{ \Illuminate\Support\Str::plural('reply', $thread->replies_count) }}: {{ $thread->replies_count }}</p>
+                    <p>{{ \Illuminate\Support\Str::plural('Reply', $thread->replies_count) }}: {{ $thread->replies_count }}</p>
                     <p>Created: {{ $thread->created_at->diffForHumans() }}</p>
                 </div>
             </div>

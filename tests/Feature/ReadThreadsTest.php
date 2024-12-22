@@ -143,9 +143,46 @@ class ReadThreadsTest extends TestCase
             ->assertSee($this->thread->body)
             ->assertSee($this->reply->body)
             ->assertSee($this->user->name)
-            ->assertSee('replies: 3')
+            ->assertSee('Replies: 3')
             ->assertSee('3')
             ->assertSee($this->thread->created_at->diffForHumans());
+    }
+
+    /** @test */
+    public function thread_page_shows_correct_reply_text_according_count()
+    {
+        $channel = Channel::factory()->create();
+        $thread = Thread::factory()->create([
+            'channel_id' => $channel->id
+        ]);
+        // Test with 0 replies
+        $response = $this->get(route('threads.show', [
+            'channel' => $channel->slug,
+            'thread' => $thread->id
+        ]));
+        $response->assertSee('Replies: 0');
+
+        // Test with 1 reply
+        Reply::factory()->create([
+            'thread_id' => $thread->id,
+        ]);
+
+        $response = $this->get(route('threads.show', [
+            'channel' => $channel->slug,
+            'thread' => $thread->id
+        ]));
+        $response->assertSee('Reply: 1');
+
+        // Test with multiple replies
+        Reply::factory()->count(2)->create([
+            'thread_id' => $this->thread->id,
+        ]);
+
+        $response = $this->get(route('threads.show', [
+            'channel' => $this->channel->slug,
+            'thread' => $this->thread->id
+        ]));
+        $response->assertSee('Replies: 3');
     }
 
     /** @test */
