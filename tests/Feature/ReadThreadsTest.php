@@ -196,15 +196,18 @@ class ReadThreadsTest extends TestCase
     /** @test */
     public function a_user_can_filter_threads_according_channel()
     {
-        $threadInChannel = $this->thread;
-        $threadNotInChannel = Thread::factory()->create();
+        $channel1 = $this->channel;
 
-        $reponse = $this->get(route('channels.show', $this->channel->slug))
-            ->assertSee($threadInChannel->title)
-            ->assertDontSee($threadNotInChannel->title);
+        $threadByChannel1 = Thread::factory()->create([
+            'channel_id' => $channel1->id
+        ]);
 
-        $reponse = $this->get(route('channels.show', 'momoinm'))
-            ->assertStatus(404);
+        $threadByChannel2 = Thread::factory()->create();
+
+        $this->get(route('threads.index', ['channel' => $channel1->name]))
+            ->assertStatus(200)
+            ->assertSeeText([$threadByChannel1->title, $threadByChannel1->body])
+            ->assertDontSeeText([$threadByChannel2->title, $threadByChannel2->body]);
     }
 
     /** @test */

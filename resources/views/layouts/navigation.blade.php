@@ -67,7 +67,7 @@
                              style="display: none;">
                             <div class="py-1 max-h-60 overflow-y-auto" role="none">
                                 @foreach($channels as $channel)
-                                    <a href="{{ route('channels.show', $channel->slug) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">{{ $channel->name }}</a>
+                                    <a href="{{ route('threads.index', ['channel' => $channel->name]) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">{{ $channel->name }}</a>
                                 @endforeach
                             </div>
                         </div>
