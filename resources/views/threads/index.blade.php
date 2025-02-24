@@ -13,17 +13,26 @@
 
         <div class="bg-white shadow-md rounded-lg space-y-4 p-4">
             @forelse ($threads as $thread)
-                <div>
-                    <article>
-                        <a href="{{ route('threads.show', [$thread->channel->slug, $thread]) }}" class="text-blue-600 hover:text-blue-800 font-semibold text-lg transition duration-300 ease-in-out">
-                            {{ $thread->title }}
-                        </a>
+                <article>
+                    <div class="flex flex-col justify-between gap-4">
+                        <div class="flex flex-row justify-between items-center">
+                            <h2>
+                                <a href="{{ route('threads.show', [$thread->channel->slug, $thread]) }}"
+                                   class="text-blue-600 hover:text-blue-800 font-semibold text-lg transition duration-300 ease-in-out">
+                                    {{ $thread->title }}
+                                </a>
+                            </h2>
+                            <strong class="flex flex-row gap-2">
+                                <span>Replies:</span>
+                                <span>{{ $thread->replies_count }}</span>
+                            </strong>
+                        </div>
                         <p>
                             {{ $thread->body }}
                         </p>
-                    </article>
-                </div>
-                <hr />
+                    </div>
+                </article>
+                <hr/>
             @empty
                 <p class="text-center text-gray-500">هیچ موضوعی یافت نشد.</p>
             @endforelse

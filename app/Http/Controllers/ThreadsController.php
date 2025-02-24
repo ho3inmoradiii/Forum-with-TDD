@@ -19,7 +19,7 @@ class ThreadsController extends Controller
      */
     public function index(Request $request, ThreadFilters $filters)
     {
-        $threads = Thread::with('channel')->filter($filters)->latest()->get();
+        $threads = Thread::with('channel')->withCount('replies')->filter($filters)->latest()->get();
         return view('threads.index', compact('threads'));
     }
 
