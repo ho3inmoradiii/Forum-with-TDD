@@ -23,8 +23,7 @@
                                 </a>
                             </h2>
                             <strong class="flex flex-row gap-2">
-                                <span>Replies:</span>
-                                <span>{{ $thread->replies_count }}</span>
+                                {{ $thread->replies_count }} {{ Str::plural('reply', $thread->replies_count) }}
                             </strong>
                         </div>
                         <p>
