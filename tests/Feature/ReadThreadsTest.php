@@ -211,6 +211,19 @@ class ReadThreadsTest extends TestCase
     }
 
     /** @test */
+    public function it_shows_all_threads_when_channel_not_found()
+    {
+        $channel = Channel::factory()->create(['name' => 'Programming']);
+        $thread = Thread::factory()->create(['channel_id' => $channel->id]);
+
+        $response = $this->get(route('threads.index', ['channel' => 'NonexistentChannel123']));
+
+        $response->assertStatus(200);
+        $response->assertSee($thread->title);
+        $response->assertSee("Channel 'NonexistentChannel123' not found. Showing all threads.");
+    }
+
+    /** @test */
     public function a_user_can_filter_threads_according_username()
     {
         $user = User::factory()->create([
@@ -253,5 +266,65 @@ class ReadThreadsTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee($thread1->title);
         $response->assertSee($thread2->title);
+    }
+
+    /** @test  */
+    public function a_user_can_filter_threads_according_popularity()
+    {
+        $thread1 = Thread::factory()->create();
+        $replies1 = Reply::factory()->count(5)->create([
+            'thread_id' => $thread1->id
+        ]);
+
+        $thread2 = Thread::factory()->create();
+        $replies2 = Reply::factory()->count(2)->create([
+            'thread_id' => $thread2->id
+        ]);
+
+        $thread3 = Thread::factory()->create();
+
+        $this->get(route('threads.index', ['popular' => true]))
+            ->assertStatus(200)
+            ->assertSeeInOrder([$thread1->title, $thread2->title, $thread3->title]);
+    }
+
+    /** @test */
+    public function show_threads_according_latest_if_popularity_equal_to_false()
+    {
+        $thread1 = Thread::factory()->create();
+        $replies1 = Reply::factory()->count(5)->create([
+            'thread_id' => $thread1->id
+        ]);
+
+        $thread2 = Thread::factory()->create();
+        $replies2 = Reply::factory()->count(2)->create([
+            'thread_id' => $thread2->id
+        ]);
+
+        $thread3 = Thread::factory()->create();
+
+        $this->get(route('threads.index', ['popular' => false]))
+            ->assertStatus(200)
+            ->assertSeeInOrder([$thread3->title, $thread2->title, $thread1->title]);
+    }
+
+    /** @test */
+    public function show_threads_according_latest_if_popularity_not_exist()
+    {
+        $thread1 = Thread::factory()->create(['created_at' => now()]);
+
+        $thread2 = Thread::factory()->create(['created_at' => now()->addSeconds(10)]);
+        $replies2 = Reply::factory()->count(2)->create([
+            'thread_id' => $thread2->id
+        ]);
+
+        $thread3 = Thread::factory()->create(['created_at' => now()->addSeconds(20)]);
+        $replies1 = Reply::factory()->count(5)->create([
+            'thread_id' => $thread3->id
+        ]);
+
+        $this->get(route('threads.index'))
+            ->assertStatus(200)
+            ->assertSeeInOrder([$thread3->title, $thread2->title, $thread1->title]);
     }
 }
