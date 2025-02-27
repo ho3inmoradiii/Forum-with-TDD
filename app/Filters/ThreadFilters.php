@@ -31,10 +31,9 @@ class ThreadFilters extends ThreadFilter
 
     public function popular($popularStatus)
     {
-        $popularStatusBoolean = filter_var($popularStatus, FILTER_VALIDATE_BOOLEAN);
-        if ($popularStatusBoolean === true) {
+        if (in_array($popularStatus, ['true', true])) {
             return $this->builder->orderBy('replies_count', 'desc');
-        } elseif ($popularStatusBoolean === false) {
+        } elseif (in_array($popularStatus, ['false', false])) {
             return $this->builder->orderBy('replies_count', 'asc');
         }
         return $this->builder;

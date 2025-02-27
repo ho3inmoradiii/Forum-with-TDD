@@ -19,11 +19,19 @@ class ThreadsController extends Controller
      */
     public function index(Request $request, ThreadFilters $filters)
     {
-        if ($request->exists('popular')) {
-            $threads = Thread::with('channel')->withCount('replies')->filter($filters)->get();
+        $popular = $request->input('popular');
+        $threads = Thread::with('channel')->withCount('replies')->filter($filters);
+
+        if ($popular !== null) {
+            if (in_array($popular, [ 'true', 'false', true, false])) {
+                $threads = $threads->get();
+            } else {
+                $threads = $threads->latest()->get();
+            }
         } else {
-            $threads = Thread::with('channel')->withCount('replies')->filter($filters)->latest()->get();
+            $threads = $threads->latest()->get();
         }
+
         return view('threads.index', compact('threads'));
     }
 
