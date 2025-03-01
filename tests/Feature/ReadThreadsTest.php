@@ -268,12 +268,12 @@ class ReadThreadsTest extends TestCase
         $response->assertSee($thread2->title);
     }
 
-    protected function createThreadWithReplies($replyCount, $createdAt) {
-        $thread = Thread::factory()->create([
-            'created_at' => $createdAt
-        ]);
-        $replies = Reply::factory()->count($replyCount)->create([
+    protected function createThreadWithReplies($replyCount, $createdAt = null)
+    {
+        $thread = Thread::factory()->create(['created_at' => $createdAt ?: now()]);
+        Reply::factory()->count($replyCount)->create([
             'thread_id' => $thread->id,
+            'created_at' => $createdAt ?: now()
         ]);
         return $thread;
     }
@@ -293,17 +293,9 @@ class ReadThreadsTest extends TestCase
     /** @test */
     public function show_threads_by_ascending_replies_when_popularity_is_false()
     {
-        $thread1 = Thread::factory()->create();
-        $replies1 = Reply::factory()->count(5)->create([
-            'thread_id' => $thread1->id
-        ]);
-
-        $thread2 = Thread::factory()->create();
-        $replies2 = Reply::factory()->count(2)->create([
-            'thread_id' => $thread2->id
-        ]);
-
-        $thread3 = Thread::factory()->create();
+        $thread1 = $this->createThreadWithReplies(5, now());
+        $thread2 = $this->createThreadWithReplies(2, now());
+        $thread3 = $this->createThreadWithReplies(0, now());
 
         $this->get(route('threads.index', ['popular' => false]))
             ->assertStatus(200)
@@ -313,17 +305,9 @@ class ReadThreadsTest extends TestCase
     /** @test */
     public function show_threads_according_latest_if_popularity_not_exist()
     {
-        $thread1 = Thread::factory()->create(['created_at' => now()]);
-
-        $thread2 = Thread::factory()->create(['created_at' => now()->addSeconds(10)]);
-        $replies2 = Reply::factory()->count(2)->create([
-            'thread_id' => $thread2->id
-        ]);
-
-        $thread3 = Thread::factory()->create(['created_at' => now()->addSeconds(20)]);
-        $replies1 = Reply::factory()->count(5)->create([
-            'thread_id' => $thread3->id
-        ]);
+        $thread1 = $this->createThreadWithReplies(0, now());
+        $thread2 = $this->createThreadWithReplies(2, now()->addSeconds(10));
+        $thread3 = $this->createThreadWithReplies(5, now()->addSeconds(20));
 
         $this->get(route('threads.index'))
             ->assertStatus(200)
@@ -333,17 +317,9 @@ class ReadThreadsTest extends TestCase
     /** @test */
     public function show_threads_according_latest_if_popularity_not_true_or_false()
     {
-        $thread1 = Thread::factory()->create(['created_at' => now()]);
-
-        $thread2 = Thread::factory()->create(['created_at' => now()->addSeconds(10)]);
-        $replies2 = Reply::factory()->count(2)->create([
-            'thread_id' => $thread2->id
-        ]);
-
-        $thread3 = Thread::factory()->create(['created_at' => now()->addSeconds(20)]);
-        $replies1 = Reply::factory()->count(5)->create([
-            'thread_id' => $thread3->id
-        ]);
+        $thread1 = $this->createThreadWithReplies(0, now());
+        $thread2 = $this->createThreadWithReplies(2, now()->addSeconds(10));
+        $thread3 = $this->createThreadWithReplies(5, now()->addSeconds(20));
 
         $this->get(route('threads.index', ['popular' => 'invalid123']))
             ->assertStatus(200)
