@@ -23,7 +23,7 @@ class ThreadsController extends Controller
         $threads = Thread::with('channel')->withCount('replies')->filter($filters);
 
         if ($popular !== null) {
-            if (in_array($popular, [ 'true', 'false', true, false])) {
+            if ($popular === 'true' || $popular === 'false' || $popular === true || $popular === false) {
                 $threads = $threads->get();
             } else {
                 $threads = $threads->latest()->get();

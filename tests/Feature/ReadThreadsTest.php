@@ -281,21 +281,21 @@ class ReadThreadsTest extends TestCase
     /** @test  */
     public function a_user_can_filter_threads_according_popularity()
     {
-        $thread1 = $this->createThreadWithReplies(5, now());
-        $thread2 = $this->createThreadWithReplies(2, now());
+        $thread1 = $this->createThreadWithReplies(5, now()->subSeconds(2));
+        $thread2 = $this->createThreadWithReplies(2, now()->subSecond(1));
         $thread3 = $this->createThreadWithReplies(0, now());
 
         $this->get(route('threads.index', ['popular' => true]))
             ->assertStatus(200)
-            ->assertSeeInOrder([$thread1->title, $thread2->title, $thread3->title]);
+            ->assertSeeInOrder([$thread3->title, $thread2->title, $thread1->title]);
     }
 
     /** @test */
     public function show_threads_by_ascending_replies_when_popularity_is_false()
     {
-        $thread1 = $this->createThreadWithReplies(5, now());
-        $thread2 = $this->createThreadWithReplies(2, now());
-        $thread3 = $this->createThreadWithReplies(0, now());
+        $thread1 = $this->createThreadWithReplies(0, now()->subSeconds(2));
+        $thread2 = $this->createThreadWithReplies(2, now()->subSecond(1));
+        $thread3 = $this->createThreadWithReplies(5, now());
 
         $this->get(route('threads.index', ['popular' => false]))
             ->assertStatus(200)
@@ -315,7 +315,7 @@ class ReadThreadsTest extends TestCase
     }
 
     /** @test */
-    public function show_threads_according_latest_if_popularity_not_true_or_false()
+    public function show_threads_according_latest_if_popularity_not_valid()
     {
         $thread1 = $this->createThreadWithReplies(0, now());
         $thread2 = $this->createThreadWithReplies(2, now()->addSeconds(10));

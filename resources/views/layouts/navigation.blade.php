@@ -31,6 +31,12 @@
                                 <x-dropdown-link :href="route('threads.index')" :active="request()->routeIs('threads.index') && !request()->has('by')">
                                     All Threads
                                 </x-dropdown-link>
+                                <x-dropdown-link :href="route('threads.index', ['popular' => 'true'])" :active="request()->routeIs('threads.index') && request()->has('popular') && request()->input('popular') === 'true'">
+                                    Popular All Time
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('threads.index', ['popular' => 'false'])" :active="request()->routeIs('threads.index') && request()->has('popular') && request()->input('popular') === 'false'">
+                                    Least Popular
+                                </x-dropdown-link>
                                 @auth
                                     <x-dropdown-link :href="route('threads.index', ['by' => auth()->user()->name])" :active="request()->routeIs('threads.index') && request()->get('by') === auth()->user()->name">
                                         My Threads
