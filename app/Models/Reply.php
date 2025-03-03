@@ -20,4 +20,9 @@ class Reply extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'favorite_replies')->withTimestamps();
+    }
 }

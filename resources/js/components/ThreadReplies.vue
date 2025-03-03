@@ -40,9 +40,6 @@ export default {
     components: {
         ReplyForm
     },
-    created() {
-        console.log(this.isAuthenticated, 'iiiiiiiiiiiii')
-    },
     props: {
         initialReplies: {
             type: Array,

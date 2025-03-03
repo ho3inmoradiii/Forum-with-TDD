@@ -3,6 +3,7 @@
 use App\Http\Controllers\ThreadsController;
 use App\Http\Controllers\RepliesController;
 use App\Http\Controllers\ChannelsController;
+use App\Http\Controllers\FavoriteController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,6 +30,10 @@ require __DIR__.'/auth.php';
 Route::group(['prefix' => 'threads', 'middleware' => 'auth'], function () {
     Route::get('/create', [ThreadsController::class, 'create'])->name('threads.create');
     Route::post('/', [ThreadsController::class, 'store'])->name('threads.store');
+});
+Route::group(['middleware' => 'auth'], function () {
+    Route::post('/replies/{reply}/favorite', [FavoriteController::class, 'store'])->name('reply.favorite.store');
+    Route::delete('/replies/{reply}/favorite', [FavoriteController::class, 'delete'])->name('reply.favorite.delete');
 });
 Route::get('/threads', [ThreadsController::class, 'index'])->name('threads.index');
 Route::get('/threads/{channel}/{thread}', [ThreadsController::class, 'show'])->name('threads.show');

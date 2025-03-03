@@ -51,4 +51,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Reply::class);
     }
+
+    public function favoriteReplies()
+    {
+        return $this->belongsToMany(Reply::class, 'favorite_replies')->withTimestamps();
+    }
 }
