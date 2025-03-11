@@ -12,12 +12,22 @@ class FavoriteRepliesTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $user;
+    protected $reply;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+        $this->reply = Reply::factory()->create();
+    }
+
     /** @test */
     public function an_authenticated_user_can_add_a_reply_to_their_favorites()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
         $this->actingAs($user);
-        $reply = Reply::factory()->create();
+        $reply = $this->reply;
         $response = $this->post(route('reply.favorite.store', $reply));
         $response->assertStatus(201)->assertJson(['message' => 'Reply favorited']);
         $this->assertDatabaseHas('favorite_replies', [
@@ -29,10 +39,10 @@ class FavoriteRepliesTest extends TestCase
     /** @test */
     public function an_authenticated_user_can_remove_the_reply_from_favorites()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
         $this->actingAs($user);
 
-        $reply = Reply::factory()->create();
+        $reply = $this->reply;
         $reply->favoritedBy()->attach($user->id);
 
         $response = $this->delete(route('reply.favorite.delete', $reply));
@@ -47,10 +57,10 @@ class FavoriteRepliesTest extends TestCase
     /** @test */
     public function an_authenticated_user_tries_to_re_favorite_a_reply_that_they_previously_favorited()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
         $this->actingAs($user);
 
-        $reply = Reply::factory()->create();
+        $reply = $this->reply;
         $reply->favoritedBy()->attach($user->id);
 
         $response = $this->post(route('reply.favorite.store', $reply));
@@ -65,10 +75,10 @@ class FavoriteRepliesTest extends TestCase
     /** @test */
     public function an_authenticated_user_tries_to_delete_a_reply_that_they_did_not_favorite()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
         $this->actingAs($user);
 
-        $reply = Reply::factory()->create();
+        $reply = $this->reply;
 
         $response = $this->delete(route('reply.favorite.delete', $reply));
         $response->assertStatus(200)->assertJson(['message' => 'Reply was not favorited']);
@@ -82,8 +92,8 @@ class FavoriteRepliesTest extends TestCase
     /** @test */
     public function a_user_who_is_not_logged_in_cannot_favorite_a_reply()
     {
-        $user = User::factory()->create();
-        $reply = Reply::factory()->create();
+        $user = $this->user;
+        $reply = $this->reply;
 
         $response = $this->post(route('reply.favorite.store', $reply));
         $response->assertStatus(302)->assertRedirect('/login');
@@ -97,8 +107,8 @@ class FavoriteRepliesTest extends TestCase
     /** @test */
     public function a_user_cannot_remove_a_reply_from_favorites_without_logging_in()
     {
-        $user = User::factory()->create();
-        $reply = Reply::factory()->create();
+        $user = $this->user;
+        $reply = $this->reply;
 
         $reply->favoritedBy()->attach($user->id);
 
@@ -114,12 +124,12 @@ class FavoriteRepliesTest extends TestCase
     /** @test */
     public function a_user_cannot_remove_another_user_s_reply_from_their_favorites()
     {
-        $user1 = User::factory()->create();
+        $user1 = $this->user;
         $user2 = User::factory()->create();
 
         $this->actingAs($user1);
 
-        $reply = Reply::factory()->create();
+        $reply = $this->reply;
 
         $reply->favoritedBy()->attach($user2->id);
 
@@ -135,7 +145,7 @@ class FavoriteRepliesTest extends TestCase
     /** @test */
     public function a_user_wants_to_favorite_or_delete_a_reply_that_does_not_exist()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
 
         $this->actingAs($user);
 
