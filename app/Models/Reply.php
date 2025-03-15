@@ -25,4 +25,9 @@ class Reply extends Model
     {
         return $this->belongsToMany(User::class, 'favorite_replies')->withTimestamps();
     }
+
+    public function isFavoritedByCurrentUser()
+    {
+        return $this->favoritedBy()->where('user_id', auth()->id())->exists();
+    }
 }

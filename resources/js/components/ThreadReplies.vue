@@ -6,7 +6,10 @@
                     <img class="h-10 w-10 rounded-full" :src="avatarUrl(reply)" :alt="reply.user.name">
                 </div>
                 <div class="flex-grow">
-                    <p class="text-gray-700">{{ reply.body }}</p>
+                    <div class="flex flex-row-reverse justify-between">
+                        <PhHeart :size="32" :color="reply.is_favorited ? 'hotpink' : 'gray'" :weight="reply.is_favorited ? 'fill' : 'duotone'" @click="toggleFavorite(reply)" />
+                        <p class="text-gray-700">{{ reply.body }}</p>
+                    </div>
                     <div class="mt-2 text-sm text-gray-500 rtl">
                         Posted by
                         <a href="#" class="text-blue-600 hover:text-blue-800 font-semibold text-sm transition duration-300 ease-in-out">
@@ -34,10 +37,15 @@
 
 <script>
 import ReplyForm from './ReplyForm.vue';
-import md5 from 'md5';
+import {PhHeart} from "@phosphor-icons/vue";
+import axios from 'axios';
 
 export default {
+    created() {
+        console.log(this.initialReplies, 'ppppppppp')
+    },
     components: {
+        PhHeart,
         ReplyForm
     },
     props: {
@@ -68,6 +76,13 @@ export default {
         };
     },
     methods: {
+        async toggleFavorite(reply) {
+            try {
+                const response = await axios.post(`/replies/${reply.id}/favorite`);
+            } catch (error) {
+                console.error('Error favorite reply:', error);
+            }
+        },
         avatarUrl(reply) {
             const email = reply.user.email.toLowerCase().trim();
             const hash = this.simpleHash(email);
