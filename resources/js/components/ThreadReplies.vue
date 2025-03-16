@@ -39,11 +39,9 @@
 import ReplyForm from './ReplyForm.vue';
 import {PhHeart} from "@phosphor-icons/vue";
 import axios from 'axios';
+import { toast } from 'vue3-toastify';
 
 export default {
-    created() {
-        console.log(this.initialReplies, 'ppppppppp')
-    },
     components: {
         PhHeart,
         ReplyForm
@@ -72,15 +70,27 @@ export default {
     },
     data() {
         return {
-            replies: this.initialReplies
+            replies: this.initialReplies.map(reply => ({
+                ...reply,
+                is_favorited: reply.is_favorited || false
+            }))
         };
     },
     methods: {
         async toggleFavorite(reply) {
             try {
-                const response = await axios.post(`/replies/${reply.id}/favorite`);
+                if (!reply.is_favorited) {
+                    await axios.post(`/replies/${reply.id}/favorite`);
+                    reply.is_favorited = true;
+                    toast.success('Replay successfully added to favorites.');
+                } else {
+                    await axios.delete(`/replies/${reply.id}/favorite`);
+                    reply.is_favorited = false;
+                    toast.success('Replay successfully removed from favorites.');
+                }
             } catch (error) {
                 console.error('Error favorite reply:', error);
+                toast.error('Something went wrong. Please try again.');
             }
         },
         avatarUrl(reply) {

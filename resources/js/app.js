@@ -4,11 +4,17 @@ import ExampleComponent from './components/ExampleComponent.vue';
 import ReplyForm from './components/ReplyForm.vue';
 import ThreadReplies from "./components/ThreadReplies.vue";
 import CreateThread from "./components/CreateThread.vue";
+import Vue3Toastify from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 const app = createApp({});
+app.use(Vue3Toastify, {
+    autoClose: 3000,
+    pauseOnHover: false,
+});
 app.component('example-component', ExampleComponent);
 app.component('reply-form', ReplyForm);
 app.component('thread-replies', ThreadReplies);
