@@ -78,19 +78,23 @@ export default {
     },
     methods: {
         async toggleFavorite(reply) {
-            try {
-                if (!reply.is_favorited) {
-                    await axios.post(`/replies/${reply.id}/favorite`);
-                    reply.is_favorited = true;
-                    toast.success('Replay successfully added to favorites.');
-                } else {
-                    await axios.delete(`/replies/${reply.id}/favorite`);
-                    reply.is_favorited = false;
-                    toast.success('Replay successfully removed from favorites.');
+            if (this.isAuthenticated) {
+                try {
+                    if (!reply.is_favorited) {
+                        await axios.post(`/replies/${reply.id}/favorite`);
+                        reply.is_favorited = true;
+                        toast.success('Replay successfully added to favorites.');
+                    } else {
+                        await axios.delete(`/replies/${reply.id}/favorite`);
+                        reply.is_favorited = false;
+                        toast.success('Replay successfully removed from favorites.');
+                    }
+                } catch (error) {
+                    console.error('Error favorite reply:', error.status);
+                    toast.error('Something went wrong. Please try again.');
                 }
-            } catch (error) {
-                console.error('Error favorite reply:', error);
-                toast.error('Something went wrong. Please try again.');
+            } else {
+                window.location.href = '/login';
             }
         },
         avatarUrl(reply) {

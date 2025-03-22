@@ -25377,41 +25377,51 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
   },
   methods: {
     toggleFavorite: function toggleFavorite(reply) {
+      var _this = this;
       return _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
-              _context.prev = 0;
-              if (reply.is_favorited) {
-                _context.next = 8;
+              if (!_this.isAuthenticated) {
+                _context.next = 21;
                 break;
               }
-              _context.next = 4;
+              _context.prev = 1;
+              if (reply.is_favorited) {
+                _context.next = 9;
+                break;
+              }
+              _context.next = 5;
               return axios__WEBPACK_IMPORTED_MODULE_1___default().post("/replies/".concat(reply.id, "/favorite"));
-            case 4:
+            case 5:
               reply.is_favorited = true;
               vue3_toastify__WEBPACK_IMPORTED_MODULE_2__.toast.success('Replay successfully added to favorites.');
-              _context.next = 12;
+              _context.next = 13;
               break;
-            case 8:
-              _context.next = 10;
+            case 9:
+              _context.next = 11;
               return axios__WEBPACK_IMPORTED_MODULE_1___default()["delete"]("/replies/".concat(reply.id, "/favorite"));
-            case 10:
+            case 11:
               reply.is_favorited = false;
               vue3_toastify__WEBPACK_IMPORTED_MODULE_2__.toast.success('Replay successfully removed from favorites.');
-            case 12:
-              _context.next = 18;
+            case 13:
+              _context.next = 19;
               break;
-            case 14:
-              _context.prev = 14;
-              _context.t0 = _context["catch"](0);
-              console.error('Error favorite reply:', _context.t0);
+            case 15:
+              _context.prev = 15;
+              _context.t0 = _context["catch"](1);
+              console.error('Error favorite reply:', _context.t0.status);
               vue3_toastify__WEBPACK_IMPORTED_MODULE_2__.toast.error('Something went wrong. Please try again.');
-            case 18:
+            case 19:
+              _context.next = 22;
+              break;
+            case 21:
+              window.location.href = '/login';
+            case 22:
             case "end":
               return _context.stop();
           }
-        }, _callee, null, [[0, 14]]);
+        }, _callee, null, [[1, 15]]);
       }))();
     },
     avatarUrl: function avatarUrl(reply) {
