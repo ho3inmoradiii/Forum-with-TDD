@@ -25677,6 +25677,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       src: $options.avatarUrl(reply),
       alt: reply.user.name
     }, null, 8 /* PROPS */, _hoisted_3)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_PhHeart, {
+      "class": "cursor-pointer",
       size: 32,
       color: reply.is_favorited ? 'hotpink' : 'gray',
       weight: reply.is_favorited ? 'fill' : 'duotone',

@@ -7,7 +7,7 @@
                 </div>
                 <div class="flex-grow">
                     <div class="flex flex-row-reverse justify-between">
-                        <PhHeart :size="32" :color="reply.is_favorited ? 'hotpink' : 'gray'" :weight="reply.is_favorited ? 'fill' : 'duotone'" @click="toggleFavorite(reply)" />
+                        <PhHeart class="cursor-pointer" :size="32" :color="reply.is_favorited ? 'hotpink' : 'gray'" :weight="reply.is_favorited ? 'fill' : 'duotone'" @click="toggleFavorite(reply)" />
                         <p class="text-gray-700">{{ reply.body }}</p>
                     </div>
                     <div class="mt-2 text-sm text-gray-500 rtl">

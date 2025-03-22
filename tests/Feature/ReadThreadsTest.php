@@ -325,4 +325,59 @@ class ReadThreadsTest extends TestCase
             ->assertStatus(200)
             ->assertSeeInOrder([$thread3->title, $thread2->title, $thread1->title]);
     }
+
+    /** @test */
+    public function show_thread_sets_is_favorited_correctly_for_authenticated_user()
+    {
+        $user = $this->user;
+        $this->actingAs($user);
+
+        $thread = $this->thread;
+
+        $reply1 = Reply::factory()->create([
+            'thread_id' => $thread->id
+        ]);
+
+        $reply2 = Reply::factory()->create([
+            'thread_id' => $thread->id
+        ]);
+
+        $reply1->favoritedBy()->attach($user->id);
+
+        $response = $this->get(route('threads.show', ['channel' => $this->channel->slug, 'thread' => $thread->id]));
+
+        $response->assertStatus(200);
+        $threadData = $response->viewData('thread');
+        $replies = $threadData->replies;
+
+        $this->assertTrue($replies->firstWhere('id', $reply1->id)->is_favorited);
+        $this->assertFalse($replies->firstWhere('id', $reply2->id)->is_favorited);
+    }
+
+    /** @test */
+    public function show_thread_sets_is_favorited_to_false_for_unauthenticated_user()
+    {
+        $user = $this->user;
+
+        $thread = $this->thread;
+
+        $reply1 = Reply::factory()->create([
+            'thread_id' => $thread->id
+        ]);
+
+        $reply2 = Reply::factory()->create([
+            'thread_id' => $thread->id
+        ]);
+
+        $reply1->favoritedBy()->attach($user->id);
+
+        $response = $this->get(route('threads.show', ['channel' => $this->channel->slug, 'thread' => $thread->id]));
+
+        $response->assertStatus(200);
+        $threadData = $response->viewData('thread');
+        $replies = $threadData->replies;
+
+        $this->assertFalse($replies->firstWhere('id', $reply1->id)->is_favorited);
+        $this->assertFalse($replies->firstWhere('id', $reply2->id)->is_favorited);
+    }
 }

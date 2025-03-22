@@ -79,7 +79,7 @@ class ThreadsController extends Controller
             'replies.favoritedBy' => function ($query) {
                 $query->where('user_id', auth()->id());
             }
-        ]);
+        ])->loadCount('replies');
         $thread->replies->each(function ($reply) {
             $reply->is_favorited = auth()->check() && $reply->favoritedBy->isNotEmpty();
         });
