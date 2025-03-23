@@ -12,6 +12,11 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public function getRouteKeyName()
+    {
+        return 'name';
+    }
+
     /**
      * The attributes that are mass assignable.
      *

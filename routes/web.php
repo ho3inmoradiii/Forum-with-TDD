@@ -4,6 +4,7 @@ use App\Http\Controllers\ThreadsController;
 use App\Http\Controllers\RepliesController;
 use App\Http\Controllers\ChannelsController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,5 +38,7 @@ Route::group(['middleware' => 'auth'], function () {
 });
 Route::get('/threads', [ThreadsController::class, 'index'])->name('threads.index');
 Route::get('/threads/{channel}/{thread}', [ThreadsController::class, 'show'])->name('threads.show');
+
+Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
 
 Route::post('/threads/{channel}/{thread}/replies', [RepliesController::class, 'store'])->name('replies.store');
