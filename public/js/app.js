@@ -25395,7 +25395,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
               return axios__WEBPACK_IMPORTED_MODULE_1___default().post("/replies/".concat(reply.id, "/favorite"));
             case 5:
               reply.is_favorited = true;
-              vue3_toastify__WEBPACK_IMPORTED_MODULE_2__.toast.success('Replay successfully added to favorites.');
+              vue3_toastify__WEBPACK_IMPORTED_MODULE_2__.toast.success('Reply successfully added to favorites.');
               _context.next = 13;
               break;
             case 9:
@@ -25403,21 +25403,24 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
               return axios__WEBPACK_IMPORTED_MODULE_1___default()["delete"]("/replies/".concat(reply.id, "/favorite"));
             case 11:
               reply.is_favorited = false;
-              vue3_toastify__WEBPACK_IMPORTED_MODULE_2__.toast.success('Replay successfully removed from favorites.');
+              vue3_toastify__WEBPACK_IMPORTED_MODULE_2__.toast.success('Reply successfully removed from favorites.');
             case 13:
               _context.next = 19;
               break;
             case 15:
               _context.prev = 15;
               _context.t0 = _context["catch"](1);
-              console.error('Error favorite reply:', _context.t0.status);
+              console.error('Error favorite reply:', _context.t0);
               vue3_toastify__WEBPACK_IMPORTED_MODULE_2__.toast.error('Something went wrong. Please try again.');
             case 19:
-              _context.next = 22;
+              _context.next = 23;
               break;
             case 21:
-              window.location.href = '/login';
-            case 22:
+              vue3_toastify__WEBPACK_IMPORTED_MODULE_2__.toast.error('To favorite a reply, you must log in.');
+              setTimeout(function () {
+                window.location.href = '/login';
+              }, 2000);
+            case 23:
             case "end":
               return _context.stop();
           }

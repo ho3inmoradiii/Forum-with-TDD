@@ -83,18 +83,19 @@ export default {
                     if (!reply.is_favorited) {
                         await axios.post(`/replies/${reply.id}/favorite`);
                         reply.is_favorited = true;
-                        toast.success('Replay successfully added to favorites.');
+                        toast.success('Reply successfully added to favorites.');
                     } else {
                         await axios.delete(`/replies/${reply.id}/favorite`);
                         reply.is_favorited = false;
-                        toast.success('Replay successfully removed from favorites.');
+                        toast.success('Reply successfully removed from favorites.');
                     }
                 } catch (error) {
-                    console.error('Error favorite reply:', error.status);
+                    console.error('Error favorite reply:', error);
                     toast.error('Something went wrong. Please try again.');
                 }
             } else {
-                window.location.href = '/login';
+                toast.error('To favorite a reply, you must log in.');
+                setTimeout(function() {window.location.href = '/login'}, 2000);
             }
         },
         avatarUrl(reply) {
