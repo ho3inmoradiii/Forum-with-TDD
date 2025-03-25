@@ -33,7 +33,7 @@
                 </article>
                 <hr/>
             @empty
-                <p class="text-center text-gray-500">هیچ موضوعی یافت نشد.</p>
+                <p class="text-center text-gray-500">No threads yet.</p>
             @endforelse
         </div>
     </div>
