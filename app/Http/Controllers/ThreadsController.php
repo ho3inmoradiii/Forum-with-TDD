@@ -113,10 +113,15 @@ class ThreadsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Thread  $thread
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Thread $thread)
     {
-        //
+        if ($thread->user_id == \auth()->id()) {
+            $thread->delete();
+            return response()->json(['message' => 'Thread deleted successfully.'], 200);
+        } else {
+            return response()->json(['message' => 'You do not have permission to delete this thread.'], 403);
+        }
     }
 }
