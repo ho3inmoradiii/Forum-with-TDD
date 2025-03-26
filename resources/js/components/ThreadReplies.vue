@@ -1,18 +1,20 @@
 <template>
     <div>
-        <div v-for="reply in replies" :key="reply.id" class="mb-4 p-4 bg-white shadow rounded">
-            <div class="flex items-start">
-                <div class="flex-shrink-0 mr-3">
-                    <img class="h-10 w-10 rounded-full" :src="avatarUrl(reply)" :alt="reply.user.name">
+        <div v-for="reply in replies" :key="reply.id" class="mb-4 p-4 bg-gray-50 rounded-lg shadow-md border border-gray-100">
+            <div class="flex items-start gap-4">
+                <div class="flex-shrink-0">
+                    <img class="h-12 w-12 rounded-full" :src="avatarUrl(reply)" :alt="reply.user.name">
                 </div>
                 <div class="flex-grow">
-                    <div class="flex flex-row-reverse justify-between">
-                        <PhHeart class="cursor-pointer" :size="32" :color="reply.is_favorited ? 'hotpink' : 'gray'" :weight="reply.is_favorited ? 'fill' : 'duotone'" @click="toggleFavorite(reply)" />
-                        <p class="text-gray-700">{{ reply.body }}</p>
+                    <div class="flex flex-row-reverse justify-between items-center gap-4">
+                        <div class="w-8 h-8">
+                            <PhHeart class="cursor-pointer" :size="32" :color="reply.is_favorited ? 'hotpink' : 'gray'" :weight="reply.is_favorited ? 'fill' : 'duotone'" @click="toggleFavorite(reply)" />
+                        </div>
+                        <p class="text-gray-700 leading-relaxed">{{ reply.body }}</p>
                     </div>
-                    <div class="mt-2 text-sm text-gray-500 rtl">
+                    <div class="mt-2 text-sm text-gray-600 flex items-center gap-2">
                         Posted by
-                        <a href="#" class="text-blue-600 hover:text-blue-800 font-semibold text-sm transition duration-300 ease-in-out">
+                        <a :href="profileUrl(reply)" class="text-blue-600 hover:text-blue-800 font-semibold transition duration-300 ease-in-out">
                             {{ reply.user.name }}
                         </a>
                         <span class="mx-1">•</span>
@@ -29,15 +31,15 @@
             @reply-posted="addReply"
             v-if="isAuthenticated"
         ></reply-form>
-        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert" v-else>
-            <p>Please <a href="/login" class="font-bold underline">log in</a> to post a reply.</p>
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg" role="alert" v-else>
+            <p>Please <a href="/login" class="font-bold underline hover:text-yellow-900">log in</a> to post a reply.</p>
         </div>
     </div>
 </template>
 
 <script>
 import ReplyForm from './ReplyForm.vue';
-import {PhHeart} from "@phosphor-icons/vue";
+import { PhHeart } from "@phosphor-icons/vue";
 import axios from 'axios';
 import { toast } from 'vue3-toastify';
 
@@ -77,6 +79,9 @@ export default {
         };
     },
     methods: {
+        profileUrl(reply) {
+            return `/profile/${reply.user.name}`;
+        },
         async toggleFavorite(reply) {
             if (this.isAuthenticated) {
                 try {
@@ -95,7 +100,7 @@ export default {
                 }
             } else {
                 toast.error('To favorite a reply, you must log in.');
-                setTimeout(function() {window.location.href = '/login'}, 2000);
+                setTimeout(function() { window.location.href = '/login' }, 2000);
             }
         },
         avatarUrl(reply) {

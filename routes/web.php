@@ -41,4 +41,5 @@ Route::get('/threads/{channel}/{thread}', [ThreadsController::class, 'show'])->n
 
 Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
 
+
 Route::post('/threads/{channel}/{thread}/replies', [RepliesController::class, 'store'])->name('replies.store');

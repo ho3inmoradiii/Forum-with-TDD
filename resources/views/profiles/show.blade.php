@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="min-h-screen bg-gray-100 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="min-h-screen max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="lg:flex flex-col gap-6">
             <!-- Profile Header -->
             <div class="bg-white shadow-lg rounded-xl p-6 flex items-center gap-4">
