@@ -35,9 +35,8 @@
             <div class="lg:w-2/5 mt-8 lg:mt-0 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
                 <div class="bg-white shadow-lg rounded-xl p-6 border border-gray-100">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Thread Info</h3>
-                    <p class="text-gray-700">
-                        {{ \Illuminate\Support\Str::plural('Reply', $thread->replies_count) }}:
-                        <span class="font-medium">{{ $thread->replies_count }}</span>
+                    <p class="text-gray-700 font-medium">
+                        {{ \Illuminate\Support\Str::plural('Reply', $thread->replies->count()) }}: {{ $thread->replies->count() }}
                     </p>
                     <p class="text-gray-700">
                         Created:
