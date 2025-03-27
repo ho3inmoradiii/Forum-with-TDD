@@ -3,10 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Channel;
+use App\Models\Reply;
 use App\Models\Thread;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class ThreadChannelTest extends TestCase
@@ -76,6 +78,66 @@ class ThreadChannelTest extends TestCase
         $this->assertDatabaseHas('threads', [
             'user_id' => $thread->user_id,
             'title' => $thread->title
+        ]);
+    }
+
+    /** @test */
+    public function unauthenticated_user_cannot_delete_any_threads()
+    {
+        $user = User::factory()->create();
+
+        $thread = Thread::factory()->create();
+
+        $this->delete(route('threads.destroy', ['thread' => $thread]))
+            ->assertStatus(302);
+
+        $this->assertDatabaseHas('threads', [
+            'id' => $thread->id
+        ]);
+    }
+
+    /** @test */
+    public function authenticated_user_cannot_delete_nonexistent_thread()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $this->delete(route('threads.destroy', ['thread' => 999999999]))
+            ->assertStatus(404);
+    }
+
+    /** @test */
+    public function deleting_a_thread_also_deletes_its_replies_and_favorites()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $thread = Thread::factory()->create([
+            'user_id' => $user->id
+        ]);
+
+        $replies = Reply::factory()->count(3)->create([
+            'thread_id' => $thread->id,
+        ]);
+
+        foreach ($replies as $reply) {
+            $reply->favoritedBy()->attach($user->id);
+        }
+
+        $this->delete(route('threads.destroy', $thread->id))
+            ->assertStatus(200)
+            ->assertJson(['message' => 'Thread deleted successfully.']);
+
+        $this->assertDatabaseMissing('threads', [
+            'id' => $thread->id
+        ]);
+
+        $this->assertDatabaseMissing('replies', [
+            'thread_id' => $thread->id
+        ]);
+
+        $this->assertDatabaseMissing('favorite_replies', [
+            'reply_id' => $replies->pluck('id')->all()
         ]);
     }
 }
