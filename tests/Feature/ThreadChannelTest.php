@@ -140,4 +140,54 @@ class ThreadChannelTest extends TestCase
             'reply_id' => $replies->pluck('id')->all()
         ]);
     }
+
+    /** @test */
+    public function authenticated_users_can_see_the_delete_thread_option_on_their_profile_page()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $thread = Thread::factory()->create([
+            'user_id' => $user->id
+        ]);
+
+        $this->get(route('profile.show', ['user' => $user->name]))
+            ->assertStatus(200)
+            ->assertSeeText('Delete Thread');
+    }
+
+    /** @test */
+    public function authenticated_users_cannot_see_delete_option_on_other_profiles()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $otherUser = User::factory()->create();
+        $thread = Thread::factory()->create([
+            'user_id' => $otherUser
+        ]);
+
+        $this->get(route('profile.show', ['user' => $otherUser->name]))
+            ->assertStatus(200)
+            ->assertDontSeeText('Delete Thread');
+    }
+
+    /** @test */
+    public function authenticated_user_can_delete_thread_from_profile_page()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $thread = Thread::factory()->create([
+            'user_id' => $user->id
+        ]);
+
+        $this->from(route('profile.show', ['user' => $user->name]))
+            ->delete(route('threads.destroy', ['thread' => $thread->id]))
+            ->assertRedirect(route('profile.show', ['user' => $user->name]));
+
+        $this->assertDatabaseMissing('threads', [
+            'id' => $thread->id
+        ]);
+    }
 }

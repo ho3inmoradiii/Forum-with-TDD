@@ -15,26 +15,41 @@
             <!-- Threads Section -->
             <div class="bg-white shadow-lg rounded-xl p-6 border border-gray-100">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Threads</h2>
-                @forelse ($user->threads as $thread)
-                    <article class="p-4 bg-gray-50 rounded-lg mb-4 last:mb-0">
-                        <div class="flex flex-col gap-3">
-                            <div class="flex flex-row justify-between items-center">
-                                <h3 class="text-xl font-semibold text-gray-800">
-                                    <a href="{{ route('threads.show', [$thread->channel->slug, $thread]) }}"
-                                       class="hover:text-blue-600 transition duration-300 ease-in-out">
-                                        {{ $thread->title }}
-                                    </a>
-                                </h3>
-                                <span class="text-sm text-gray-600">{{ $thread->created_at->diffForHumans() }}</span>
-                            </div>
-                            <p class="text-gray-700 leading-relaxed line-clamp-3">{{ $thread->body }}</p>
-                        </div>
-                    </article>
-                @empty
-                    <div class="text-center text-gray-600 text-lg font-medium py-8 bg-gray-100 rounded-lg">
-                        No threads yet.
-                    </div>
-                @endforelse
+                <profile-threads
+                    :initial-threads="{{ json_encode($user->threads) }}"
+                    :user-id="{{ auth()->id() }}"
+                    :is-authenticated="{{ json_encode(Auth::check()) }}"
+                    >
+                </profile-threads>
+{{--                @forelse ($user->threads as $thread)--}}
+{{--                    <article class="p-4 bg-gray-50 rounded-lg mb-4 last:mb-0">--}}
+{{--                        <div class="flex flex-col gap-3">--}}
+{{--                            <div class="flex flex-row justify-between items-center">--}}
+{{--                                <h3 class="text-xl font-semibold text-gray-800">--}}
+{{--                                    <a href="{{ route('threads.show', [$thread->channel->slug, $thread]) }}"--}}
+{{--                                       class="hover:text-blue-600 transition duration-300 ease-in-out">--}}
+{{--                                        {{ $thread->title }}--}}
+{{--                                    </a>--}}
+{{--                                </h3>--}}
+{{--                                <span class="text-sm text-gray-600">{{ $thread->created_at->diffForHumans() }}</span>--}}
+{{--                            </div>--}}
+{{--                            <p class="text-gray-700 leading-relaxed line-clamp-3">{{ $thread->body }}</p>--}}
+{{--                            @if($user->id === auth()->id())--}}
+{{--                                <form method="post" action="{{route('threads.destroy', ['thread' => $thread])}}">--}}
+{{--                                    @method('DELETE')--}}
+{{--                                    @csrf--}}
+{{--                                    <button type="submit" class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out">--}}
+{{--                                        Delete Thread--}}
+{{--                                    </button>--}}
+{{--                                </form>--}}
+{{--                            @endif--}}
+{{--                        </div>--}}
+{{--                    </article>--}}
+{{--                @empty--}}
+{{--                    <div class="text-center text-gray-600 text-lg font-medium py-8 bg-gray-100 rounded-lg">--}}
+{{--                        No threads yet.--}}
+{{--                    </div>--}}
+{{--                @endforelse--}}
             </div>
         </div>
     </div>

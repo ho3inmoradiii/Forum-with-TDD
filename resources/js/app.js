@@ -4,6 +4,7 @@ import ExampleComponent from './components/ExampleComponent.vue';
 import ReplyForm from './components/ReplyForm.vue';
 import ThreadReplies from "./components/ThreadReplies.vue";
 import CreateThread from "./components/CreateThread.vue";
+import ProfileThreads from "./components/ProfileThreads.vue";
 import Vue3Toastify from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
@@ -19,6 +20,7 @@ app.component('example-component', ExampleComponent);
 app.component('reply-form', ReplyForm);
 app.component('thread-replies', ThreadReplies);
 app.component('create-thread', CreateThread);
+app.component('profile-threads', ProfileThreads);
 app.mount('#app');
 
 Alpine.start();
