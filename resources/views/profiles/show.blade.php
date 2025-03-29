@@ -16,9 +16,8 @@
             <div class="bg-white shadow-lg rounded-xl p-6 border border-gray-100">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Threads</h2>
                 <profile-threads
-                    :initial-threads="{{ json_encode($user->threads) }}"
-                    :user-id="{{ auth()->id() }}"
-                    :is-authenticated="{{ json_encode(Auth::check()) }}"
+                    :user-with-threads="{{ json_encode($user) }}"
+                    :user-id="{{ (int)auth()->id() }}"
                     >
                 </profile-threads>
 {{--                @forelse ($user->threads as $thread)--}}

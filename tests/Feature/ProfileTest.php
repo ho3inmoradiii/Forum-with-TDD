@@ -58,8 +58,7 @@ class ProfileTest extends TestCase
 
         $this->get(route('profile.show', ['user' => $user->name]))
             ->assertStatus(200)
-            ->assertSee('No threads yet')
-            ->assertDontSee($thread->title);
+            ->assertSee('profile-threads');
     }
 
     /** @test */

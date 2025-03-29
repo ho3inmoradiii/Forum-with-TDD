@@ -151,9 +151,10 @@ class ThreadChannelTest extends TestCase
             'user_id' => $user->id
         ]);
 
-        $this->get(route('profile.show', ['user' => $user->name]))
-            ->assertStatus(200)
-            ->assertSeeText('Delete Thread');
+        $response = $this->get(route('profile.show', $user->name));
+
+        $response->assertStatus(200)
+            ->assertSee('profile-threads');
     }
 
     /** @test */
@@ -184,7 +185,8 @@ class ThreadChannelTest extends TestCase
 
         $this->from(route('profile.show', ['user' => $user->name]))
             ->delete(route('threads.destroy', ['thread' => $thread->id]))
-            ->assertRedirect(route('profile.show', ['user' => $user->name]));
+            ->assertStatus(200)
+            ->assertJson(['message' => 'Thread deleted successfully.']);
 
         $this->assertDatabaseMissing('threads', [
             'id' => $thread->id
