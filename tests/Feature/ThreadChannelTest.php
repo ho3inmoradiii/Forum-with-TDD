@@ -15,6 +15,14 @@ class ThreadChannelTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+    }
+
     /** @test */
     public function a_thread_belongs_to_a_channel()
     {
@@ -42,14 +50,14 @@ class ThreadChannelTest extends TestCase
     /** @test */
     public function authenticated_user_can_delete_own_thread()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
         $this->actingAs($user);
 
         $thread = Thread::factory()->create([
             'user_id' => $user->id
         ]);
 
-        $this->delete(route('threads.destroy', ['thread' => $thread]))
+        $this->delete(route('threads.destroy', $thread->id))
             ->assertStatus(200)
             ->assertJson(['message' => 'Thread deleted successfully.']);
 
@@ -62,7 +70,7 @@ class ThreadChannelTest extends TestCase
     /** @test */
     public function a_user_cannot_delete_other_users_threads()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
         $this->actingAs($user);
 
         $otherUser = User::factory()->create();
@@ -71,7 +79,7 @@ class ThreadChannelTest extends TestCase
             'user_id' => $otherUser->id
         ]);
 
-        $this->delete(route('threads.destroy', ['thread' => $thread]))
+        $this->delete(route('threads.destroy', $thread->id), [], ['Accept' => 'application/json'])
             ->assertStatus(403)
             ->assertJson(['message' => 'You do not have permission to delete this thread.']);
 
@@ -84,7 +92,7 @@ class ThreadChannelTest extends TestCase
     /** @test */
     public function unauthenticated_user_cannot_delete_any_threads()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
 
         $thread = Thread::factory()->create();
 
@@ -99,7 +107,7 @@ class ThreadChannelTest extends TestCase
     /** @test */
     public function authenticated_user_cannot_delete_nonexistent_thread()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
         $this->actingAs($user);
 
         $this->delete(route('threads.destroy', ['thread' => 999999999]))
@@ -109,7 +117,7 @@ class ThreadChannelTest extends TestCase
     /** @test */
     public function deleting_a_thread_also_deletes_its_replies_and_favorites()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
         $this->actingAs($user);
 
         $thread = Thread::factory()->create([
@@ -144,7 +152,7 @@ class ThreadChannelTest extends TestCase
     /** @test */
     public function authenticated_users_can_see_the_delete_thread_option_on_their_profile_page()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
         $this->actingAs($user);
 
         $thread = Thread::factory()->create([
@@ -160,7 +168,7 @@ class ThreadChannelTest extends TestCase
     /** @test */
     public function authenticated_users_cannot_see_delete_option_on_other_profiles()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
         $this->actingAs($user);
 
         $otherUser = User::factory()->create();
@@ -176,7 +184,7 @@ class ThreadChannelTest extends TestCase
     /** @test */
     public function authenticated_user_can_delete_thread_from_profile_page()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
         $this->actingAs($user);
 
         $thread = Thread::factory()->create([

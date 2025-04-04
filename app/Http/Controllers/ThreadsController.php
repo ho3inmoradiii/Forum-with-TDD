@@ -117,11 +117,12 @@ class ThreadsController extends Controller
      */
     public function destroy(Thread $thread)
     {
-        if ($thread->user_id == \auth()->id()) {
+        $this->authorize('delete', $thread);
+        try {
             $thread->delete();
             return response()->json(['message' => 'Thread deleted successfully.'], 200);
-        } else {
-            return response()->json(['message' => 'You do not have permission to delete this thread.'], 403);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete thread. Please try again.'], 500);
         }
     }
 }
