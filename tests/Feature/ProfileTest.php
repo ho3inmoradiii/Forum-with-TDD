@@ -12,10 +12,18 @@ class ProfileTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+    }
+
     /** @test */
     public function a_user_has_profile()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
 
         $this->get(route('profile.show', ['user' => $user->name]))
             ->assertStatus(200)
@@ -25,7 +33,7 @@ class ProfileTest extends TestCase
     /** @test */
     public function profile_displays_all_threads_created_by_the_associated_user()
     {
-        $user1 = User::factory()->create();
+        $user1 = $this->user;
         $user2 = User::factory()->create();
 
         $thread1 = Thread::factory()->create([
@@ -49,7 +57,7 @@ class ProfileTest extends TestCase
     /** @test */
     public function profile_page_displays_the_message_if_the_user_has_not_posted_any_threads()
     {
-        $user = User::factory()->create();
+        $user = $this->user;
         $user1 = User::factory()->create();
 
         $thread = Thread::factory()->create([
