@@ -30,4 +30,9 @@ class Reply extends Model
     {
         return $this->favoritedBy()->where('user_id', auth()->id())->exists();
     }
+
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'target');
+    }
 }

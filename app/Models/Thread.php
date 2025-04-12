@@ -3,11 +3,19 @@
 namespace App\Models;
 
 use App\Filters\ThreadFilter;
+use App\Observers\ThreadObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Thread extends Model
 {
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::observe(ThreadObserver::class);
+    }
+
     use HasFactory;
 
     protected $fillable = [
@@ -46,5 +54,10 @@ class Thread extends Model
     public function channel()
     {
         return $this->belongsTo(Channel::class);
+    }
+
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'target');
     }
 }
