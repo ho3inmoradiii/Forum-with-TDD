@@ -62,8 +62,6 @@ class ThreadsController extends Controller
             'channel_id' => $request->channel_id
         ]);
 
-
-
         return response()->json($thread, 201);
     }
 

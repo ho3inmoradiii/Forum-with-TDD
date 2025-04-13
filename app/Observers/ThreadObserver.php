@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Activity;
 use App\Models\Thread;
+use Illuminate\Support\Facades\Log;
 
 class ThreadObserver
 {
@@ -15,12 +16,16 @@ class ThreadObserver
      */
     public function created(Thread $thread)
     {
-        $thread->activities()->create([
-            'user_id' => $thread->user_id,
-            'activity_type' => 'thread_created',
-            'target_id' => $thread->id,
-            'target_type' => 'App\Models\Thread',
-        ]);
+        try {
+            $thread->activities()->create([
+                'user_id' => $thread->user_id,
+                'activity_type' => 'thread_created',
+                'target_id' => $thread->id,
+                'target_type' => 'App\Models\Thread',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to record activity for thread creation: ' . $e->getMessage());
+        }
     }
 
     /**
