@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Activity;
 use App\Models\Thread;
 use Illuminate\Support\Facades\Log;
+use App\Constants\ActivityTypes;
 
 class ThreadObserver
 {
@@ -19,7 +20,7 @@ class ThreadObserver
         try {
             $thread->activities()->create([
                 'user_id' => $thread->user_id,
-                'activity_type' => 'thread_created',
+                'activity_type' => ActivityTypes::THREAD_CREATED,
                 'target_id' => $thread->id,
                 'target_type' => 'App\Models\Thread',
             ]);

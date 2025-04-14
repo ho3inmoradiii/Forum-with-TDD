@@ -2,12 +2,20 @@
 
 namespace App\Models;
 
+use App\Observers\ReplyObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Reply extends Model
 {
     use HasFactory;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::observe(ReplyObserver::class);
+    }
 
     protected $fillable = ['body', 'user_id'];
 
