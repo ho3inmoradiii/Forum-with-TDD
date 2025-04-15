@@ -61,4 +61,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Reply::class, 'favorite_replies')->withTimestamps();
     }
+
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
+    }
 }

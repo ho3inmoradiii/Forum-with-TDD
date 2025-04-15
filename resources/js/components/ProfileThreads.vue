@@ -1,28 +1,41 @@
 <template>
-    <div v-if="threads.length > 0">
-        <div v-for="thread in threads" :key="thread.id">
+    <div v-if="activities.length > 0">
+        <div v-for="activity in activities" :key="activity.id">
             <article class="p-4 bg-gray-50 rounded-lg mb-4">
                 <div class="flex flex-col gap-3">
                     <div class="flex flex-row justify-between items-center">
                         <h3 class="text-xl font-semibold text-gray-800">
-                            <a :href="threadsShow(thread)" class="hover:text-blue-600 transition duration-300 ease-in-out">
-                                {{ thread.title }}
-                            </a>
+                            <template v-if="activity.activity_type === 'thread_created' && activity.target">
+                                <span>{{ userWithActivities.name }} created a new thread</span>
+                                <a :href="threadsShow(activity.target)" class="hover:text-blue-600 transition duration-300 ease-in-out ml-2">
+                                    {{ activity.target.title }}
+                                </a>
+                            </template>
+                            <template v-else-if="activity.activity_type === 'reply_added' && activity.target">
+                                <span>{{ userWithActivities.name }} replied to </span>
+                                <a :href="threadsShow(activity.target.thread)" class="hover:text-blue-600 transition duration-300 ease-in-out ml-2">
+                                    {{ activity.target.thread.title }}
+                                </a>
+                            </template>
+                            <template v-else>
+                                <span>Unknown activity</span>
+                            </template>
                         </h3>
-                        <span class="text-sm text-gray-600">{{ formatDate(thread.created_at) }}</span>
+                        <span class="text-sm text-gray-600">{{ formatDate(activity.created_at) }}</span>
                     </div>
-                    <p class="text-gray-700 leading-relaxed line-clamp-3">{{ thread.body }}</p>
+                    <p v-if="activity.target" class="text-gray-700 leading-relaxed line-clamp-3">
+                        {{ activity.target.body }}
+                    </p>
                     <button
-                        v-if="userWithThreads.id === userId"
-                        @click="showConfirm(thread)"
-                        :disabled="isDeleting === thread.id"
+                        v-if="userWithActivities.id === userId && activity.activity_type === 'thread_created'"
+                        @click="showConfirm(activity.target)"
+                        :disabled="isDeleting === activity.target.id"
                         class="w-40 justify-center inline-flex items-center px-5 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-300 ease-in-out"
                     >
-                        {{ isDeleting === thread.id ? 'Deleting...' : 'Delete Thread' }}
+                        {{ isDeleting === activity.target.id ? 'Deleting...' : 'Delete Thread' }}
                     </button>
                 </div>
             </article>
-
             <confirm-dialog
                 :is-open="showDialog"
                 title="Delete Thread"
@@ -34,7 +47,7 @@
         </div>
     </div>
     <div v-else class="text-center text-gray-600 text-lg font-medium py-8 bg-gray-100 rounded-lg">
-        No threads yet.
+        No activities yet.
     </div>
 </template>
 
@@ -49,7 +62,7 @@ export default {
         ConfirmDialog
     },
     props: {
-        userWithThreads: {
+        userWithActivities: {
             type: Object,
             required: true
         },
@@ -60,7 +73,7 @@ export default {
     },
     data() {
         return {
-            threads: this.userWithThreads.threads,
+            activities: this.userWithActivities.activities,
             isDeleting: null,
             showDialog: false,
             threadToDelete: null
@@ -84,7 +97,7 @@ export default {
                     headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
                 });
                 toast.success(response.data.message);
-                this.threads = this.threads.filter(item => item.id !== thread.id);
+                this.activities = this.activities.filter(item => item.id !== thread.id);
             } catch (error) {
                 console.error('Error deleting thread:', error);
                 toast.error(error.response?.data?.message || 'Something went wrong.');

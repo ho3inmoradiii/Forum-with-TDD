@@ -25302,7 +25302,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     ConfirmDialog: _ConfirmDialog_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   props: {
-    userWithThreads: {
+    userWithActivities: {
       type: Object,
       required: true
     },
@@ -25313,7 +25313,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
   },
   data: function data() {
     return {
-      threads: this.userWithThreads.threads,
+      activities: this.userWithActivities.activities,
       isDeleting: null,
       showDialog: false,
       threadToDelete: null
@@ -25347,7 +25347,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
             case 6:
               response = _context.sent;
               vue3_toastify__WEBPACK_IMPORTED_MODULE_1__.toast.success(response.data.message);
-              _this.threads = _this.threads.filter(function (item) {
+              _this.activities = _this.activities.filter(function (item) {
                 return item.id !== thread.id;
               });
               _context.next = 15;
@@ -25833,33 +25833,45 @@ var _hoisted_5 = {
   "class": "text-xl font-semibold text-gray-800"
 };
 var _hoisted_6 = ["href"];
-var _hoisted_7 = {
+var _hoisted_7 = ["href"];
+var _hoisted_8 = {
+  key: 2
+};
+var _hoisted_9 = {
   "class": "text-sm text-gray-600"
 };
-var _hoisted_8 = {
+var _hoisted_10 = {
+  key: 0,
   "class": "text-gray-700 leading-relaxed line-clamp-3"
 };
-var _hoisted_9 = ["onClick", "disabled"];
-var _hoisted_10 = {
+var _hoisted_11 = ["onClick", "disabled"];
+var _hoisted_12 = {
   key: 1,
   "class": "text-center text-gray-600 text-lg font-medium py-8 bg-gray-100 rounded-lg"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_confirm_dialog = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("confirm-dialog");
-  return $data.threads.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.threads, function (thread) {
+  return $data.activities.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.activities, function (activity) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
-      key: thread.id
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("article", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
-      href: $options.threadsShow(thread),
-      "class": "hover:text-blue-600 transition duration-300 ease-in-out"
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(thread.title), 9 /* TEXT, PROPS */, _hoisted_6)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.formatDate(thread.created_at)), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(thread.body), 1 /* TEXT */), $props.userWithThreads.id === $props.userId ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
-      key: 0,
+      key: activity.id
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("article", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", _hoisted_5, [activity.activity_type === 'thread_created' && activity.target ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+      key: 0
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.userWithActivities.name) + " created a new thread", 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+      href: $options.threadsShow(activity.target),
+      "class": "hover:text-blue-600 transition duration-300 ease-in-out ml-2"
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(activity.target.title), 9 /* TEXT, PROPS */, _hoisted_6)], 64 /* STABLE_FRAGMENT */)) : activity.activity_type === 'reply_added' && activity.target ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+      key: 1
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.userWithActivities.name) + " replied to ", 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+      href: $options.threadsShow(activity.target.thread),
+      "class": "hover:text-blue-600 transition duration-300 ease-in-out ml-2"
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(activity.target.thread.title), 9 /* TEXT, PROPS */, _hoisted_7)], 64 /* STABLE_FRAGMENT */)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_8, "Unknown activity"))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.formatDate(activity.created_at)), 1 /* TEXT */)]), activity.target ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(activity.target.body), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.userWithActivities.id === $props.userId && activity.activity_type === 'thread_created' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+      key: 1,
       onClick: function onClick($event) {
-        return $options.showConfirm(thread);
+        return $options.showConfirm(activity.target);
       },
-      disabled: $data.isDeleting === thread.id,
+      disabled: $data.isDeleting === activity.target.id,
       "class": "w-40 justify-center inline-flex items-center px-5 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-300 ease-in-out"
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isDeleting === thread.id ? 'Deleting...' : 'Delete Thread'), 9 /* TEXT, PROPS */, _hoisted_9)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_confirm_dialog, {
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isDeleting === activity.target.id ? 'Deleting...' : 'Delete Thread'), 9 /* TEXT, PROPS */, _hoisted_11)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_confirm_dialog, {
       "is-open": $data.showDialog,
       title: "Delete Thread",
       message: "Are you sure you want to delete this thread? This action cannot be undone.",
@@ -25869,7 +25881,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         return $data.showDialog = false;
       })
     }, null, 8 /* PROPS */, ["is-open", "onConfirm"])]);
-  }), 128 /* KEYED_FRAGMENT */))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_10, " No threads yet. "));
+  }), 128 /* KEYED_FRAGMENT */))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_12, " No activities yet. "));
 }
 
 /***/ }),

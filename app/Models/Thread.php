@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Thread extends Model
 {
+    protected $with = ['channel'];
+
     protected static function boot()
     {
         parent::boot();
