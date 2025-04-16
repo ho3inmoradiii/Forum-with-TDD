@@ -8,6 +8,7 @@ use App\Models\Thread;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ThreadsController extends Controller
@@ -110,7 +111,7 @@ class ThreadsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete the specified thread and its associated activities.
      *
      * @param  \App\Models\Thread  $thread
      * @return \Illuminate\Http\JsonResponse
@@ -118,10 +119,28 @@ class ThreadsController extends Controller
     public function destroy(Thread $thread)
     {
         $this->authorize('delete', $thread);
+
         try {
-            $thread->delete();
+            DB::transaction(function () use ($thread) {
+                // Delete reply activities before cascade deletion
+                DB::table('activities')
+                    ->where('target_type', 'App\Models\Reply')
+                    ->whereIn('target_id', DB::table('replies')->where('thread_id', $thread->id)->pluck('id'))
+                    ->delete();
+
+                // Delete thread activities
+                $thread->activities()->delete();
+
+                // Delete the thread (will trigger cascade deletion of replies)
+                $thread->delete();
+
+                // Log for debugging
+                Log::info('Thread and related activities deleted successfully: Thread ID ' . $thread->id);
+            });
+
             return response()->json(['message' => 'Thread deleted successfully.'], 200);
         } catch (\Exception $e) {
+            Log::error('Failed to delete thread and related activities: Thread ID ' . $thread->id . ', Error: ' . $e->getMessage());
             return response()->json(['message' => 'Failed to delete thread. Please try again.'], 500);
         }
     }

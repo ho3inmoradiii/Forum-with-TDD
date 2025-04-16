@@ -25348,7 +25348,12 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               response = _context.sent;
               vue3_toastify__WEBPACK_IMPORTED_MODULE_1__.toast.success(response.data.message);
               _this.activities = _this.activities.filter(function (item) {
-                return item.id !== thread.id;
+                if (item.target_type === 'App\\Models\\Thread') {
+                  return item.target.id !== thread.id;
+                } else if (item.target_type === 'App\\Models\\Reply') {
+                  return item.target.thread.id !== thread.id;
+                }
+                return true;
               });
               _context.next = 15;
               break;
@@ -25603,7 +25608,6 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
     },
     addReply: function addReply(newReply) {
       this.replies.push(newReply);
-      console.log(this.replies, 'hi');
     },
     formatDate: function formatDate(dateString) {
       if (!dateString) return 'Unknown date';

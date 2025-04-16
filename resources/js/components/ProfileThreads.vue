@@ -97,7 +97,14 @@ export default {
                     headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
                 });
                 toast.success(response.data.message);
-                this.activities = this.activities.filter(item => item.id !== thread.id);
+                this.activities = this.activities.filter(item => {
+                    if (item.target_type === 'App\\Models\\Thread') {
+                        return item.target.id !== thread.id;
+                    } else if (item.target_type === 'App\\Models\\Reply') {
+                        return item.target.thread.id !== thread.id;
+                    }
+                    return true;
+                });
             } catch (error) {
                 console.error('Error deleting thread:', error);
                 toast.error(error.response?.data?.message || 'Something went wrong.');

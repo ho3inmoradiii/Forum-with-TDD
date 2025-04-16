@@ -47,7 +47,11 @@ class ReplyObserver
      */
     public function deleted(Reply $reply)
     {
-        //
+        try {
+            $reply->activities()->delete();
+        } catch (\Exception $e) {
+            Log::error('Failed to destroy activity for reply deletion: Reply ID ' . $reply->id . ', User ID ' . $reply->user_id . ', Error: ' . $e->getMessage());
+        }
     }
 
     /**

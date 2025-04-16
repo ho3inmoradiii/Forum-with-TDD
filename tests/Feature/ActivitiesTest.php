@@ -315,4 +315,43 @@ class ActivitiesTest extends TestCase
         $this->assertDatabaseCount('replies', 0);
         $this->assertDatabaseCount('activities', 1);
     }
+
+    /** @test */
+    public function test_activity_record_deletion_on_thread_deletion()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $thread = Thread::factory()->create([
+            'user_id' => $user->id
+        ]);
+
+        $this->assertDatabaseHas('activities', [
+            'user_id' => $user->id,
+            'activity_type' => ActivityTypes::THREAD_CREATED,
+            'target_id' => $thread->id,
+            'target_type' => 'App\Models\Thread'
+        ]);
+
+        $this->assertDatabaseHas('threads', [
+            'user_id' => $thread->user_id,
+            'title' => $thread->title
+        ]);
+
+        $this->delete(route('threads.destroy', $thread->id))
+            ->assertStatus(200)
+            ->assertJson(['message' => 'Thread deleted successfully.']);
+
+        $this->assertDatabaseMissing('threads', [
+            'user_id' => $thread->user_id,
+            'title' => $thread->title
+        ]);
+
+        $this->assertDatabaseMissing('activities', [
+            'user_id' => $user->id,
+            'activity_type' => ActivityTypes::THREAD_CREATED,
+            'target_id' => $thread->id,
+            'target_type' => 'App\Models\Thread'
+        ]);
+    }
 }

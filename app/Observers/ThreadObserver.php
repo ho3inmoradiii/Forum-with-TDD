@@ -48,7 +48,11 @@ class ThreadObserver
      */
     public function deleted(Thread $thread)
     {
-        //
+        try {
+            $thread->activities()->delete();
+        } catch (\Exception $e) {
+            Log::error('Failed to destroy activity for thread deletion: ' . $e->getMessage());
+        }
     }
 
     /**

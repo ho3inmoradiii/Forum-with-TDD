@@ -119,7 +119,6 @@ export default {
         },
         addReply(newReply) {
             this.replies.push(newReply);
-            console.log(this.replies, 'hi');
         },
         formatDate(dateString) {
             if (!dateString) return 'Unknown date';
