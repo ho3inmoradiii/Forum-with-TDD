@@ -9,159 +9,147 @@ use App\Models\Reply;
 use App\Models\Thread;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ActivitiesTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $user;
+    protected $channel;
+    protected $thread;
+
+    /**
+     * Set up the test environment.
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Create and authenticate a user
+        $this->user = User::factory()->create();
+        $this->actingAs($this->user);
+
+        // Create a channel
+        $this->channel = Channel::factory()->create();
+
+        // Create a default thread
+        $this->thread = Thread::factory()->create([
+            'user_id' => $this->user->id,
+            'channel_id' => $this->channel->id,
+        ]);
+    }
+
     /** @test */
     public function it_records_an_activity_when_a_thread_is_created()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $thread = Thread::factory()->create([
-            'user_id' => $user->id
-        ]);
-
         $this->assertDatabaseCount('activities', 1);
 
         $this->assertDatabaseHas('activities', [
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'activity_type' => 'thread_created',
-            'target_id' => $thread->id,
-            'target_type' => 'App\Models\Thread'
+            'target_id' => $this->thread->id,
+            'target_type' => 'App\Models\Thread',
         ]);
     }
 
     /** @test */
     public function test_activity_relationships_are_correctly_associated()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $thread = Thread::factory()->create([
-            'user_id' => $user->id
-        ]);
-
         $activity = Activity::first();
-        $this->assertEquals($activity->target_id, $thread->id);
-        $this->assertEquals($activity->user_id, $user->id);
+
+        $this->assertEquals($activity->target_id, $this->thread->id);
+        $this->assertEquals($activity->user_id, $this->user->id);
     }
 
     /** @test */
     public function test_no_activity_recorded_when_thread_fails_to_save()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $channel = Channel::factory()->create();
-
-        $thread = Thread::factory()->raw([
+        $threadData = Thread::factory()->raw([
             'title' => '',
-            'channel_id' => $channel->id
+            'channel_id' => $this->channel->id,
         ]);
 
-        $response = $this->postJson(route('threads.store'), $thread);
-
+        $response = $this->postJson(route('threads.store'), $threadData);
         $response->assertStatus(422);
 
-        $this->assertDatabaseCount('threads', 0);
-        $this->assertDatabaseCount('activities', 0);
+        $this->assertDatabaseCount('threads', 1); // Default thread from setUp
+        $this->assertDatabaseCount('activities', 1); // Activity from default thread
     }
 
     /** @test */
     public function test_multiple_threads_create_multiple_activity_records()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $thread = Thread::factory()->create([
-            'user_id' => $user->id
-        ]);
         $anotherThread = Thread::factory()->create([
-            'user_id' => $user->id
+            'user_id' => $this->user->id,
+            'channel_id' => $this->channel->id,
         ]);
 
         $this->assertDatabaseCount('activities', 2);
 
         $this->assertDatabaseHas('activities', [
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'activity_type' => 'thread_created',
-            'target_id' => $thread->id,
-            'target_type' => 'App\Models\Thread'
+            'target_id' => $this->thread->id,
+            'target_type' => 'App\Models\Thread',
         ]);
 
         $this->assertDatabaseHas('activities', [
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'activity_type' => 'thread_created',
             'target_id' => $anotherThread->id,
-            'target_type' => 'App\Models\Thread'
+            'target_type' => 'App\Models\Thread',
         ]);
     }
 
     /** @test */
     public function test_no_activity_recorded_for_unauthenticated_user_thread_creation()
     {
-        $user = User::factory()->create();
-        $channel = Channel::factory()->create();
-        $thread = Thread::factory()->raw([
-            'channel_id' => $channel->id
+        \Illuminate\Support\Facades\Auth::logout();
+        $threadData = Thread::factory()->raw([
+            'channel_id' => $this->channel->id,
         ]);
 
-        $response = $this->postJson(route('threads.store'), $thread);
+        $response = $this->postJson(route('threads.store'), $threadData);
         $response->assertStatus(401);
 
-        $this->assertDatabaseCount('activities', 0);
+        $this->assertDatabaseCount('activities', 1); // Activity from default thread
     }
 
     /** @test */
     public function test_activities_are_ordered_from_newest_to_oldest()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $thread = Thread::factory()->create([
-            'user_id' => $user->id,
-        ]);
-
         $anotherThread = Thread::factory()->create([
-            'user_id' => $user->id,
-            'created_at' => now()->subSeconds(10)
+            'user_id' => $this->user->id,
+            'channel_id' => $this->channel->id,
+            'created_at' => now()->subSeconds(10),
         ]);
 
         $lastActivity = Activity::latest()->first();
         $secondActivity = Activity::latest()->skip(1)->first();
 
-        $this->assertEquals($lastActivity->target_id, $thread->id);
+        $this->assertEquals($lastActivity->target_id, $this->thread->id);
         $this->assertEquals($secondActivity->target_id, $anotherThread->id);
     }
 
     /** @test */
     public function it_records_an_activity_when_a_reply_added()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $channel = Channel::factory()->create();
-        $thread = Thread::factory()->create([
-            'channel_id' => $channel->id
-        ]);
-        $reply = ['body' => 'This is a reply'];
-        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $reply);
+        $replyData = ['body' => 'This is a reply'];
+        $response = $this->postJson(route('replies.store', ['channel' => $this->channel->slug, 'thread' => $this->thread->id]), $replyData);
         $response->assertStatus(201)
             ->assertJson([
-                'body' => $reply['body'],
-                'user_id' => $user->id,
-                'thread_id' => $thread->id
+                'body' => $replyData['body'],
+                'user_id' => $this->user->id,
+                'thread_id' => $this->thread->id,
             ]);
 
         $this->assertDatabaseHas('replies', [
-            'body' => $reply['body'],
-            'user_id' => $user->id,
-            'thread_id' => $thread->id
+            'body' => $replyData['body'],
+            'user_id' => $this->user->id,
+            'thread_id' => $this->thread->id,
         ]);
 
         $reply = Reply::first();
@@ -169,46 +157,37 @@ class ActivitiesTest extends TestCase
         $this->assertDatabaseCount('activities', 2);
 
         $this->assertDatabaseHas('activities', [
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'activity_type' => 'reply_added',
             'target_id' => $reply->id,
-            'target_type' => 'App\Models\Reply'
+            'target_type' => 'App\Models\Reply',
         ]);
     }
 
     /** @test */
     public function test_reply_activity_relationships_are_correctly_associated()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $channel = Channel::factory()->create();
-        $thread = Thread::factory()->create([
-            'channel_id' => $channel->id,
-            'created_at' => now()->subSeconds(5)
-        ]);
-
-        $reply = ['body' => 'This is a reply'];
-        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $reply);
+        $replyData = ['body' => 'This is a reply'];
+        $response = $this->postJson(route('replies.store', ['channel' => $this->channel->slug, 'thread' => $this->thread->id]), $replyData);
         $response->assertStatus(201)
             ->assertJson([
-                'body' => $reply['body'],
-                'user_id' => $user->id,
-                'thread_id' => $thread->id
+                'body' => $replyData['body'],
+                'user_id' => $this->user->id,
+                'thread_id' => $this->thread->id,
             ]);
 
         $this->assertDatabaseHas('replies', [
-            'body' => $reply['body'],
-            'user_id' => $user->id,
-            'thread_id' => $thread->id
+            'body' => $replyData['body'],
+            'user_id' => $this->user->id,
+            'thread_id' => $this->thread->id,
         ]);
 
         $reply = Reply::first();
+        $activity = Activity::where('activity_type', ActivityTypes::REPLY_ADDED)->first();
 
-        $activity = Activity::latest()->skip(1)->first();
-
+        $this->assertNotNull($activity, 'Reply activity was not recorded.');
         $this->assertEquals($activity->target_id, $reply->id);
-        $this->assertEquals($activity->user_id, $user->id);
+        $this->assertEquals($activity->user_id, $this->user->id);
         $this->assertEquals(ActivityTypes::REPLY_ADDED, $activity->activity_type);
         $this->assertEquals('App\Models\Reply', $activity->target_type);
     }
@@ -216,67 +195,52 @@ class ActivitiesTest extends TestCase
     /** @test */
     public function test_no_activity_recorded_when_reply_fails_to_save()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $channel = Channel::factory()->create();
-        $thread = Thread::factory()->create([
-            'channel_id' => $channel->id
-        ]);
-
-        $reply = ['body' => ''];
-        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $reply);
+        $replyData = ['body' => ''];
+        $response = $this->postJson(route('replies.store', ['channel' => $this->channel->slug, 'thread' => $this->thread->id]), $replyData);
         $response->assertStatus(422);
 
         $this->assertDatabaseCount('replies', 0);
-        $this->assertDatabaseCount('activities', 1);
+        $this->assertDatabaseCount('activities', 1); // Activity from default thread
         $this->assertDatabaseMissing('activities', [
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'activity_type' => 'reply_added',
-            'target_type' => 'App\Models\Reply'
+            'target_type' => 'App\Models\Reply',
         ]);
     }
 
     /** @test */
     public function test_multiple_replies_create_multiple_activity_records()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        $replyData = ['body' => 'This is a reply'];
+        $anotherReplyData = ['body' => 'This is another reply'];
 
-        $channel = Channel::factory()->create();
-        $thread = Thread::factory()->create([
-            'channel_id' => $channel->id,
-        ]);
-
-        $reply = ['body' => 'This is a reply'];
-        $anotherReply = ['body' => 'This is another reply'];
-        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $reply);
-        $anotherResponse = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $anotherReply);
+        $response = $this->postJson(route('replies.store', ['channel' => $this->channel->slug, 'thread' => $this->thread->id]), $replyData);
+        $anotherResponse = $this->postJson(route('replies.store', ['channel' => $this->channel->slug, 'thread' => $this->thread->id]), $anotherReplyData);
 
         $response->assertStatus(201)
             ->assertJson([
-                'body' => $reply['body'],
-                'user_id' => $user->id,
-                'thread_id' => $thread->id
+                'body' => $replyData['body'],
+                'user_id' => $this->user->id,
+                'thread_id' => $this->thread->id,
             ]);
 
         $anotherResponse->assertStatus(201)
             ->assertJson([
-                'body' => $anotherReply['body'],
-                'user_id' => $user->id,
-                'thread_id' => $thread->id
+                'body' => $anotherReplyData['body'],
+                'user_id' => $this->user->id,
+                'thread_id' => $this->thread->id,
             ]);
 
         $this->assertDatabaseHas('replies', [
-            'body' => $reply['body'],
-            'user_id' => $user->id,
-            'thread_id' => $thread->id
+            'body' => $replyData['body'],
+            'user_id' => $this->user->id,
+            'thread_id' => $this->thread->id,
         ]);
 
         $this->assertDatabaseHas('replies', [
-            'body' => $anotherReply['body'],
-            'user_id' => $user->id,
-            'thread_id' => $thread->id
+            'body' => $anotherReplyData['body'],
+            'user_id' => $this->user->id,
+            'thread_id' => $this->thread->id,
         ]);
 
         $reply1 = Reply::first();
@@ -285,73 +249,63 @@ class ActivitiesTest extends TestCase
         $this->assertDatabaseCount('activities', 3);
 
         $this->assertDatabaseHas('activities', [
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'activity_type' => 'reply_added',
             'target_id' => $reply1->id,
-            'target_type' => 'App\Models\Reply'
+            'target_type' => 'App\Models\Reply',
         ]);
 
         $this->assertDatabaseHas('activities', [
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'activity_type' => 'reply_added',
             'target_id' => $reply2->id,
-            'target_type' => 'App\Models\Reply'
+            'target_type' => 'App\Models\Reply',
         ]);
     }
 
     /** @test */
     public function test_no_activity_recorded_for_unauthenticated_user_reply_creation()
     {
-        $channel = Channel::factory()->create();
-        $thread = Thread::factory()->create([
-            'channel_id' => $channel->id
-        ]);
+        \Illuminate\Support\Facades\Auth::logout();
 
-        $reply = ['body' => 'This is a reply'];
+        $replyData = ['body' => 'This is a reply'];
 
-        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $reply);
+        $response = $this->postJson(route('replies.store', ['channel' => $this->channel->slug, 'thread' => $this->thread->id]), $replyData);
         $response->assertStatus(401);
 
         $this->assertDatabaseCount('replies', 0);
-        $this->assertDatabaseCount('activities', 1);
+        $this->assertDatabaseCount('activities', 1); // Activity from default thread
     }
 
     /** @test */
     public function test_activity_record_deletion_on_thread_deletion()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $thread = Thread::factory()->create([
-            'user_id' => $user->id
-        ]);
-
         $this->assertDatabaseHas('activities', [
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'activity_type' => ActivityTypes::THREAD_CREATED,
-            'target_id' => $thread->id,
-            'target_type' => 'App\Models\Thread'
+            'target_id' => $this->thread->id,
+            'target_type' => 'App\Models\Thread',
         ]);
 
         $this->assertDatabaseHas('threads', [
-            'user_id' => $thread->user_id,
-            'title' => $thread->title
+            'user_id' => $this->thread->user_id,
+            'title' => $this->thread->title,
         ]);
 
-        $this->delete(route('threads.destroy', $thread->id))
+        $this->delete(route('threads.destroy', $this->thread->id))
             ->assertStatus(200)
             ->assertJson(['message' => 'Thread deleted successfully.']);
 
         $this->assertDatabaseMissing('threads', [
-            'user_id' => $thread->user_id,
-            'title' => $thread->title
+            'user_id' => $this->thread->user_id,
+            'title' => $this->thread->title,
         ]);
 
         $this->assertDatabaseMissing('activities', [
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'activity_type' => ActivityTypes::THREAD_CREATED,
-            'target_id' => $thread->id,
-            'target_type' => 'App\Models\Thread'
+            'target_id' => $this->thread->id,
+            'target_type' => 'App\Models\Thread',
         ]);
     }
 }
