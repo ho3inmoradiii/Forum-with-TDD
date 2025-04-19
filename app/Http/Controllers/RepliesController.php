@@ -7,11 +7,6 @@ use Illuminate\Http\Request;
 
 class RepliesController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function store($channel, Thread $thread, Request $request)
     {
         $request->validate([
@@ -24,7 +19,9 @@ class RepliesController extends Controller
         ]);
 
         $reply->load('user');
-
-        return response()->json($reply, 201);
+        return response()->json([
+            'reply' => $reply,
+            'message' => 'Reply added successfully'
+        ], 201);
     }
 }

@@ -36,11 +36,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/replies/{reply}/favorite', [FavoriteController::class, 'store'])->name('reply.favorite.store');
     Route::delete('/replies/{reply}/favorite', [FavoriteController::class, 'delete'])->name('reply.favorite.delete');
     Route::delete('/threads/{thread}', [ThreadsController::class, 'destroy'])->name('threads.destroy');
+    Route::post('/threads/{channel}/{thread}/replies', [RepliesController::class, 'store'])->name('replies.store');
 });
+
 Route::get('/threads', [ThreadsController::class, 'index'])->name('threads.index');
 Route::get('/threads/{channel}/{thread}', [ThreadsController::class, 'show'])->name('threads.show');
-
 Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
-
-
-Route::post('/threads/{channel}/{thread}/replies', [RepliesController::class, 'store'])->name('replies.store');

@@ -45,7 +45,8 @@
         <div>
             <button
                 type="submit"
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                :disabled="!enableSubmitThreadButton"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
             >
                 Create Thread
             </button>
@@ -58,12 +59,18 @@
 
 <script>
 import axios from 'axios';
+import { toast } from 'vue3-toastify';
 
 export default {
     props: {
         channels: {
             type: Array,
             required: true
+        }
+    },
+    computed: {
+        enableSubmitThreadButton(){
+            return this.threadTitle && this.threadBody && this.channelId;
         }
     },
     data() {
@@ -85,11 +92,12 @@ export default {
                     body: this.threadBody,
                     channel_id: this.channelId
                 });
+                toast.success(response.data.message);
 
-                const channel = this.channels.filter(channel => channel.id === this.channelId)
+                const channel = this.channels.find(channel => channel.id === this.channelId);
 
                 // Redirect to the new thread's page
-                window.location.href = `/threads/${channel.slug}/${response.data.id}`;
+                window.location.href = `/threads/${channel.slug}/${response.data.thread.id}`;
             } catch (error) {
                 if (error.response && error.response.status === 422) {
                     // Validation errors

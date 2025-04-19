@@ -63,7 +63,10 @@ class ThreadsController extends Controller
             'channel_id' => $request->channel_id
         ]);
 
-        return response()->json($thread, 201);
+        return response()->json([
+            'thread' => $thread,
+            'message' => 'Thread created successfully'
+        ], 201);
     }
 
     /**
