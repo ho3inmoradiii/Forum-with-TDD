@@ -19,9 +19,6 @@ class RepliesController extends Controller
         ]);
 
         $reply->load('user');
-        return response()->json([
-            'reply' => $reply,
-            'message' => 'Reply added successfully'
-        ], 201);
+        return response()->json($reply, 201);
     }
 }

@@ -27,6 +27,7 @@
                         :user-id="{{ auth()->id() }}"
                         :is-authenticated="{{ json_encode(Auth::check()) }}"
                         submit-url="{{ route('replies.store', [$thread->channel->slug, $thread]) }}"
+                        :initial-reply-count="{{ $thread->replies->count() }}"
                     ></thread-replies>
                 </div>
             </div>
@@ -36,7 +37,8 @@
                 <div class="bg-white shadow-lg rounded-xl p-6 border border-gray-100">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Thread Info</h3>
                     <p class="text-gray-700 font-medium">
-                        {{ \Illuminate\Support\Str::plural('Reply', $thread->replies->count()) }}: {{ $thread->replies->count() }}
+                        <span v-text="replyCount === 1 ? 'Reply: ' : 'Replies: '"></span>
+                        <span v-text="replyCount"></span>
                     </p>
                     <p class="text-gray-700">
                         Created:
@@ -51,5 +53,6 @@
 @push('scripts')
     <script>
         window.threadId = {{ $thread->id }};
+        window.emitter.emit('reply-count-updated', {{ $thread->replies->count() }});
     </script>
 @endpush

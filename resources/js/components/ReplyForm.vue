@@ -59,7 +59,7 @@ export default {
                     thread_id: this.threadId,
                     user_id: this.userId
                 });
-                toast.success(response.data.message);
+                toast.success('Reply added successfully.');
 
                 // Clear the form
                 this.replyBody = '';

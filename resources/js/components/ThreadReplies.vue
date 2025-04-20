@@ -68,6 +68,10 @@ export default {
         isAuthenticated: {
             type: Boolean,
             required: true
+        },
+        initialReplyCount: {
+            type: Number,
+            required: true
         }
     },
     data() {
@@ -75,7 +79,8 @@ export default {
             replies: this.initialReplies.map(reply => ({
                 ...reply,
                 is_favorited: reply.is_favorited || false
-            }))
+            })),
+            replyCount: this.initialReplyCount
         };
     },
     methods: {
@@ -119,6 +124,9 @@ export default {
         },
         addReply(newReply) {
             this.replies.push(newReply);
+            this.replyCount++;
+            console.log('Emitting reply-count-updated with count:', this.replyCount);
+            window.emitter.emit('reply-count-updated', this.replyCount);
         },
         formatDate(dateString) {
             if (!dateString) return 'Unknown date';

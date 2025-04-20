@@ -25463,7 +25463,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               });
             case 3:
               response = _context.sent;
-              vue3_toastify__WEBPACK_IMPORTED_MODULE_1__.toast.success(response.data.message);
+              vue3_toastify__WEBPACK_IMPORTED_MODULE_1__.toast.success('Reply added successfully.');
 
               // Clear the form
               _this.replyBody = '';
@@ -25543,6 +25543,10 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
     isAuthenticated: {
       type: Boolean,
       required: true
+    },
+    initialReplyCount: {
+      type: Number,
+      required: true
     }
   },
   data: function data() {
@@ -25551,7 +25555,8 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
         return _objectSpread(_objectSpread({}, reply), {}, {
           is_favorited: reply.is_favorited || false
         });
-      })
+      }),
+      replyCount: this.initialReplyCount
     };
   },
   methods: {
@@ -25625,6 +25630,9 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
     },
     addReply: function addReply(newReply) {
       this.replies.push(newReply);
+      this.replyCount++;
+      console.log('Emitting reply-count-updated with count:', this.replyCount);
+      window.emitter.emit('reply-count-updated', this.replyCount);
     },
     formatDate: function formatDate(dateString) {
       if (!dateString) return 'Unknown date';
@@ -26043,15 +26051,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _bootstrap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 /* harmony import */ var _bootstrap__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_bootstrap__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-/* harmony import */ var _components_ExampleComponent_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue");
-/* harmony import */ var _components_ReplyForm_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/ReplyForm.vue */ "./resources/js/components/ReplyForm.vue");
-/* harmony import */ var _components_ThreadReplies_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/ThreadReplies.vue */ "./resources/js/components/ThreadReplies.vue");
-/* harmony import */ var _components_CreateThread_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/CreateThread.vue */ "./resources/js/components/CreateThread.vue");
-/* harmony import */ var _components_ProfileThreads_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/ProfileThreads.vue */ "./resources/js/components/ProfileThreads.vue");
-/* harmony import */ var _components_ConfirmDialog_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/ConfirmDialog.vue */ "./resources/js/components/ConfirmDialog.vue");
-/* harmony import */ var vue3_toastify__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vue3-toastify */ "./node_modules/vue3-toastify/dist/index.mjs");
-/* harmony import */ var vue3_toastify_dist_index_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! vue3-toastify/dist/index.css */ "./node_modules/vue3-toastify/dist/index.css");
-/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
+/* harmony import */ var mitt__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! mitt */ "./node_modules/mitt/dist/mitt.mjs");
+/* harmony import */ var _components_ExampleComponent_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue");
+/* harmony import */ var _components_ReplyForm_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/ReplyForm.vue */ "./resources/js/components/ReplyForm.vue");
+/* harmony import */ var _components_ThreadReplies_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/ThreadReplies.vue */ "./resources/js/components/ThreadReplies.vue");
+/* harmony import */ var _components_CreateThread_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/CreateThread.vue */ "./resources/js/components/CreateThread.vue");
+/* harmony import */ var _components_ProfileThreads_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/ProfileThreads.vue */ "./resources/js/components/ProfileThreads.vue");
+/* harmony import */ var _components_ConfirmDialog_vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/ConfirmDialog.vue */ "./resources/js/components/ConfirmDialog.vue");
+/* harmony import */ var vue3_toastify__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! vue3-toastify */ "./node_modules/vue3-toastify/dist/index.mjs");
+/* harmony import */ var vue3_toastify_dist_index_css__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vue3-toastify/dist/index.css */ "./node_modules/vue3-toastify/dist/index.css");
+/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
 
 
 
@@ -26063,20 +26072,38 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"];
-var app = (0,vue__WEBPACK_IMPORTED_MODULE_1__.createApp)({});
-app.use(vue3_toastify__WEBPACK_IMPORTED_MODULE_8__["default"], {
+
+window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_11__["default"];
+
+// Create event bus
+var emitter = (0,mitt__WEBPACK_IMPORTED_MODULE_2__["default"])();
+window.emitter = emitter;
+var app = (0,vue__WEBPACK_IMPORTED_MODULE_1__.createApp)({
+  data: function data() {
+    return {
+      replyCount: 0 // Will be set by thread-replies
+    };
+  },
+  created: function created() {
+    var _this = this;
+    // Listen for reply count updates
+    window.emitter.on('reply-count-updated', function (count) {
+      _this.replyCount = count;
+    });
+  }
+});
+app.use(vue3_toastify__WEBPACK_IMPORTED_MODULE_9__["default"], {
   autoClose: 3000,
   pauseOnHover: false
 });
-app.component('example-component', _components_ExampleComponent_vue__WEBPACK_IMPORTED_MODULE_2__["default"]);
-app.component('reply-form', _components_ReplyForm_vue__WEBPACK_IMPORTED_MODULE_3__["default"]);
-app.component('thread-replies', _components_ThreadReplies_vue__WEBPACK_IMPORTED_MODULE_4__["default"]);
-app.component('create-thread', _components_CreateThread_vue__WEBPACK_IMPORTED_MODULE_5__["default"]);
-app.component('profile-threads', _components_ProfileThreads_vue__WEBPACK_IMPORTED_MODULE_6__["default"]);
-app.component('confirm-dialog', _components_ConfirmDialog_vue__WEBPACK_IMPORTED_MODULE_7__["default"]);
+app.component('example-component', _components_ExampleComponent_vue__WEBPACK_IMPORTED_MODULE_3__["default"]);
+app.component('reply-form', _components_ReplyForm_vue__WEBPACK_IMPORTED_MODULE_4__["default"]);
+app.component('thread-replies', _components_ThreadReplies_vue__WEBPACK_IMPORTED_MODULE_5__["default"]);
+app.component('create-thread', _components_CreateThread_vue__WEBPACK_IMPORTED_MODULE_6__["default"]);
+app.component('profile-threads', _components_ProfileThreads_vue__WEBPACK_IMPORTED_MODULE_7__["default"]);
+app.component('confirm-dialog', _components_ConfirmDialog_vue__WEBPACK_IMPORTED_MODULE_8__["default"]);
 app.mount('#app');
-alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].start();
+alpinejs__WEBPACK_IMPORTED_MODULE_11__["default"].start();
 
 /***/ }),
 
@@ -45370,6 +45397,23 @@ const A = ["width", "height", "fill", "transform"], M = { key: 0 }, f = /* @__PU
   }
 });
 
+
+
+/***/ }),
+
+/***/ "./node_modules/mitt/dist/mitt.mjs":
+/*!*****************************************!*\
+  !*** ./node_modules/mitt/dist/mitt.mjs ***!
+  \*****************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* export default binding */ __WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ function __WEBPACK_DEFAULT_EXPORT__(n){return{all:n=n||new Map,on:function(t,e){var i=n.get(t);i?i.push(e):n.set(t,[e])},off:function(t,e){var i=n.get(t);i&&(e?i.splice(i.indexOf(e)>>>0,1):n.set(t,[]))},emit:function(t,e){var i=n.get(t);i&&i.slice().map(function(n){n(e)}),(i=n.get("*"))&&i.slice().map(function(n){n(t,e)})}}}
+//# sourceMappingURL=mitt.mjs.map
 
 
 /***/ }),
