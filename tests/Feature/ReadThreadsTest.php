@@ -143,7 +143,8 @@ class ReadThreadsTest extends TestCase
             ->assertSee($this->thread->body)
             ->assertSee($this->reply->body)
             ->assertSee($this->user->name)
-            ->assertSeeText('Replies: 3')
+            ->assertSeeText('Replies')
+            ->assertSeeText('3')
             ->assertSee($this->thread->created_at->diffForHumans());
     }
 

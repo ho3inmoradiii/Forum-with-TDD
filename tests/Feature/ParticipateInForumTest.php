@@ -8,6 +8,7 @@ use App\Models\Thread;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
 class ParticipateInForumTest extends TestCase
@@ -95,10 +96,13 @@ class ParticipateInForumTest extends TestCase
         $response = $this->postJson(route('threads.store'), $thread);
         $response->assertStatus(201)
             ->assertJson([
-                'body' => $thread['body'],
-                'title' => $thread['title'],
-                'user_id' => $user->id,
-                'channel_id' => $channel->id,
+                'thread' => [
+                    'body' => $thread['body'],
+                    'title' => $thread['title'],
+                    'user_id' => $user->id,
+                    'channel_id' => $channel->id,
+                ],
+                'message' => 'Thread created successfully'
             ]);
 
         $this->assertDatabaseHas('threads', [
