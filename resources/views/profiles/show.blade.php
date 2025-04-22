@@ -18,11 +18,11 @@
             <!-- Activities Section -->
             <div class="bg-white shadow-lg rounded-xl p-6 border border-gray-100 animate-fade-in">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Recent Activities</h2>
-                <profile-threads
+                <profile-activities
                     :user-with-activities="{{ json_encode($user) }}"
                     :user-id="{{ (int)auth()->id() }}"
                 >
-                </profile-threads>
+                </profile-activities>
             </div>
         </div>
     </div>

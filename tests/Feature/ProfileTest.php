@@ -66,7 +66,7 @@ class ProfileTest extends TestCase
 
         $this->get(route('profile.show', ['user' => $user->name]))
             ->assertStatus(200)
-            ->assertSee('profile-threads');
+            ->assertSee('profile-activities');
     }
 
     /** @test */

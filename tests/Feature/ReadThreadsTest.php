@@ -160,7 +160,7 @@ class ReadThreadsTest extends TestCase
             'channel' => $channel->slug,
             'thread' => $thread->id
         ]));
-        $response->assertSee('Replies: 0');
+        $response->assertSeeText('Replies')->assertSeeText('0');
 
         // Test with 1 reply
         Reply::factory()->create([
@@ -171,7 +171,7 @@ class ReadThreadsTest extends TestCase
             'channel' => $channel->slug,
             'thread' => $thread->id
         ]));
-        $response->assertSee('Reply: 1');
+        $response->assertSeeText('Replies')->assertSeeText('1');
 
         // Test with multiple replies
         Reply::factory()->count(2)->create([
@@ -182,7 +182,7 @@ class ReadThreadsTest extends TestCase
             'channel' => $this->channel->slug,
             'thread' => $this->thread->id
         ]));
-        $response->assertSee('Replies: 3');
+        $response->assertSeeText('Replies')->assertSeeText('3');
     }
 
     /** @test */

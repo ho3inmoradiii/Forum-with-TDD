@@ -17,6 +17,12 @@
                                     {{ activity.target.thread.title }}
                                 </a>
                             </template>
+                            <template v-else-if="activity.activity_type === 'reply_favorited' && activity.target">
+                                <span>{{ userWithActivities.name }} favorited the </span>
+                                <a :href="threadsShow(activity.target.thread)" class="hover:text-blue-600 transition duration-300 ease-in-out ml-2">
+                                    {{ activity.target.body }}
+                                </a>
+                            </template>
                             <template v-else>
                                 <span>Unknown activity</span>
                             </template>

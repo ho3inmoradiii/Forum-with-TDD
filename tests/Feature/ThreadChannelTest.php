@@ -162,7 +162,7 @@ class ThreadChannelTest extends TestCase
         $response = $this->get(route('profile.show', $user->name));
 
         $response->assertStatus(200)
-            ->assertSee('profile-threads');
+            ->assertSee('profile-activities');
     }
 
     /** @test */

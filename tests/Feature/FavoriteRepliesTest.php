@@ -64,7 +64,7 @@ class FavoriteRepliesTest extends TestCase
         $reply->favoritedBy()->attach($user->id);
 
         $response = $this->post(route('reply.favorite.store', $reply));
-        $response->assertStatus(200)->assertJson(['message' => 'Reply already favorited']);
+        $response->assertStatus(422)->assertJson(['message' => 'Reply already favorited']);
 
         $this->assertDatabaseHas('favorite_replies', [
             'user_id' => $user->id,
@@ -81,7 +81,7 @@ class FavoriteRepliesTest extends TestCase
         $reply = $this->reply;
 
         $response = $this->delete(route('reply.favorite.delete', $reply));
-        $response->assertStatus(200)->assertJson(['message' => 'Reply was not favorited']);
+        $response->assertStatus(422)->assertJson(['message' => 'Reply was not favorited']);
 
         $this->assertDatabaseMissing('favorite_replies', [
             'user_id' => $user->id,
@@ -134,7 +134,7 @@ class FavoriteRepliesTest extends TestCase
         $reply->favoritedBy()->attach($user2->id);
 
         $response = $this->delete(route('reply.favorite.delete', $reply));
-        $response->assertStatus(200)->assertJson(['message' => 'Reply was not favorited']);
+        $response->assertStatus(422)->assertJson(['message' => 'Reply was not favorited']);
 
         $this->assertDatabaseHas('favorite_replies', [
             'user_id' => $user2->id,

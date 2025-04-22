@@ -9,6 +9,7 @@ use App\Models\Reply;
 use App\Models\Thread;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class ActivitiesTest extends TestCase
@@ -158,7 +159,7 @@ class ActivitiesTest extends TestCase
 
         $this->assertDatabaseHas('activities', [
             'user_id' => $this->user->id,
-            'activity_type' => 'reply_added',
+            'activity_type' => ActivityTypes::REPLY_ADDED,
             'target_id' => $reply->id,
             'target_type' => 'App\Models\Reply',
         ]);
@@ -203,7 +204,7 @@ class ActivitiesTest extends TestCase
         $this->assertDatabaseCount('activities', 1); // Activity from default thread
         $this->assertDatabaseMissing('activities', [
             'user_id' => $this->user->id,
-            'activity_type' => 'reply_added',
+            'activity_type' => ActivityTypes::REPLY_ADDED,
             'target_type' => 'App\Models\Reply',
         ]);
     }
@@ -250,14 +251,14 @@ class ActivitiesTest extends TestCase
 
         $this->assertDatabaseHas('activities', [
             'user_id' => $this->user->id,
-            'activity_type' => 'reply_added',
+            'activity_type' => ActivityTypes::REPLY_ADDED,
             'target_id' => $reply1->id,
             'target_type' => 'App\Models\Reply',
         ]);
 
         $this->assertDatabaseHas('activities', [
             'user_id' => $this->user->id,
-            'activity_type' => 'reply_added',
+            'activity_type' => ActivityTypes::REPLY_ADDED,
             'target_id' => $reply2->id,
             'target_type' => 'App\Models\Reply',
         ]);
@@ -307,5 +308,131 @@ class ActivitiesTest extends TestCase
             'target_id' => $this->thread->id,
             'target_type' => 'App\Models\Thread',
         ]);
+    }
+
+    /** @test */
+    public function it_records_an_activity_when_a_reply_favorited()
+    {
+        $reply = Reply::factory()->create([
+            'thread_id' => $this->thread->id
+        ]);
+        $response = $this->post(route('reply.favorite.store', $reply));
+        $response->assertStatus(201)->assertJson(['message' => 'Reply favorited']);
+        $this->assertDatabaseHas('favorite_replies', [
+            'user_id' => $this->user->id,
+            'reply_id' => $reply->id
+        ]);
+        $this->assertDatabaseCount('activities', 3);
+        $this->assertDatabaseHas('activities', [
+            'user_id' => $this->user->id,
+            'activity_type' => ActivityTypes::REPLY_FAVORITED,
+            'target_id' => $reply->id,
+            'target_type' => 'App\Models\Reply',
+        ]);
+    }
+
+    /** @test */
+    public function test_activity_record_deletion_when_remove_the_reply_from_favorites()
+    {
+        $reply = Reply::factory()->create([
+            'thread_id' => $this->thread->id
+        ]);
+
+        $response = $this->post(route('reply.favorite.store', $reply));
+
+        $response->assertStatus(201)->assertJson(['message' => 'Reply favorited']);
+        $this->assertDatabaseHas('favorite_replies', [
+            'user_id' => $this->user->id,
+            'reply_id' => $reply->id
+        ]);
+        $this->assertDatabaseCount('activities', 3);
+        $this->assertDatabaseHas('activities', [
+            'user_id' => $this->user->id,
+            'activity_type' => ActivityTypes::REPLY_FAVORITED,
+            'target_id' => $reply->id,
+            'target_type' => 'App\Models\Reply',
+        ]);
+
+        $anotherResponse = $this->delete(route('reply.favorite.delete', $reply));
+        $anotherResponse->assertStatus(200)->assertJson(['message' => 'Reply Favorite deleted successfully']);
+
+        $this->assertDatabaseMissing('favorite_replies', [
+            'user_id' => $this->user->id,
+            'reply_id' => $reply->id
+        ]);
+        $this->assertDatabaseCount('activities', 2);
+        $this->assertDatabaseMissing('activities', [
+            'user_id' => $this->user->id,
+            'activity_type' => ActivityTypes::REPLY_FAVORITED,
+            'target_id' => $reply->id,
+            'target_type' => 'App\Models\Reply',
+        ]);
+    }
+
+    /** @test */
+    public function an_authenticated_user_tries_to_delete_a_reply_that_they_did_not_favorite()
+    {
+        $reply = Reply::factory()->create([
+            'thread_id' => $this->thread->id
+        ]);
+
+        $response = $this->delete(route('reply.favorite.delete', $reply));
+        $response->assertStatus(422)->assertJson(['message' => 'Reply was not favorited']);
+
+        $this->assertDatabaseMissing('favorite_replies', [
+            'user_id' => $this->user->id,
+            'reply_id' => $reply->id
+        ])->assertDatabaseCount('favorite_replies', 0);
+
+        $this->assertDatabaseMissing('activities', [
+            'user_id' => $this->user->id,
+            'activity_type' => ActivityTypes::REPLY_FAVORITED,
+            'target_id' => $reply->id,
+            'target_type' => 'App\Models\Reply',
+        ])->assertDatabaseCount('activities', 2);
+    }
+
+    /** @test */
+    public function an_authenticated_user_tries_to_delete_another_user_s_reply_from_their_favorites()
+    {
+        $reply = Reply::factory()->create([
+            'user_id' => $this->user->id,
+            'thread_id' => $this->thread->id
+        ]);
+
+        $response = $this->post(route('reply.favorite.store', $reply));
+
+        $response->assertStatus(201)->assertJson(['message' => 'Reply favorited']);
+        $this->assertDatabaseHas('favorite_replies', [
+            'user_id' => $this->user->id,
+            'reply_id' => $reply->id
+        ]);
+        $this->assertDatabaseCount('activities', 3);
+        $this->assertDatabaseHas('activities', [
+            'user_id' => $this->user->id,
+            'activity_type' => ActivityTypes::REPLY_FAVORITED,
+            'target_id' => $reply->id,
+            'target_type' => 'App\Models\Reply',
+        ]);
+
+        \Illuminate\Support\Facades\Auth::logout();
+
+        $anotherUser = User::factory()->create();
+        $this->actingAs($anotherUser);
+
+        $response = $this->delete(route('reply.favorite.delete', $reply));
+        $response->assertStatus(422)->assertJson(['message' => 'Reply was not favorited']);
+
+        $this->assertDatabaseHas('favorite_replies', [
+            'user_id' => $this->user->id,
+            'reply_id' => $reply->id
+        ])->assertDatabaseCount('favorite_replies', 1);
+
+        $this->assertDatabaseHas('activities', [
+            'user_id' => $this->user->id,
+            'activity_type' => ActivityTypes::REPLY_FAVORITED,
+            'target_id' => $reply->id,
+            'target_type' => 'App\Models\Reply',
+        ])->assertDatabaseCount('activities', 3);
     }
 }
