@@ -35,8 +35,11 @@ Route::group(['prefix' => 'threads', 'middleware' => 'auth'], function () {
 Route::group(['middleware' => 'auth'], function () {
     Route::post('/replies/{reply}/favorite', [FavoriteController::class, 'store'])->name('reply.favorite.store');
     Route::delete('/replies/{reply}/favorite', [FavoriteController::class, 'delete'])->name('reply.favorite.delete');
+
     Route::delete('/threads/{thread}', [ThreadsController::class, 'destroy'])->name('threads.destroy');
+
     Route::post('/threads/{channel}/{thread}/replies', [RepliesController::class, 'store'])->name('replies.store');
+    Route::delete('/replies/{reply}', [RepliesController::class, 'destroy'])->name('replies.destroy');
 });
 
 Route::get('/threads', [ThreadsController::class, 'index'])->name('threads.index');

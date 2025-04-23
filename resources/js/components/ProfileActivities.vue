@@ -1,59 +1,118 @@
 <template>
-    <div v-if="activities.length > 0">
-        <div v-for="activity in activities" :key="activity.id">
-            <article class="p-4 bg-gray-50 rounded-lg mb-4">
-                <div class="flex flex-col gap-3">
-                    <div class="flex flex-row justify-between items-center">
-                        <h3 class="text-xl font-semibold text-gray-800">
-                            <template v-if="activity.activity_type === 'thread_created' && activity.target">
-                                <span>{{ userWithActivities.name }} created a new thread</span>
-                                <a :href="threadsShow(activity.target)" class="hover:text-blue-600 transition duration-300 ease-in-out ml-2">
-                                    {{ activity.target.title }}
-                                </a>
-                            </template>
-                            <template v-else-if="activity.activity_type === 'reply_added' && activity.target">
-                                <span>{{ userWithActivities.name }} replied to </span>
-                                <a :href="threadsShow(activity.target.thread)" class="hover:text-blue-600 transition duration-300 ease-in-out ml-2">
-                                    {{ activity.target.thread.title }}
-                                </a>
-                            </template>
-                            <template v-else-if="activity.activity_type === 'reply_favorited' && activity.target">
-                                <span>{{ userWithActivities.name }} favorited the </span>
-                                <a :href="threadsShow(activity.target.thread)" class="hover:text-blue-600 transition duration-300 ease-in-out ml-2">
-                                    {{ activity.target.body }}
-                                </a>
-                            </template>
-                            <template v-else>
-                                <span>Unknown activity</span>
-                            </template>
-                        </h3>
-                        <span class="text-sm text-gray-600">{{ formatDate(activity.created_at) }}</span>
+    <div class="space-y-4">
+        <div v-if="activities.length > 0">
+            <div v-for="activity in activities" :key="activity.id">
+                <article
+                    :class="{
+                        'bg-green-50 border-l-4 border-green-400': activity.activity_type === 'thread_created',
+                        'bg-blue-50 border-l-4 border-blue-400': activity.activity_type === 'reply_added',
+                        'bg-orange-50 border-l-4 border-orange-400': activity.activity_type === 'reply_favorited',
+                        'bg-gray-50 border-l-4 border-gray-300': !['thread_created', 'reply_added', 'reply_favorited'].includes(activity.activity_type)
+                    }"
+                    class="p-4 rounded-lg mb-4 shadow-sm hover:shadow-md transition-shadow duration-300"
+                >
+                    <div class="flex flex-col gap-2">
+                        <!-- Header with icon and activity -->
+                        <div class="flex flex-row justify-between items-start gap-3">
+                            <div class="flex items-center gap-2">
+                                <!-- Activity Icon -->
+                                <i
+                                    :class="{
+                                        'fas fa-plus-circle text-green-500': activity.activity_type === 'thread_created',
+                                        'fas fa-comment-dots text-blue-500': activity.activity_type === 'reply_added',
+                                        'fas fa-heart text-orange-500': activity.activity_type === 'reply_favorited',
+                                        'fas fa-question-circle text-gray-500': !['thread_created', 'reply_added', 'reply_favorited'].includes(activity.activity_type)
+                                    }"
+                                ></i>
+                                <!-- Activity Text -->
+                                <h3 class="text-lg font-semibold text-gray-800">
+                                    <template v-if="activity.activity_type === 'thread_created' && activity.target">
+                                        <span>{{ userWithActivities.name }} created</span>
+                                        <a
+                                            :href="threadsShow(activity.target)"
+                                            class="text-green-600 hover:text-green-700 transition duration-300 ease-in-out ml-1 underline"
+                                        >
+                                            {{ activity.target.title }}
+                                        </a>
+                                    </template>
+                                    <template v-else-if="activity.activity_type === 'reply_added' && activity.target">
+                                        <span>{{ userWithActivities.name }} replied to</span>
+                                        <a
+                                            :href="threadsShow(activity.target.thread)"
+                                            class="text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out ml-1 underline"
+                                        >
+                                            {{ activity.target.thread.title }}
+                                        </a>
+                                    </template>
+                                    <template v-else-if="activity.activity_type === 'reply_favorited' && activity.target">
+                                        <span>{{ userWithActivities.name }} favorited</span>
+                                        <a
+                                            :href="threadsShow(activity.target.thread)"
+                                            class="text-orange-600 hover:text-orange-700 transition duration-300 ease-in-out ml-1 underline"
+                                        >
+                                            {{ activity.target.body }}
+                                        </a>
+                                    </template>
+                                    <template v-else>
+                                        <span class="text-gray-600 italic">Unknown activity</span>
+                                    </template>
+                                </h3>
+                            </div>
+                            <!-- Timestamp -->
+                            <span class="text-xs text-gray-500 font-medium">{{ formatDate(activity.created_at) }}</span>
+                        </div>
+                        <!-- Activity Body -->
+                        <p
+                            v-if="activity.target"
+                            class="text-gray-600 leading-relaxed line-clamp-2 text-sm mt-1 pl-6"
+                        >
+                            {{ activity.target.body }}
+                        </p>
+                        <!-- Delete Buttons -->
+                        <div class="flex gap-2 mt-2 pl-6">
+                            <button
+                                v-if="userWithActivities.id === userId && activity.activity_type === 'thread_created'"
+                                @click="showConfirm(activity.target, activity.activity_type)"
+                                :disabled="isDeleting === activity.target.id"
+                                class="flex items-center gap-1 px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105"
+                            >
+                                <i class="fas fa-trash-alt"></i>
+                                {{ isDeleting === activity.target.id ? 'Deleting...' : 'Delete Thread' }}
+                            </button>
+                            <button
+                                v-if="userWithActivities.id === userId && activity.activity_type === 'reply_added'"
+                                @click="showConfirm(activity.target, activity.activity_type)"
+                                :disabled="isDeleting === activity.target.id"
+                                class="flex items-center gap-1 px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105"
+                            >
+                                <i class="fas fa-trash-alt"></i>
+                                {{ isDeleting === activity.target.id ? 'Deleting...' : 'Delete Reply' }}
+                            </button>
+                        </div>
                     </div>
-                    <p v-if="activity.target" class="text-gray-700 leading-relaxed line-clamp-3">
-                        {{ activity.target.body }}
-                    </p>
-                    <button
-                        v-if="userWithActivities.id === userId && activity.activity_type === 'thread_created'"
-                        @click="showConfirm(activity.target)"
-                        :disabled="isDeleting === activity.target.id"
-                        class="w-40 justify-center inline-flex items-center px-5 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-300 ease-in-out"
-                    >
-                        {{ isDeleting === activity.target.id ? 'Deleting...' : 'Delete Thread' }}
-                    </button>
-                </div>
-            </article>
-            <confirm-dialog
-                :is-open="showDialog"
-                title="Delete Thread"
-                message="Are you sure you want to delete this thread? This action cannot be undone."
-                confirm-text="Delete"
-                @confirm="confirmDelete"
-                @cancel="showDialog = false"
-            />
+                </article>
+                <!-- Confirm Dialogs -->
+                <confirm-dialog
+                    :is-open="showDeleteThreadDialog"
+                    title="Delete Thread"
+                    message="Are you sure you want to delete this thread? This action cannot be undone."
+                    confirm-text="Delete"
+                    @confirm="confirmThreadDelete"
+                    @cancel="showDeleteThreadDialog = false"
+                />
+                <confirm-dialog
+                    :is-open="showDeleteReplyDialog"
+                    title="Delete Reply"
+                    message="Are you sure you want to delete this reply? This action cannot be undone."
+                    confirm-text="Delete"
+                    @confirm="confirmReplyDelete"
+                    @cancel="showDeleteReplyDialog = false"
+                />
+            </div>
         </div>
-    </div>
-    <div v-else class="text-center text-gray-600 text-lg font-medium py-8 bg-gray-100 rounded-lg">
-        No activities yet.
+        <div v-else class="text-center text-gray-500 text-base font-medium py-6 bg-gray-100 rounded-lg shadow-sm">
+            No activities yet.
+        </div>
     </div>
 </template>
 
@@ -81,21 +140,54 @@ export default {
         return {
             activities: this.userWithActivities.activities,
             isDeleting: null,
-            showDialog: false,
-            threadToDelete: null
+            showDeleteThreadDialog: false,
+            showDeleteReplyDialog: false,
+            threadToDelete: null,
+            replyToDelete: null,
         };
     },
     methods: {
         threadsShow(thread) {
             return `/threads/${thread.channel.slug}/${thread.id}`;
         },
-        showConfirm(thread) {
-            this.threadToDelete = thread;
-            this.showDialog = true;
+        showConfirm(item, activityType) {
+            if (activityType === 'thread_created') {
+                this.threadToDelete = item;
+                this.showDeleteThreadDialog = true;
+            } else {
+                this.replyToDelete = item;
+                this.showDeleteReplyDialog = true;
+            }
         },
-        async confirmDelete() {
+        async confirmReplyDelete() {
+            const reply = this.replyToDelete;
+            this.showDeleteReplyDialog = false;
+            this.isDeleting = reply.id;
+
+            try {
+                const response = await axios.delete(`/replies/${reply.id}`, {
+                    headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+                });
+                toast.success(response.data.message);
+                this.activities = this.activities.filter(item => {
+                    if (item.target_type === 'App\\Models\\Thread') {
+                        return item.target.id !== reply.id;
+                    } else if (item.target_type === 'App\\Models\\Reply') {
+                        return item.target.id !== reply.id;
+                    }
+                    return true;
+                });
+            } catch (error) {
+                console.error('Error deleting reply:', error);
+                toast.error(error.response?.data?.message || 'Something went wrong.');
+            } finally {
+                this.isDeleting = null;
+                this.replyToDelete = null;
+            }
+        },
+        async confirmThreadDelete() {
             const thread = this.threadToDelete;
-            this.showDialog = false;
+            this.showDeleteThreadDialog = false;
             this.isDeleting = thread.id;
 
             try {
@@ -137,3 +229,15 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+/* Optional hover effect for article */
+article:hover {
+    transform: translateY(-2px);
+}
+
+/* Smooth transitions for buttons */
+button {
+    transition: all 0.3s ease-in-out;
+}
+</style>

@@ -68,7 +68,7 @@ class FavoriteController extends Controller
                 'user_id' => Auth::id()
             ])->delete();
         } catch (\Exception $e) {
-            Log::error('Failed to delete activity for: Reply ID ' . $reply->id , (array)', Error: ');
+            Log::error('Failed to delete activity for: Reply ID ' . $reply->id . ', Error: ' . $e->getMessage());
         }
     }
 }
