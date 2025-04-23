@@ -279,8 +279,15 @@ class ActivitiesTest extends TestCase
     }
 
     /** @test */
-    public function test_activity_record_deletion_on_thread_deletion()
+    public function test_activity_records_deletion_on_thread_deletion()
     {
+        $reply = Reply::factory()->create([
+            'thread_id' => $this->thread->id
+        ]);
+
+        $response = $this->post(route('reply.favorite.store', $reply));
+        $response->assertStatus(201)->assertJson(['message' => 'Reply favorited']);
+
         $this->assertDatabaseHas('activities', [
             'user_id' => $this->user->id,
             'activity_type' => ActivityTypes::THREAD_CREATED,
@@ -297,6 +304,13 @@ class ActivitiesTest extends TestCase
             ->assertStatus(200)
             ->assertJson(['message' => 'Thread deleted successfully.']);
 
+        $this->assertDatabaseMissing('activities', [
+            'user_id' => $this->user->id,
+            'activity_type' => ActivityTypes::REPLY_ADDED,
+            'target_id' => $reply->id,
+            'target_type' => 'App\Models\Reply',
+        ]);
+
         $this->assertDatabaseMissing('threads', [
             'user_id' => $this->thread->user_id,
             'title' => $this->thread->title,
@@ -308,6 +322,15 @@ class ActivitiesTest extends TestCase
             'target_id' => $this->thread->id,
             'target_type' => 'App\Models\Thread',
         ]);
+
+        $this->assertDatabaseMissing('activities', [
+            'user_id' => $this->user->id,
+            'activity_type' => ActivityTypes::REPLY_FAVORITED,
+            'target_id' => $reply->id,
+            'target_type' => 'App\Models\Reply',
+        ]);
+
+        $this->assertDatabaseCount('activities', 0);
     }
 
     /** @test */
