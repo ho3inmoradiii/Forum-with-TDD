@@ -76,16 +76,16 @@
                                 :disabled="isDeleting === activity.target.id"
                                 class="flex items-center gap-1 px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105"
                             >
-                                <i class="fas fa-trash-alt"></i>
+                                <PhTrash :size="14" color="white" />
                                 {{ isDeleting === activity.target.id ? 'Deleting...' : 'Delete Thread' }}
                             </button>
                             <button
                                 v-if="userWithActivities.id === userId && activity.activity_type === 'reply_added'"
                                 @click="showConfirm(activity.target, activity.activity_type)"
                                 :disabled="isDeleting === activity.target.id"
-                                class="flex items-center gap-1 px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105"
+                                class="flex items-center gap-1 px-2 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105"
                             >
-                                <i class="fas fa-trash-alt"></i>
+                                <PhTrash :size="14" color="white" />
                                 {{ isDeleting === activity.target.id ? 'Deleting...' : 'Delete Reply' }}
                             </button>
                         </div>
@@ -120,10 +120,12 @@
 import axios from 'axios';
 import { toast } from 'vue3-toastify';
 import ConfirmDialog from './ConfirmDialog.vue';
+import {PhTrash} from "@phosphor-icons/vue";
 
 export default {
     name: "ProfileThreads",
     components: {
+        PhTrash,
         ConfirmDialog
     },
     props: {

@@ -28,4 +28,12 @@ class ReplyPolicy
         }
         return true;
     }
+
+    public function update(User $user, Reply $reply)
+    {
+        if ($user->id != $reply->user_id) {
+            throw new AuthorizationException('You do not have permission to update this reply.');
+        }
+        return true;
+    }
 }

@@ -40,6 +40,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('/threads/{channel}/{thread}/replies', [RepliesController::class, 'store'])->name('replies.store');
     Route::delete('/replies/{reply}', [RepliesController::class, 'destroy'])->name('replies.destroy');
+    Route::post('/replies/{reply}', [RepliesController::class, 'update'])->name('replies.update');
 });
 
 Route::get('/threads', [ThreadsController::class, 'index'])->name('threads.index');

@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="submitReply" class="space-y-6 bg-white shadow-lg rounded-xl p-6 border border-gray-100">
+    <form @submit.prevent="submitReply" class="space-y-6 bg-white shadow-lg rounded-xl p-6 border border-gray-100 w-full">
         <div>
             <label for="body" class="block text-sm font-medium text-gray-800">Your Reply</label>
             <textarea
@@ -16,7 +16,7 @@
                 :disabled="!enableSubmitReplyButton"
                 class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
             >
-                Post Reply
+                {{ reply ? 'Edit Reply' : 'Post Reply' }}
             </button>
         </div>
     </form>
@@ -39,6 +39,10 @@ export default {
         submitUrl: {
             type: String,
             required: true
+        },
+        reply: {
+            type: Object,
+            default: null,
         }
     },
     computed: {
@@ -48,7 +52,7 @@ export default {
     },
     data() {
         return {
-            replyBody: ''
+            replyBody: this.reply && this.reply.body ? this.reply.body : ''
         };
     },
     methods: {
@@ -59,13 +63,13 @@ export default {
                     thread_id: this.threadId,
                     user_id: this.userId
                 });
-                toast.success('Reply added successfully.');
+                toast.success(this.reply ? 'Reply updated successfully.' : 'Reply added successfully.');
 
                 // Clear the form
                 this.replyBody = '';
 
                 // Emit an event with the new reply data
-                this.$emit('reply-posted', response.data);
+                this.reply ? this.$emit('reply-edited', response.data) : this.$emit('reply-posted', response.data);
             } catch (error) {
                 console.error('Error posting reply:', error);
                 // Handle error (e.g., show error message to user)

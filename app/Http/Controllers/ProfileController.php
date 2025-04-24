@@ -11,7 +11,12 @@ class ProfileController extends Controller
 {
     public function show(User $user)
     {
-        $user->load('activities.target');
+        $user->load([
+            'activities' => function ($query) {
+                $query->orderBy('created_at', 'DESC');
+            },
+            'activities.target'
+        ]);
 
         $threadIds = $user->activities->where('target_type', 'App\Models\Thread')->pluck('target_id')->toArray();
         if (!empty($threadIds)) {

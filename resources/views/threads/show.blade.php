@@ -27,6 +27,7 @@
                         :user-id="{{ auth()->id() }}"
                         :is-authenticated="{{ json_encode(Auth::check()) }}"
                         submit-url="{{ route('replies.store', [$thread->channel->slug, $thread]) }}"
+                        submit-edit-url="{{ url('/replies') }}"
                         :initial-reply-count="{{ $thread->replies->count() }}"
                     ></thread-replies>
                 </div>

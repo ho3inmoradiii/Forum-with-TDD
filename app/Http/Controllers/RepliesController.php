@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Reply;
 use App\Models\Thread;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -51,5 +52,27 @@ class RepliesController extends Controller
             Log::error('Failed to delete reply and related activities: Reply ID ' . $reply->id . ', Error: ' . $e->getMessage());
             return response()->json(['message' => 'Failed to delete reply. Please try again.'], 500);
         }
+    }
+
+    /**
+     * Update the specified reply.
+     *
+     * @param Request $request
+     * @param Reply $reply
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function update(Request $request, Reply $reply)
+    {
+        $this->authorize('update', $reply);
+
+        $request->validate([
+            'body' => ['required', 'string']
+        ]);
+
+        $reply->update(['body' => $request->body]);
+
+        $reply->load('user');
+        return response()->json($reply, 200);
     }
 }
