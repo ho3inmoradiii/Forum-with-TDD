@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="submitReply" class="space-y-6 bg-white shadow-lg rounded-xl p-6 border border-gray-100 w-full">
+    <div class="space-y-6 bg-white shadow-lg rounded-xl p-6 border border-gray-100 w-full">
         <div>
             <label for="body" class="block text-sm font-medium text-gray-800">Your Reply</label>
             <textarea
@@ -10,16 +10,22 @@
                 placeholder="Type your reply here..."
             ></textarea>
         </div>
-        <div>
+        <div class="flex flex-row gap-3">
             <button
-                type="submit"
+                @click="submitReply"
                 :disabled="!enableSubmitReplyButton"
                 class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
             >
-                {{ reply ? 'Edit Reply' : 'Post Reply' }}
+                {{ reply ? 'Update Reply' : 'Post Reply' }}
+            </button>
+            <button
+                @click="cancelUpdate"
+                class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
+            >
+                Cancel Update
             </button>
         </div>
-    </form>
+    </div>
 </template>
 
 <script>
@@ -74,6 +80,9 @@ export default {
                 console.error('Error posting reply:', error);
                 // Handle error (e.g., show error message to user)
             }
+        },
+        cancelUpdate() {
+            this.$emit('cancel-edit')
         }
     }
 };

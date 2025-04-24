@@ -25544,6 +25544,9 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
           }
         }, _callee, null, [[0, 9]]);
       }))();
+    },
+    cancelUpdate: function cancelUpdate() {
+      this.$emit('cancel-edit');
     }
   }
 });
@@ -25749,6 +25752,9 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
         hash = hash & hash; // Convert to 32-bit integer
       }
       return Math.abs(hash).toString(16).padStart(32, '0');
+    },
+    cancelEdit: function cancelEdit() {
+      this.isEditing = null;
     },
     addReply: function addReply(newReply) {
       this.replies.push(newReply);
@@ -26111,18 +26117,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
-var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_1 = {
+  "class": "space-y-6 bg-white shadow-lg rounded-xl p-6 border border-gray-100 w-full"
+};
+var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "for": "body",
   "class": "block text-sm font-medium text-gray-800"
 }, "Your Reply", -1 /* HOISTED */);
-var _hoisted_2 = ["disabled"];
+var _hoisted_3 = {
+  "class": "flex flex-row gap-3"
+};
+var _hoisted_4 = ["disabled"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("form", {
-    onSubmit: _cache[1] || (_cache[1] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
-      return $options.submitReply && $options.submitReply.apply($options, arguments);
-    }, ["prevent"])),
-    "class": "space-y-6 bg-white shadow-lg rounded-xl p-6 border border-gray-100 w-full"
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
     id: "body",
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $data.replyBody = $event;
@@ -26130,11 +26137,18 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     rows: "4",
     "class": "mt-2 block w-full rounded-lg border border-gray-200 bg-gray-50 p-3 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out",
     placeholder: "Type your reply here..."
-  }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.replyBody]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    type: "submit",
+  }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.replyBody]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    onClick: _cache[1] || (_cache[1] = function () {
+      return $options.submitReply && $options.submitReply.apply($options, arguments);
+    }),
     disabled: !$options.enableSubmitReplyButton,
     "class": "inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.reply ? 'Edit Reply' : 'Post Reply'), 9 /* TEXT, PROPS */, _hoisted_2)])], 32 /* HYDRATE_EVENTS */);
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.reply ? 'Update Reply' : 'Post Reply'), 9 /* TEXT, PROPS */, _hoisted_4), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    onClick: _cache[2] || (_cache[2] = function () {
+      return $options.cancelUpdate && $options.cancelUpdate.apply($options, arguments);
+    }),
+    "class": "inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
+  }, " Cancel Update ")])]);
 }
 
 /***/ }),
@@ -26227,8 +26241,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       "thread-id": $props.threadId,
       reply: reply,
       "class": "mt-3",
-      onReplyEdited: $options.editReply
-    }, null, 8 /* PROPS */, ["submit-url", "user-id", "thread-id", "reply", "onReplyEdited"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [reply.user.id === $props.userId ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+      onReplyEdited: $options.editReply,
+      onCancelEdit: $options.cancelEdit
+    }, null, 8 /* PROPS */, ["submit-url", "user-id", "thread-id", "reply", "onReplyEdited", "onCancelEdit"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [reply.user.id === $props.userId ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
       key: 0,
       onClick: function onClick($event) {
         return $options.showConfirm(reply);

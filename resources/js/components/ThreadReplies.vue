@@ -32,6 +32,7 @@
                 :reply="reply"
                 class="mt-3"
                 @reply-edited="editReply"
+                @cancel-edit="cancelEdit"
             />
             <div class="flex items-start border-t w-full pt-4 mt-4 gap-3">
                 <button
@@ -200,6 +201,9 @@ export default {
                 hash = hash & hash; // Convert to 32-bit integer
             }
             return Math.abs(hash).toString(16).padStart(32, '0');
+        },
+        cancelEdit() {
+            this.isEditing = null;
         },
         addReply(newReply) {
             this.replies.push(newReply);
