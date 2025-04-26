@@ -34,23 +34,21 @@
                 @reply-edited="editReply"
                 @cancel-edit="cancelEdit"
             />
-            <div class="flex items-start border-t w-full pt-4 mt-4 gap-3">
+            <div class="flex items-start border-t w-full pt-4 mt-4 gap-3" v-if="reply.user.id === userId">
                 <button
-                    v-if="reply.user.id === userId"
                     @click="showConfirm(reply)"
                     :disabled="isDeleting === reply.id"
-                    class="w-32 flex items-center justify-center gap-1 px-2 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105"
+                    class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md disabled:bg-gray-400 disabled:hover:cursor-not-allowed disabled:opacity-60"
                 >
-                    <PhTrash :size="14" color="white" />
-                    {{ isDeleting === reply.id ? 'Deleting...' : 'Delete Reply' }}
+                    <PhTrash :size="16" color="white" weight="bold" />
+                    <span>{{ isDeleting === reply.id ? 'Deleting...' : 'Delete' }}</span>
                 </button>
                 <button
-                    v-if="reply.user.id === userId"
                     @click="isEditing = reply.id"
-                    class="w-32 flex items-center justify-center gap-1 px-2 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105"
+                    class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md"
                 >
-                    <PhTrash :size="14" color="white" />
-                    {{ isEditing === reply.id ? 'Editing...' : 'Edit Reply' }}
+                    <PhPencil :size="16" color="white" weight="bold" />
+                    <span>{{ isEditing === reply.id ? 'Editing...' : 'Edit' }}</span>
                 </button>
             </div>
         </div>
@@ -79,12 +77,13 @@
 
 <script>
 import ReplyForm from './ReplyForm.vue';
-import {PhHeart, PhTrash} from "@phosphor-icons/vue";
+import {PhHeart, PhPencil, PhTrash} from "@phosphor-icons/vue";
 import axios from 'axios';
 import {toast} from 'vue3-toastify';
 
 export default {
     components: {
+        PhPencil,
         PhTrash,
         PhHeart,
         ReplyForm
@@ -210,11 +209,17 @@ export default {
             this.replyCount++;
             window.emitter.emit('reply-count-updated', this.replyCount);
         },
-        editReply(reply){
-            this.replies = this.replies.filter(item => {
-                return item.id !== reply.id;
-            })
-            this.replies.push(reply);
+        editReply(updatedReply) {
+            this.replies = this.replies.map(reply => {
+                if (reply.id === updatedReply.id) {
+                    return {
+                        ...reply,
+                        body: updatedReply.body,
+                        updated_at: updatedReply.updated_at
+                    };
+                }
+                return reply;
+            });
             this.isEditing = null;
         },
         formatDate(dateString) {

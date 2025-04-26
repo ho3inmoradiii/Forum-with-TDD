@@ -3,13 +3,7 @@
         <div v-if="activities.length > 0">
             <div v-for="activity in activities" :key="activity.id">
                 <article
-                    :class="{
-                        'bg-green-50 border-l-4 border-green-400': activity.activity_type === 'thread_created',
-                        'bg-blue-50 border-l-4 border-blue-400': activity.activity_type === 'reply_added',
-                        'bg-orange-50 border-l-4 border-orange-400': activity.activity_type === 'reply_favorited',
-                        'bg-gray-50 border-l-4 border-gray-300': !['thread_created', 'reply_added', 'reply_favorited'].includes(activity.activity_type)
-                    }"
-                    class="p-4 rounded-lg mb-4 shadow-sm hover:shadow-md transition-shadow duration-300"
+                    class="bg-gray-50 border-l-4 border-gray-300 p-4 rounded-lg mb-4 shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
                     <div class="flex flex-col gap-2">
                         <!-- Header with icon and activity -->
@@ -18,10 +12,10 @@
                                 <!-- Activity Icon -->
                                 <i
                                     :class="{
-                                        'fas fa-plus-circle text-green-500': activity.activity_type === 'thread_created',
-                                        'fas fa-comment-dots text-blue-500': activity.activity_type === 'reply_added',
-                                        'fas fa-heart text-orange-500': activity.activity_type === 'reply_favorited',
-                                        'fas fa-question-circle text-gray-500': !['thread_created', 'reply_added', 'reply_favorited'].includes(activity.activity_type)
+                                        'fas fa-plus-circle text-gray-600': activity.activity_type === 'thread_created',
+                                        'fas fa-comment-dots text-gray-600': activity.activity_type === 'reply_added',
+                                        'fas fa-heart text-gray-600': activity.activity_type === 'reply_favorited',
+                                        'fas fa-question-circle text-gray-600': !['thread_created', 'reply_added', 'reply_favorited'].includes(activity.activity_type)
                                     }"
                                 ></i>
                                 <!-- Activity Text -->
@@ -30,7 +24,7 @@
                                         <span>{{ userWithActivities.name }} created</span>
                                         <a
                                             :href="threadsShow(activity.target)"
-                                            class="text-green-600 hover:text-green-700 transition duration-300 ease-in-out ml-1 underline"
+                                            class="text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out ml-1 underline"
                                         >
                                             {{ activity.target.title }}
                                         </a>
@@ -48,7 +42,7 @@
                                         <span>{{ userWithActivities.name }} favorited</span>
                                         <a
                                             :href="threadsShow(activity.target.thread)"
-                                            class="text-orange-600 hover:text-orange-700 transition duration-300 ease-in-out ml-1 underline"
+                                            class="text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out ml-1 underline"
                                         >
                                             {{ activity.target.body }}
                                         </a>
@@ -74,19 +68,19 @@
                                 v-if="userWithActivities.id === userId && activity.activity_type === 'thread_created'"
                                 @click="showConfirm(activity.target, activity.activity_type)"
                                 :disabled="isDeleting === activity.target.id"
-                                class="flex items-center gap-1 px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105"
+                                class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md disabled:bg-gray-400 disabled:hover:cursor-not-allowed disabled:opacity-60"
                             >
-                                <PhTrash :size="14" color="white" />
-                                {{ isDeleting === activity.target.id ? 'Deleting...' : 'Delete Thread' }}
+                                <PhTrash :size="16" color="white" weight="bold" />
+                                <span>{{ isDeleting === activity.target.id ? 'Deleting...' : 'Delete' }}</span>
                             </button>
                             <button
                                 v-if="userWithActivities.id === userId && activity.activity_type === 'reply_added'"
                                 @click="showConfirm(activity.target, activity.activity_type)"
                                 :disabled="isDeleting === activity.target.id"
-                                class="flex items-center gap-1 px-2 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105"
+                                class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md disabled:bg-gray-400 disabled:hover:cursor-not-allowed disabled:opacity-60"
                             >
-                                <PhTrash :size="14" color="white" />
-                                {{ isDeleting === activity.target.id ? 'Deleting...' : 'Delete Reply' }}
+                                <PhTrash :size="16" color="white" weight="bold" />
+                                <span>{{ isDeleting === activity.target.id ? 'Deleting...' : 'Delete' }}</span>
                             </button>
                         </div>
                     </div>
@@ -120,7 +114,7 @@
 import axios from 'axios';
 import { toast } from 'vue3-toastify';
 import ConfirmDialog from './ConfirmDialog.vue';
-import {PhTrash} from "@phosphor-icons/vue";
+import { PhTrash } from "@phosphor-icons/vue";
 
 export default {
     name: "ProfileThreads",

@@ -25472,13 +25472,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue3_toastify__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue3-toastify */ "./node_modules/vue3-toastify/dist/index.mjs");
+/* harmony import */ var _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @phosphor-icons/vue */ "./node_modules/@phosphor-icons/vue/dist/icons/PhXCircle.vue.mjs");
+/* harmony import */ var _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @phosphor-icons/vue */ "./node_modules/@phosphor-icons/vue/dist/icons/PhCheckCircle.vue.mjs");
+/* harmony import */ var _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @phosphor-icons/vue */ "./node_modules/@phosphor-icons/vue/dist/icons/PhPaperPlaneTilt.vue.mjs");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return e; }; var t, e = {}, r = Object.prototype, n = r.hasOwnProperty, o = Object.defineProperty || function (t, e, r) { t[e] = r.value; }, i = "function" == typeof Symbol ? Symbol : {}, a = i.iterator || "@@iterator", c = i.asyncIterator || "@@asyncIterator", u = i.toStringTag || "@@toStringTag"; function define(t, e, r) { return Object.defineProperty(t, e, { value: r, enumerable: !0, configurable: !0, writable: !0 }), t[e]; } try { define({}, ""); } catch (t) { define = function define(t, e, r) { return t[e] = r; }; } function wrap(t, e, r, n) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype), c = new Context(n || []); return o(a, "_invoke", { value: makeInvokeMethod(t, r, c) }), a; } function tryCatch(t, e, r) { try { return { type: "normal", arg: t.call(e, r) }; } catch (t) { return { type: "throw", arg: t }; } } e.wrap = wrap; var h = "suspendedStart", l = "suspendedYield", f = "executing", s = "completed", y = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var p = {}; define(p, a, function () { return this; }); var d = Object.getPrototypeOf, v = d && d(d(values([]))); v && v !== r && n.call(v, a) && (p = v); var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p); function defineIteratorMethods(t) { ["next", "throw", "return"].forEach(function (e) { define(t, e, function (t) { return this._invoke(e, t); }); }); } function AsyncIterator(t, e) { function invoke(r, o, i, a) { var c = tryCatch(t[r], t, o); if ("throw" !== c.type) { var u = c.arg, h = u.value; return h && "object" == _typeof(h) && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) { invoke("next", t, i, a); }, function (t) { invoke("throw", t, i, a); }) : e.resolve(h).then(function (t) { u.value = t, i(u); }, function (t) { return invoke("throw", t, i, a); }); } a(c.arg); } var r; o(this, "_invoke", { value: function value(t, n) { function callInvokeWithMethodAndArg() { return new e(function (e, r) { invoke(t, n, e, r); }); } return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(e, r, n) { var o = h; return function (i, a) { if (o === f) throw Error("Generator is already running"); if (o === s) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var c = n.delegate; if (c) { var u = maybeInvokeDelegate(c, n); if (u) { if (u === y) continue; return u; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (o === h) throw o = s, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = f; var p = tryCatch(e, r, n); if ("normal" === p.type) { if (o = n.done ? s : l, p.arg === y) continue; return { value: p.arg, done: n.done }; } "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg); } }; } function maybeInvokeDelegate(e, r) { var n = r.method, o = e.iterator[n]; if (o === t) return r.delegate = null, "throw" === n && e.iterator["return"] && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y; var i = tryCatch(o, e.iterator, r.arg); if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y; var a = i.arg; return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y); } function pushTryEntry(t) { var e = { tryLoc: t[0] }; 1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e); } function resetTryEntry(t) { var e = t.completion || {}; e.type = "normal", delete e.arg, t.completion = e; } function Context(t) { this.tryEntries = [{ tryLoc: "root" }], t.forEach(pushTryEntry, this), this.reset(!0); } function values(e) { if (e || "" === e) { var r = e[a]; if (r) return r.call(e); if ("function" == typeof e.next) return e; if (!isNaN(e.length)) { var o = -1, i = function next() { for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next; return next.value = t, next.done = !0, next; }; return i.next = i; } } throw new TypeError(_typeof(e) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), o(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) { var e = "function" == typeof t && t.constructor; return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name)); }, e.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t; }, e.awrap = function (t) { return { __await: t }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () { return this; }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(wrap(t, r, n, o), i); return e.isGeneratorFunction(r) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () { return this; }), define(g, "toString", function () { return "[object Generator]"; }), e.keys = function (t) { var e = Object(t), r = []; for (var n in e) r.push(n); return r.reverse(), function next() { for (; r.length;) { var t = r.pop(); if (t in e) return next.value = t, next.done = !1, next; } return next.done = !0, next; }; }, e.values = values, Context.prototype = { constructor: Context, reset: function reset(e) { if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0].completion; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(e) { if (this.done) throw e; var r = this; function handle(n, o) { return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o; } for (var o = this.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i.completion; if ("root" === i.tryLoc) return handle("end"); if (i.tryLoc <= this.prev) { var c = n.call(i, "catchLoc"), u = n.call(i, "finallyLoc"); if (c && u) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } else if (c) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); } else { if (!u) throw Error("try statement without catch or finally"); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } } } }, abrupt: function abrupt(t, e) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var o = this.tryEntries[r]; if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) { var i = o; break; } } i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null); var a = i ? i.completion : {}; return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a); }, complete: function complete(t, e) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y; }, finish: function finish(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y; } }, "catch": function _catch(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.tryLoc === t) { var n = r.completion; if ("throw" === n.type) { var o = n.arg; resetTryEntry(r); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(e, r, n) { return this.delegate = { iterator: values(e), resultName: r, nextLoc: n }, "next" === this.method && (this.arg = t), y; } }, e; }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    PhXCircle: _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
+    PhCheckCircle: _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+    PhPaperPlaneTilt: _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
+  },
   props: {
     threadId: {
       type: Number,
@@ -25565,8 +25574,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _ReplyForm_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ReplyForm.vue */ "./resources/js/components/ReplyForm.vue");
-/* harmony import */ var _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @phosphor-icons/vue */ "./node_modules/@phosphor-icons/vue/dist/icons/PhTrash.vue.mjs");
-/* harmony import */ var _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @phosphor-icons/vue */ "./node_modules/@phosphor-icons/vue/dist/icons/PhHeart.vue.mjs");
+/* harmony import */ var _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @phosphor-icons/vue */ "./node_modules/@phosphor-icons/vue/dist/icons/PhPencil.vue.mjs");
+/* harmony import */ var _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @phosphor-icons/vue */ "./node_modules/@phosphor-icons/vue/dist/icons/PhTrash.vue.mjs");
+/* harmony import */ var _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @phosphor-icons/vue */ "./node_modules/@phosphor-icons/vue/dist/icons/PhHeart.vue.mjs");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var vue3_toastify__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue3-toastify */ "./node_modules/vue3-toastify/dist/index.mjs");
@@ -25585,8 +25595,9 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
-    PhTrash: _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
-    PhHeart: _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
+    PhPencil: _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+    PhTrash: _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
+    PhHeart: _phosphor_icons_vue__WEBPACK_IMPORTED_MODULE_5__["default"],
     ReplyForm: _ReplyForm_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   props: {
@@ -25761,11 +25772,16 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
       this.replyCount++;
       window.emitter.emit('reply-count-updated', this.replyCount);
     },
-    editReply: function editReply(reply) {
-      this.replies = this.replies.filter(function (item) {
-        return item.id !== reply.id;
+    editReply: function editReply(updatedReply) {
+      this.replies = this.replies.map(function (reply) {
+        if (reply.id === updatedReply.id) {
+          return _objectSpread(_objectSpread({}, reply), {}, {
+            body: updatedReply.body,
+            updated_at: updatedReply.updated_at
+          });
+        }
+        return reply;
       });
-      this.replies.push(reply);
       this.isEditing = null;
     },
     formatDate: function formatDate(dateString) {
@@ -25991,37 +26007,40 @@ var _hoisted_2 = {
   key: 0
 };
 var _hoisted_3 = {
-  "class": "flex flex-col gap-2"
+  "class": "bg-gray-50 border-l-4 border-gray-300 p-4 rounded-lg mb-4 shadow-sm hover:shadow-md transition-shadow duration-300"
 };
 var _hoisted_4 = {
-  "class": "flex flex-row justify-between items-start gap-3"
+  "class": "flex flex-col gap-2"
 };
 var _hoisted_5 = {
-  "class": "flex items-center gap-2"
+  "class": "flex flex-row justify-between items-start gap-3"
 };
 var _hoisted_6 = {
+  "class": "flex items-center gap-2"
+};
+var _hoisted_7 = {
   "class": "text-lg font-semibold text-gray-800"
 };
-var _hoisted_7 = ["href"];
 var _hoisted_8 = ["href"];
 var _hoisted_9 = ["href"];
-var _hoisted_10 = {
+var _hoisted_10 = ["href"];
+var _hoisted_11 = {
   key: 3,
   "class": "text-gray-600 italic"
 };
-var _hoisted_11 = {
+var _hoisted_12 = {
   "class": "text-xs text-gray-500 font-medium"
 };
-var _hoisted_12 = {
+var _hoisted_13 = {
   key: 0,
   "class": "text-gray-600 leading-relaxed line-clamp-2 text-sm mt-1 pl-6"
 };
-var _hoisted_13 = {
+var _hoisted_14 = {
   "class": "flex gap-2 mt-2 pl-6"
 };
-var _hoisted_14 = ["onClick", "disabled"];
 var _hoisted_15 = ["onClick", "disabled"];
-var _hoisted_16 = {
+var _hoisted_16 = ["onClick", "disabled"];
+var _hoisted_17 = {
   key: 1,
   "class": "text-center text-gray-500 text-base font-medium py-6 bg-gray-100 rounded-lg shadow-sm"
 };
@@ -26031,56 +26050,51 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [$data.activities.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.activities, function (activity) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       key: activity.id
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("article", {
-      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([{
-        'bg-green-50 border-l-4 border-green-400': activity.activity_type === 'thread_created',
-        'bg-blue-50 border-l-4 border-blue-400': activity.activity_type === 'reply_added',
-        'bg-orange-50 border-l-4 border-orange-400': activity.activity_type === 'reply_favorited',
-        'bg-gray-50 border-l-4 border-gray-300': !['thread_created', 'reply_added', 'reply_favorited'].includes(activity.activity_type)
-      }, "p-4 rounded-lg mb-4 shadow-sm hover:shadow-md transition-shadow duration-300"])
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Header with icon and activity "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Activity Icon "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("article", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Header with icon and activity "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Activity Icon "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)({
-        'fas fa-plus-circle text-green-500': activity.activity_type === 'thread_created',
-        'fas fa-comment-dots text-blue-500': activity.activity_type === 'reply_added',
-        'fas fa-heart text-orange-500': activity.activity_type === 'reply_favorited',
-        'fas fa-question-circle text-gray-500': !['thread_created', 'reply_added', 'reply_favorited'].includes(activity.activity_type)
+        'fas fa-plus-circle text-gray-600': activity.activity_type === 'thread_created',
+        'fas fa-comment-dots text-gray-600': activity.activity_type === 'reply_added',
+        'fas fa-heart text-gray-600': activity.activity_type === 'reply_favorited',
+        'fas fa-question-circle text-gray-600': !['thread_created', 'reply_added', 'reply_favorited'].includes(activity.activity_type)
       })
-    }, null, 2 /* CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Activity Text "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", _hoisted_6, [activity.activity_type === 'thread_created' && activity.target ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    }, null, 2 /* CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Activity Text "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", _hoisted_7, [activity.activity_type === 'thread_created' && activity.target ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
       key: 0
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.userWithActivities.name) + " created", 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
       href: $options.threadsShow(activity.target),
-      "class": "text-green-600 hover:text-green-700 transition duration-300 ease-in-out ml-1 underline"
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(activity.target.title), 9 /* TEXT, PROPS */, _hoisted_7)], 64 /* STABLE_FRAGMENT */)) : activity.activity_type === 'reply_added' && activity.target ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+      "class": "text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out ml-1 underline"
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(activity.target.title), 9 /* TEXT, PROPS */, _hoisted_8)], 64 /* STABLE_FRAGMENT */)) : activity.activity_type === 'reply_added' && activity.target ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
       key: 1
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.userWithActivities.name) + " replied to", 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
       href: $options.threadsShow(activity.target.thread),
       "class": "text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out ml-1 underline"
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(activity.target.thread.title), 9 /* TEXT, PROPS */, _hoisted_8)], 64 /* STABLE_FRAGMENT */)) : activity.activity_type === 'reply_favorited' && activity.target ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(activity.target.thread.title), 9 /* TEXT, PROPS */, _hoisted_9)], 64 /* STABLE_FRAGMENT */)) : activity.activity_type === 'reply_favorited' && activity.target ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
       key: 2
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.userWithActivities.name) + " favorited", 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
       href: $options.threadsShow(activity.target.thread),
-      "class": "text-orange-600 hover:text-orange-700 transition duration-300 ease-in-out ml-1 underline"
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(activity.target.body), 9 /* TEXT, PROPS */, _hoisted_9)], 64 /* STABLE_FRAGMENT */)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_10, "Unknown activity"))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Timestamp "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.formatDate(activity.created_at)), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Activity Body "), activity.target ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(activity.target.body), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Delete Buttons "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [$props.userWithActivities.id === $props.userId && activity.activity_type === 'thread_created' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+      "class": "text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out ml-1 underline"
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(activity.target.body), 9 /* TEXT, PROPS */, _hoisted_10)], 64 /* STABLE_FRAGMENT */)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_11, "Unknown activity"))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Timestamp "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.formatDate(activity.created_at)), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Activity Body "), activity.target ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(activity.target.body), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Delete Buttons "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [$props.userWithActivities.id === $props.userId && activity.activity_type === 'thread_created' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
       key: 0,
       onClick: function onClick($event) {
         return $options.showConfirm(activity.target, activity.activity_type);
       },
       disabled: $data.isDeleting === activity.target.id,
-      "class": "flex items-center gap-1 px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105"
+      "class": "flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md disabled:bg-gray-400 disabled:hover:cursor-not-allowed disabled:opacity-60"
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_PhTrash, {
-      size: 14,
-      color: "white"
-    }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isDeleting === activity.target.id ? 'Deleting...' : 'Delete Thread'), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_14)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.userWithActivities.id === $props.userId && activity.activity_type === 'reply_added' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+      size: 16,
+      color: "white",
+      weight: "bold"
+    }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isDeleting === activity.target.id ? 'Deleting...' : 'Delete'), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_15)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.userWithActivities.id === $props.userId && activity.activity_type === 'reply_added' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
       key: 1,
       onClick: function onClick($event) {
         return $options.showConfirm(activity.target, activity.activity_type);
       },
       disabled: $data.isDeleting === activity.target.id,
-      "class": "flex items-center gap-1 px-2 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105"
+      "class": "flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md disabled:bg-gray-400 disabled:hover:cursor-not-allowed disabled:opacity-60"
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_PhTrash, {
-      size: 14,
-      color: "white"
-    }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isDeleting === activity.target.id ? 'Deleting...' : 'Delete Reply'), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_15)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])], 2 /* CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Confirm Dialogs "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_confirm_dialog, {
+      size: 16,
+      color: "white",
+      weight: "bold"
+    }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isDeleting === activity.target.id ? 'Deleting...' : 'Delete'), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_16)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Confirm Dialogs "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_confirm_dialog, {
       "is-open": $data.showDeleteThreadDialog,
       title: "Delete Thread",
       message: "Are you sure you want to delete this thread? This action cannot be undone.",
@@ -26099,7 +26113,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         return $data.showDeleteReplyDialog = false;
       })
     }, null, 8 /* PROPS */, ["is-open", "onConfirm"])]);
-  }), 128 /* KEYED_FRAGMENT */))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_16, " No activities yet. "))]);
+  }), 128 /* KEYED_FRAGMENT */))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_17, " No activities yet. "))]);
 }
 
 /***/ }),
@@ -26128,7 +26142,11 @@ var _hoisted_3 = {
   "class": "flex flex-row gap-3"
 };
 var _hoisted_4 = ["disabled"];
+var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "Cancel", -1 /* HOISTED */);
 function render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_PhPaperPlaneTilt = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("PhPaperPlaneTilt");
+  var _component_PhCheckCircle = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("PhCheckCircle");
+  var _component_PhXCircle = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("PhXCircle");
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
     id: "body",
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
@@ -26142,13 +26160,28 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return $options.submitReply && $options.submitReply.apply($options, arguments);
     }),
     disabled: !$options.enableSubmitReplyButton,
-    "class": "inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.reply ? 'Update Reply' : 'Post Reply'), 9 /* TEXT, PROPS */, _hoisted_4), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md disabled:bg-gray-400 disabled:hover:cursor-not-allowed disabled:opacity-60"
+  }, [!$props.reply ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_PhPaperPlaneTilt, {
+    key: 0,
+    size: 16,
+    color: "white",
+    weight: "bold"
+  })) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_PhCheckCircle, {
+    key: 1,
+    size: 16,
+    color: "white",
+    weight: "bold"
+  })), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.reply ? 'Update' : 'Post'), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_4), $props.reply ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+    key: 0,
     onClick: _cache[2] || (_cache[2] = function () {
       return $options.cancelUpdate && $options.cancelUpdate.apply($options, arguments);
     }),
-    "class": "inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
-  }, " Cancel Update ")])]);
+    "class": "flex items-center gap-2 px-4 py-2 bg-gray-500 text-white text-sm font-medium rounded-lg shadow hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md"
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_PhXCircle, {
+    size: 16,
+    color: "white",
+    weight: "bold"
+  }), _hoisted_5])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]);
 }
 
 /***/ }),
@@ -26196,6 +26229,7 @@ var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
   "class": "mx-1"
 }, "•", -1 /* HOISTED */);
 var _hoisted_12 = {
+  key: 1,
   "class": "flex items-start border-t w-full pt-4 mt-4 gap-3"
 };
 var _hoisted_13 = ["onClick", "disabled"];
@@ -26214,6 +26248,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_PhHeart = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("PhHeart");
   var _component_reply_form = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("reply-form");
   var _component_PhTrash = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("PhTrash");
+  var _component_PhPencil = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("PhPencil");
   var _component_confirm_dialog = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("confirm-dialog");
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.replies, function (reply) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
@@ -26243,26 +26278,26 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       "class": "mt-3",
       onReplyEdited: $options.editReply,
       onCancelEdit: $options.cancelEdit
-    }, null, 8 /* PROPS */, ["submit-url", "user-id", "thread-id", "reply", "onReplyEdited", "onCancelEdit"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [reply.user.id === $props.userId ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
-      key: 0,
+    }, null, 8 /* PROPS */, ["submit-url", "user-id", "thread-id", "reply", "onReplyEdited", "onCancelEdit"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), reply.user.id === $props.userId ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
       onClick: function onClick($event) {
         return $options.showConfirm(reply);
       },
       disabled: $data.isDeleting === reply.id,
-      "class": "w-32 flex items-center justify-center gap-1 px-2 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105"
+      "class": "flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md disabled:bg-gray-400 disabled:hover:cursor-not-allowed disabled:opacity-60"
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_PhTrash, {
-      size: 14,
-      color: "white"
-    }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isDeleting === reply.id ? 'Deleting...' : 'Delete Reply'), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_13)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), reply.user.id === $props.userId ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
-      key: 1,
+      size: 16,
+      color: "white",
+      weight: "bold"
+    }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isDeleting === reply.id ? 'Deleting...' : 'Delete'), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_13), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
       onClick: function onClick($event) {
         return $data.isEditing = reply.id;
       },
-      "class": "w-32 flex items-center justify-center gap-1 px-2 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105"
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_PhTrash, {
-      size: 14,
-      color: "white"
-    }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isEditing === reply.id ? 'Editing...' : 'Edit Reply'), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_14)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]);
+      "class": "flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md"
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_PhPencil, {
+      size: 16,
+      color: "white",
+      weight: "bold"
+    }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isEditing === reply.id ? 'Editing...' : 'Edit'), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_14)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
   }), 128 /* KEYED_FRAGMENT */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_confirm_dialog, {
     "is-open": $data.showDeleteReplyDialog,
     title: "Delete Reply",
@@ -45647,6 +45682,73 @@ function genPropsAccessExp(name) {
 
 /***/ }),
 
+/***/ "./node_modules/@phosphor-icons/vue/dist/icons/PhCheckCircle.vue.mjs":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@phosphor-icons/vue/dist/icons/PhCheckCircle.vue.mjs ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ H)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+const y = ["width", "height", "fill", "transform"], M = { key: 0 }, f = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M176.49,95.51a12,12,0,0,1,0,17l-56,56a12,12,0,0,1-17,0l-24-24a12,12,0,1,1,17-17L112,143l47.51-47.52A12,12,0,0,1,176.49,95.51ZM236,128A108,108,0,1,1,128,20,108.12,108.12,0,0,1,236,128Zm-24,0a84,84,0,1,0-84,84A84.09,84.09,0,0,0,212,128Z" }, null, -1), w = [
+  f
+], k = { key: 1 }, C = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", {
+  d: "M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z",
+  opacity: "0.2"
+}, null, -1), x = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z" }, null, -1), L = [
+  C,
+  x
+], S = { key: 2 }, z = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z" }, null, -1), B = [
+  z
+], N = { key: 3 }, b = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M172.24,99.76a6,6,0,0,1,0,8.48l-56,56a6,6,0,0,1-8.48,0l-24-24a6,6,0,0,1,8.48-8.48L112,151.51l51.76-51.75A6,6,0,0,1,172.24,99.76ZM230,128A102,102,0,1,1,128,26,102.12,102.12,0,0,1,230,128Zm-12,0a90,90,0,1,0-90,90A90.1,90.1,0,0,0,218,128Z" }, null, -1), E = [
+  b
+], P = { key: 4 }, V = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z" }, null, -1), W = [
+  V
+], $ = { key: 5 }, j = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M170.83,101.17a4,4,0,0,1,0,5.66l-56,56a4,4,0,0,1-5.66,0l-24-24a4,4,0,0,1,5.66-5.66L112,154.34l53.17-53.17A4,4,0,0,1,170.83,101.17ZM228,128A100,100,0,1,1,128,28,100.11,100.11,0,0,1,228,128Zm-8,0a92,92,0,1,0-92,92A92.1,92.1,0,0,0,220,128Z" }, null, -1), q = [
+  j
+], D = {
+  name: "PhCheckCircle"
+}, H = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.defineComponent)({
+  ...D,
+  props: {
+    weight: {
+      type: String
+    },
+    size: {
+      type: [String, Number]
+    },
+    color: {
+      type: String
+    },
+    mirrored: {
+      type: Boolean
+    }
+  },
+  setup(c) {
+    const s = c, d = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("weight", "regular"), _ = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("size", "1em"), h = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("color", "currentColor"), u = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("mirrored", !1), l = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => s.weight ?? d), i = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => s.size ?? _), p = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => s.color ?? h), m = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => s.mirrored !== void 0 ? s.mirrored ? "scale(-1, 1)" : void 0 : u ? "scale(-1, 1)" : void 0);
+    return (r, F) => ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("svg", (0,vue__WEBPACK_IMPORTED_MODULE_0__.mergeProps)({
+      xmlns: "http://www.w3.org/2000/svg",
+      viewBox: "0 0 256 256",
+      width: i.value,
+      height: i.value,
+      fill: p.value,
+      transform: m.value
+    }, r.$attrs), [
+      (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(r.$slots, "default"),
+      l.value === "bold" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", M, w)) : l.value === "duotone" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", k, L)) : l.value === "fill" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", S, B)) : l.value === "light" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", N, E)) : l.value === "regular" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", P, W)) : l.value === "thin" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", $, q)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("", !0)
+    ], 16, y));
+  }
+});
+
+
+
+/***/ }),
+
 /***/ "./node_modules/@phosphor-icons/vue/dist/icons/PhHeart.vue.mjs":
 /*!*********************************************************************!*\
   !*** ./node_modules/@phosphor-icons/vue/dist/icons/PhHeart.vue.mjs ***!
@@ -45714,6 +45816,140 @@ const A = ["width", "height", "fill", "transform"], M = { key: 0 }, f = /* @__PU
 
 /***/ }),
 
+/***/ "./node_modules/@phosphor-icons/vue/dist/icons/PhPaperPlaneTilt.vue.mjs":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@phosphor-icons/vue/dist/icons/PhPaperPlaneTilt.vue.mjs ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ G)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+const A = ["width", "height", "fill", "transform"], f = { key: 0 }, M = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M230.14,25.86a20,20,0,0,0-19.57-5.11l-.22.07L18.44,79a20,20,0,0,0-3.06,37.25L99,157l40.71,83.65a19.81,19.81,0,0,0,18,11.38c.57,0,1.15,0,1.73-.07A19.82,19.82,0,0,0,177,237.56L235.18,45.65a1.42,1.42,0,0,0,.07-.22A20,20,0,0,0,230.14,25.86ZM156.91,221.07l-34.37-70.64,46-45.95a12,12,0,0,0-17-17l-46,46L34.93,99.09,210,46Z" }, null, -1), Z = [
+  M
+], w = { key: 1 }, k = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", {
+  d: "M223.69,42.18l-58.22,192a8,8,0,0,1-14.92,1.25L108,148,20.58,105.45a8,8,0,0,1,1.25-14.92l192-58.22A8,8,0,0,1,223.69,42.18Z",
+  opacity: "0.2"
+}, null, -1), x = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M227.32,28.68a16,16,0,0,0-15.66-4.08l-.15,0L19.57,82.84a16,16,0,0,0-2.49,29.8L102,154l41.3,84.87A15.86,15.86,0,0,0,157.74,248q.69,0,1.38-.06a15.88,15.88,0,0,0,14-11.51l58.2-191.94c0-.05,0-.1,0-.15A16,16,0,0,0,227.32,28.68ZM157.83,231.85l-.05.14,0-.07-40.06-82.3,48-48a8,8,0,0,0-11.31-11.31l-48,48L24.08,98.25l-.07,0,.14,0L216,40Z" }, null, -1), S = [
+  k,
+  x
+], z = { key: 2 }, C = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M231.4,44.34s0,.1,0,.15l-58.2,191.94a15.88,15.88,0,0,1-14,11.51q-.69.06-1.38.06a15.86,15.86,0,0,1-14.42-9.15L107,164.15a4,4,0,0,1,.77-4.58l57.92-57.92a8,8,0,0,0-11.31-11.31L96.43,148.26a4,4,0,0,1-4.58.77L17.08,112.64a16,16,0,0,1,2.49-29.8l191.94-58.2.15,0A16,16,0,0,1,231.4,44.34Z" }, null, -1), B = [
+  C
+], P = { key: 3 }, q = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M225.88,30.12a13.83,13.83,0,0,0-13.7-3.58l-.11,0L20.14,84.77A14,14,0,0,0,18,110.85l85.56,41.64L145.12,238a13.87,13.87,0,0,0,12.61,8c.4,0,.81,0,1.21-.05a13.9,13.9,0,0,0,12.29-10.09l58.2-191.93,0-.11A13.83,13.83,0,0,0,225.88,30.12Zm-8,10.4L159.73,232.43l0,.11a2,2,0,0,1-3.76.26l-40.68-83.58,49-49a6,6,0,1,0-8.49-8.49l-49,49L23.15,100a2,2,0,0,1,.31-3.74l.11,0L215.48,38.08a1.94,1.94,0,0,1,1.92.52A2,2,0,0,1,217.92,40.52Z" }, null, -1), N = [
+  q
+], b = { key: 4 }, E = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M227.32,28.68a16,16,0,0,0-15.66-4.08l-.15,0L19.57,82.84a16,16,0,0,0-2.49,29.8L102,154l41.3,84.87A15.86,15.86,0,0,0,157.74,248q.69,0,1.38-.06a15.88,15.88,0,0,0,14-11.51l58.2-191.94c0-.05,0-.1,0-.15A16,16,0,0,0,227.32,28.68ZM157.83,231.85l-.05.14,0-.07-40.06-82.3,48-48a8,8,0,0,0-11.31-11.31l-48,48L24.08,98.25l-.07,0,.14,0L216,40Z" }, null, -1), V = [
+  E
+], W = { key: 5 }, $ = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M224.47,31.52a11.87,11.87,0,0,0-11.82-3L20.74,86.67a12,12,0,0,0-1.91,22.38L105,151l41.92,86.15A11.88,11.88,0,0,0,157.74,244c.34,0,.69,0,1,0a11.89,11.89,0,0,0,10.52-8.63l58.21-192,0-.08A11.85,11.85,0,0,0,224.47,31.52Zm-4.62,9.54-58.23,192a4,4,0,0,1-7.48.59l-41.3-84.86,50-50a4,4,0,1,0-5.66-5.66l-50,50-84.9-41.31a3.88,3.88,0,0,1-2.27-4,3.93,3.93,0,0,1,3-3.54L214.9,36.16A3.93,3.93,0,0,1,216,36a4,4,0,0,1,2.79,1.19A3.93,3.93,0,0,1,219.85,41.06Z" }, null, -1), j = [
+  $
+], T = {
+  name: "PhPaperPlaneTilt"
+}, G = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.defineComponent)({
+  ...T,
+  props: {
+    weight: {
+      type: String
+    },
+    size: {
+      type: [String, Number]
+    },
+    color: {
+      type: String
+    },
+    mirrored: {
+      type: Boolean
+    }
+  },
+  setup(c) {
+    const a = c, d = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("weight", "regular"), _ = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("size", "1em"), h = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("color", "currentColor"), u = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("mirrored", !1), l = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => a.weight ?? d), i = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => a.size ?? _), p = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => a.color ?? h), L = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => a.mirrored !== void 0 ? a.mirrored ? "scale(-1, 1)" : void 0 : u ? "scale(-1, 1)" : void 0);
+    return (r, D) => ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("svg", (0,vue__WEBPACK_IMPORTED_MODULE_0__.mergeProps)({
+      xmlns: "http://www.w3.org/2000/svg",
+      viewBox: "0 0 256 256",
+      width: i.value,
+      height: i.value,
+      fill: p.value,
+      transform: L.value
+    }, r.$attrs), [
+      (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(r.$slots, "default"),
+      l.value === "bold" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", f, Z)) : l.value === "duotone" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", w, S)) : l.value === "fill" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", z, B)) : l.value === "light" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", P, N)) : l.value === "regular" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", b, V)) : l.value === "thin" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", W, j)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("", !0)
+    ], 16, A));
+  }
+});
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@phosphor-icons/vue/dist/icons/PhPencil.vue.mjs":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@phosphor-icons/vue/dist/icons/PhPencil.vue.mjs ***!
+  \**********************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ G)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+const v = ["width", "height", "fill", "transform"], y = { key: 0 }, f = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M230.14,70.54,185.46,25.85a20,20,0,0,0-28.29,0L33.86,149.17A19.85,19.85,0,0,0,28,163.31V208a20,20,0,0,0,20,20H92.69a19.86,19.86,0,0,0,14.14-5.86L230.14,98.82a20,20,0,0,0,0-28.28ZM93,180l71-71,11,11-71,71ZM76,163,65,152l71-71,11,11ZM52,173l15.51,15.51h0L83,204H52ZM192,103,153,64l18.34-18.34,39,39Z" }, null, -1), H = [
+  f
+], A = { key: 1 }, w = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", {
+  d: "M221.66,90.34,192,120,136,64l29.66-29.66a8,8,0,0,1,11.31,0L221.66,79A8,8,0,0,1,221.66,90.34Z",
+  opacity: "0.2"
+}, null, -1), V = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM51.31,160,136,75.31,152.69,92,68,176.68ZM48,179.31,76.69,208H48Zm48,25.38L79.31,188,164,103.31,180.69,120Zm96-96L147.31,64l24-24L216,84.68Z" }, null, -1), k = [
+  w,
+  V
+], x = { key: 2 }, S = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM51.31,160l90.35-90.35,16.68,16.69L68,176.68ZM48,179.31,76.69,208H48Zm48,25.38L79.31,188l90.35-90.35h0l16.68,16.69Z" }, null, -1), z = [
+  S
+], C = { key: 3 }, B = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M225.9,74.78,181.21,30.09a14,14,0,0,0-19.8,0L38.1,153.41a13.94,13.94,0,0,0-4.1,9.9V208a14,14,0,0,0,14,14H92.69a13.94,13.94,0,0,0,9.9-4.1L225.9,94.58a14,14,0,0,0,0-19.8ZM48.49,160,136,72.48,155.51,92,68,179.51ZM46,208V174.48L81.51,210H48A2,2,0,0,1,46,208Zm50-.49L76.49,188,164,100.48,183.51,120ZM217.41,86.1,192,111.51,144.49,64,169.9,38.58a2,2,0,0,1,2.83,0l44.68,44.69a2,2,0,0,1,0,2.83Z" }, null, -1), N = [
+  B
+], P = { key: 4 }, b = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM51.31,160,136,75.31,152.69,92,68,176.68ZM48,179.31,76.69,208H48Zm48,25.38L79.31,188,164,103.31,180.69,120Zm96-96L147.31,64l24-24L216,84.68Z" }, null, -1), E = [
+  b
+], W = { key: 5 }, $ = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M224.49,76.2,179.8,31.51a12,12,0,0,0-17,0L39.52,154.83A11.9,11.9,0,0,0,36,163.31V208a12,12,0,0,0,12,12H92.69a12,12,0,0,0,8.48-3.51L224.48,93.17a12,12,0,0,0,0-17ZM45.66,160,136,69.65,158.34,92,68,182.34ZM44,208V169.66l21.17,21.17h0L86.34,212H48A4,4,0,0,1,44,208Zm52,2.34L73.66,188,164,97.65,186.34,120ZM218.83,87.51,192,114.34,141.66,64l26.82-26.83a4,4,0,0,1,5.66,0l44.69,44.68a4,4,0,0,1,0,5.66Z" }, null, -1), j = [
+  $
+], q = {
+  name: "PhPencil"
+}, G = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.defineComponent)({
+  ...q,
+  props: {
+    weight: {
+      type: String
+    },
+    size: {
+      type: [String, Number]
+    },
+    color: {
+      type: String
+    },
+    mirrored: {
+      type: Boolean
+    }
+  },
+  setup(c) {
+    const l = c, d = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("weight", "regular"), h = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("size", "1em"), _ = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("color", "currentColor"), u = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("mirrored", !1), s = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => l.weight ?? d), i = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => l.size ?? h), Z = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => l.color ?? _), p = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => l.mirrored !== void 0 ? l.mirrored ? "scale(-1, 1)" : void 0 : u ? "scale(-1, 1)" : void 0);
+    return (r, D) => ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("svg", (0,vue__WEBPACK_IMPORTED_MODULE_0__.mergeProps)({
+      xmlns: "http://www.w3.org/2000/svg",
+      viewBox: "0 0 256 256",
+      width: i.value,
+      height: i.value,
+      fill: Z.value,
+      transform: p.value
+    }, r.$attrs), [
+      (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(r.$slots, "default"),
+      s.value === "bold" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", y, H)) : s.value === "duotone" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", A, k)) : s.value === "fill" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", x, z)) : s.value === "light" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", C, N)) : s.value === "regular" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", P, E)) : s.value === "thin" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", W, j)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("", !0)
+    ], 16, v));
+  }
+});
+
+
+
+/***/ }),
+
 /***/ "./node_modules/@phosphor-icons/vue/dist/icons/PhTrash.vue.mjs":
 /*!*********************************************************************!*\
   !*** ./node_modules/@phosphor-icons/vue/dist/icons/PhTrash.vue.mjs ***!
@@ -45774,6 +46010,73 @@ const g = ["width", "height", "fill", "transform"], M = { key: 0 }, y = /* @__PU
       (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(l.$slots, "default"),
       o.value === "bold" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", M, f)) : o.value === "duotone" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", w, x)) : o.value === "fill" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", S, C)) : o.value === "light" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", B, b)) : o.value === "regular" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", E, W)) : o.value === "thin" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", $, T)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("", !0)
     ], 16, g));
+  }
+});
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@phosphor-icons/vue/dist/icons/PhXCircle.vue.mjs":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@phosphor-icons/vue/dist/icons/PhXCircle.vue.mjs ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ G)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+const y = ["width", "height", "fill", "transform"], M = { key: 0 }, f = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M168.49,104.49,145,128l23.52,23.51a12,12,0,0,1-17,17L128,145l-23.51,23.52a12,12,0,0,1-17-17L111,128,87.51,104.49a12,12,0,0,1,17-17L128,111l23.51-23.52a12,12,0,0,1,17,17ZM236,128A108,108,0,1,1,128,20,108.12,108.12,0,0,1,236,128Zm-24,0a84,84,0,1,0-84,84A84.09,84.09,0,0,0,212,128Z" }, null, -1), A = [
+  f
+], w = { key: 1 }, k = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", {
+  d: "M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z",
+  opacity: "0.2"
+}, null, -1), x = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M165.66,101.66,139.31,128l26.35,26.34a8,8,0,0,1-11.32,11.32L128,139.31l-26.34,26.35a8,8,0,0,1-11.32-11.32L116.69,128,90.34,101.66a8,8,0,0,1,11.32-11.32L128,116.69l26.34-26.35a8,8,0,0,1,11.32,11.32ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z" }, null, -1), C = [
+  k,
+  x
+], S = { key: 2 }, z = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm37.66,130.34a8,8,0,0,1-11.32,11.32L128,139.31l-26.34,26.35a8,8,0,0,1-11.32-11.32L116.69,128,90.34,101.66a8,8,0,0,1,11.32-11.32L128,116.69l26.34-26.35a8,8,0,0,1,11.32,11.32L139.31,128Z" }, null, -1), B = [
+  z
+], N = { key: 3 }, b = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M164.24,100.24,136.48,128l27.76,27.76a6,6,0,1,1-8.48,8.48L128,136.48l-27.76,27.76a6,6,0,0,1-8.48-8.48L119.52,128,91.76,100.24a6,6,0,0,1,8.48-8.48L128,119.52l27.76-27.76a6,6,0,0,1,8.48,8.48ZM230,128A102,102,0,1,1,128,26,102.12,102.12,0,0,1,230,128Zm-12,0a90,90,0,1,0-90,90A90.1,90.1,0,0,0,218,128Z" }, null, -1), E = [
+  b
+], P = { key: 4 }, V = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M165.66,101.66,139.31,128l26.35,26.34a8,8,0,0,1-11.32,11.32L128,139.31l-26.34,26.35a8,8,0,0,1-11.32-11.32L116.69,128,90.34,101.66a8,8,0,0,1,11.32-11.32L128,116.69l26.34-26.35a8,8,0,0,1,11.32,11.32ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z" }, null, -1), W = [
+  V
+], $ = { key: 5 }, j = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", { d: "M162.83,98.83,133.66,128l29.17,29.17a4,4,0,0,1-5.66,5.66L128,133.66,98.83,162.83a4,4,0,0,1-5.66-5.66L122.34,128,93.17,98.83a4,4,0,0,1,5.66-5.66L128,122.34l29.17-29.17a4,4,0,1,1,5.66,5.66ZM228,128A100,100,0,1,1,128,28,100.11,100.11,0,0,1,228,128Zm-8,0a92,92,0,1,0-92,92A92.1,92.1,0,0,0,220,128Z" }, null, -1), X = [
+  j
+], q = {
+  name: "PhXCircle"
+}, G = /* @__PURE__ */ (0,vue__WEBPACK_IMPORTED_MODULE_0__.defineComponent)({
+  ...q,
+  props: {
+    weight: {
+      type: String
+    },
+    size: {
+      type: [String, Number]
+    },
+    color: {
+      type: String
+    },
+    mirrored: {
+      type: Boolean
+    }
+  },
+  setup(c) {
+    const s = c, d = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("weight", "regular"), _ = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("size", "1em"), h = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("color", "currentColor"), u = (0,vue__WEBPACK_IMPORTED_MODULE_0__.inject)("mirrored", !1), l = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => s.weight ?? d), i = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => s.size ?? _), p = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => s.color ?? h), m = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => s.mirrored !== void 0 ? s.mirrored ? "scale(-1, 1)" : void 0 : u ? "scale(-1, 1)" : void 0);
+    return (r, D) => ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("svg", (0,vue__WEBPACK_IMPORTED_MODULE_0__.mergeProps)({
+      xmlns: "http://www.w3.org/2000/svg",
+      viewBox: "0 0 256 256",
+      width: i.value,
+      height: i.value,
+      fill: p.value,
+      transform: m.value
+    }, r.$attrs), [
+      (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(r.$slots, "default"),
+      l.value === "bold" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", M, A)) : l.value === "duotone" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", w, C)) : l.value === "fill" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", S, B)) : l.value === "light" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", N, E)) : l.value === "regular" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", P, W)) : l.value === "thin" ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("g", $, X)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("", !0)
+    ], 16, y));
   }
 });
 

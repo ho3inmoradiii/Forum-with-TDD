@@ -14,15 +14,19 @@
             <button
                 @click="submitReply"
                 :disabled="!enableSubmitReplyButton"
-                class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
+                class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md disabled:bg-gray-400 disabled:hover:cursor-not-allowed disabled:opacity-60"
             >
-                {{ reply ? 'Update Reply' : 'Post Reply' }}
+                <PhPaperPlaneTilt v-if="!reply" :size="16" color="white" weight="bold" />
+                <PhCheckCircle v-else :size="16" color="white" weight="bold" />
+                <span>{{ reply ? 'Update' : 'Post' }}</span>
             </button>
             <button
+                v-if="reply"
                 @click="cancelUpdate"
-                class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
+                class="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white text-sm font-medium rounded-lg shadow hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md"
             >
-                Cancel Update
+                <PhXCircle :size="16" color="white" weight="bold" />
+                <span>Cancel</span>
             </button>
         </div>
     </div>
@@ -31,8 +35,10 @@
 <script>
 import axios from 'axios';
 import {toast} from "vue3-toastify";
+import {PhCheckCircle, PhPaperPlaneTilt, PhXCircle} from "@phosphor-icons/vue";
 
 export default {
+    components: {PhXCircle, PhCheckCircle, PhPaperPlaneTilt},
     props: {
         threadId: {
             type: Number,

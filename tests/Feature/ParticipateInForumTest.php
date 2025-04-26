@@ -180,4 +180,105 @@ class ParticipateInForumTest extends TestCase
         $response = $this->get(route('threads.create'));
         $response->assertRedirect(route('login'));
     }
+
+    /** @test */
+    public function authenticated_user_can_update_own_reply()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $reply = Reply::factory()->create([
+            'user_id' => $user->id,
+            'thread_id' => $this->thread->id,
+        ]);
+
+        $replyRaw = Reply::factory()->raw([
+            'body' => 'test body for update'
+        ]);
+
+        $response = $this->putJson(route('replies.update', $reply->id), $replyRaw);
+        $response->assertStatus(200)
+            ->assertJson([
+                'body' => $replyRaw['body'],
+                'user_id' => $user->id,
+                'id' => $reply->id,
+                'thread_id' => $this->thread->id,
+            ]);
+
+        $this->assertDatabaseHas('replies', [
+            'body' => $replyRaw['body'],
+            'user_id' => $user->id,
+            'id' => $reply->id,
+            'thread_id' => $this->thread->id,
+        ])->assertDatabaseCount('replies', 1);
+    }
+
+    /** @test */
+    public function authenticated_user_attempts_to_update_another_user_s_reply()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $anotherUser = User::factory()->create();
+
+        $reply = Reply::factory()->create([
+            'user_id' => $anotherUser->id,
+            'thread_id' => $this->thread->id,
+        ]);
+
+        $replyRaw = Reply::factory()->raw([
+            'body' => 'test body for update'
+        ]);
+
+        $response = $this->putJson(route('replies.update', $reply->id), $replyRaw);
+        $response->assertStatus(403)
+            ->assertJson(['message' => 'You do not have permission to update this reply.']);;
+
+        $this->assertDatabaseHas('replies', [
+            'body' => $reply->body,
+            'user_id' => $anotherUser->id,
+            'id' => $reply->id,
+            'thread_id' => $this->thread->id,
+        ])->assertDatabaseCount('replies', 1);
+    }
+
+    /** @test */
+    public function unauthenticated_user_cannot_update_any_replies()
+    {
+        $reply = Reply::factory()->create([
+            'thread_id' => $this->thread->id,
+        ]);
+
+        $replyRaw = Reply::factory()->raw([
+            'body' => 'test body for update'
+        ]);
+
+        $this->putJson(route('replies.update', $reply->id), $replyRaw)
+            ->assertStatus(401);
+
+        $this->assertDatabaseHas('replies', [
+            'user_id' => $reply->user_id,
+            'body' => $reply->body,
+            'thread_id' => $reply->thread_id
+        ]);
+    }
+
+    /** @test */
+    public function test_update_reply_requires_valid_fields()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $reply = Reply::factory()->create([
+            'user_id' => $user->id,
+            'thread_id' => $this->thread->id,
+        ]);
+
+        $replyData = ['body' => ''];
+
+        $response = $this->putJson(route('replies.update', $reply->id), $replyData);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['body']);
+    }
 }
