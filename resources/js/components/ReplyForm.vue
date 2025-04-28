@@ -70,11 +70,21 @@ export default {
     methods: {
         async submitReply() {
             try {
-                const response = await axios.post(this.submitUrl, {
-                    body: this.replyBody,
-                    thread_id: this.threadId,
-                    user_id: this.userId
-                });
+                let response = null;
+                if (this.reply) {
+                    response = await axios.put(this.submitUrl, {
+                        body: this.replyBody,
+                        thread_id: this.threadId,
+                        user_id: this.userId
+                    });
+                } else {
+                    response = await axios.post(this.submitUrl, {
+                        body: this.replyBody,
+                        thread_id: this.threadId,
+                        user_id: this.userId
+                    });
+                }
+
                 toast.success(this.reply ? 'Reply updated successfully.' : 'Reply added successfully.');
 
                 // Clear the form

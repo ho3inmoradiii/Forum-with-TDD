@@ -1,56 +1,62 @@
 <template>
     <div>
-        <div v-for="reply in replies" :key="reply.id" class="mb-4 p-4 bg-gray-50 rounded-lg shadow-md border border-gray-100 flex flex-col items-start">
-            <div class="flex items-start gap-4 w-full">
-                <div class="flex-shrink-0">
-                    <img class="h-12 w-12 rounded-full" :src="avatarUrl(reply)" :alt="reply.user.name">
-                </div>
-                <div class="flex-grow">
-                    <div class="flex flex-row-reverse justify-between items-start gap-4">
-                        <div class="flex flex-row gap-2 items-center">
-                            <div class="w-8 h-8">
-                                <PhHeart class="cursor-pointer" :size="32" :color="reply.is_favorited ? 'hotpink' : 'gray'" :weight="reply.is_favorited ? 'fill' : 'duotone'" @click="toggleFavorite(reply)" />
+        <template v-if="replies.length > 0">
+            <div v-for="reply in replies" :key="reply.id" class="mb-4 p-4 bg-gray-50 rounded-lg shadow-md border border-gray-100 flex flex-col items-start">
+                <div class="flex items-start gap-4 w-full">
+                    <div class="flex-shrink-0">
+                        <img class="h-12 w-12 rounded-full" :src="avatarUrl(reply)" :alt="reply.user.name">
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex flex-row-reverse justify-between items-start gap-4">
+                            <div class="flex flex-row gap-2 items-center">
+                                <div class="w-8 h-8">
+                                    <PhHeart class="cursor-pointer" :size="32" :color="reply.is_favorited ? 'hotpink' : 'gray'" :weight="reply.is_favorited ? 'fill' : 'duotone'" @click="toggleFavorite(reply)" />
+                                </div>
                             </div>
+                            <p class="text-gray-700 leading-relaxed">{{ reply.body }}</p>
                         </div>
-                        <p class="text-gray-700 leading-relaxed">{{ reply.body }}</p>
-                    </div>
-                    <div class="mt-2 text-sm text-gray-600 flex items-center gap-2">
-                        Posted by
-                        <a :href="profileUrl(reply)" class="text-blue-600 hover:text-blue-800 font-semibold transition duration-300 ease-in-out">
-                            {{ reply.user.name }}
-                        </a>
-                        <span class="mx-1">•</span>
-                        {{ formatDate(reply.created_at) }}
+                        <div class="mt-2 text-sm text-gray-600 flex items-center gap-2">
+                            Posted by
+                            <a :href="profileUrl(reply)" class="text-blue-600 hover:text-blue-800 font-semibold transition duration-300 ease-in-out">
+                                {{ reply.user.name }}
+                            </a>
+                            <span class="mx-1">•</span>
+                            {{ formatDate(reply.created_at) }}
+                        </div>
                     </div>
                 </div>
+                <reply-form
+                    :submit-url="getEditUrl(reply)"
+                    :user-id="userId"
+                    :thread-id="threadId"
+                    v-if="isEditing === reply.id"
+                    :reply="reply"
+                    class="mt-3"
+                    @reply-edited="editReply"
+                    @cancel-edit="cancelEdit"
+                />
+                <div class="flex items-start border-t w-full pt-4 mt-4 gap-3" v-if="reply.user.id === userId">
+                    <button
+                        @click="showConfirm(reply)"
+                        :disabled="isDeleting === reply.id"
+                        class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md disabled:bg-gray-400 disabled:hover:cursor-not-allowed disabled:opacity-60"
+                    >
+                        <PhTrash :size="16" color="white" weight="bold" />
+                        <span>{{ isDeleting === reply.id ? 'Deleting...' : 'Delete' }}</span>
+                    </button>
+                    <button
+                        @click="isEditing = reply.id"
+                        class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md"
+                    >
+                        <PhPencil :size="16" color="white" weight="bold" />
+                        <span>{{ isEditing === reply.id ? 'Editing...' : 'Edit' }}</span>
+                    </button>
+                </div>
             </div>
-            <reply-form
-                :submit-url="getEditUrl(reply)"
-                :user-id="userId"
-                :thread-id="threadId"
-                v-if="isEditing === reply.id"
-                :reply="reply"
-                class="mt-3"
-                @reply-edited="editReply"
-                @cancel-edit="cancelEdit"
-            />
-            <div class="flex items-start border-t w-full pt-4 mt-4 gap-3" v-if="reply.user.id === userId">
-                <button
-                    @click="showConfirm(reply)"
-                    :disabled="isDeleting === reply.id"
-                    class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md disabled:bg-gray-400 disabled:hover:cursor-not-allowed disabled:opacity-60"
-                >
-                    <PhTrash :size="16" color="white" weight="bold" />
-                    <span>{{ isDeleting === reply.id ? 'Deleting...' : 'Delete' }}</span>
-                </button>
-                <button
-                    @click="isEditing = reply.id"
-                    class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md"
-                >
-                    <PhPencil :size="16" color="white" weight="bold" />
-                    <span>{{ isEditing === reply.id ? 'Editing...' : 'Edit' }}</span>
-                </button>
-            </div>
+        </template>
+        <div v-else class="flex items-center gap-2 bg-gray-100 border-l-4 border-gray-300 text-gray-700 p-4 shadow-lg rounded-xl">
+            <PhChatCircleDots :size="20" color="#4B5563" weight="bold" />
+            <span>No replies have been posted for this thread.</span>
         </div>
 
         <confirm-dialog
@@ -68,6 +74,7 @@
             :submit-url="submitUrl"
             @reply-posted="addReply"
             v-if="isAuthenticated"
+            class="mt-4"
         ></reply-form>
         <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg" role="alert" v-else>
             <p>Please <a href="/login" class="font-bold underline hover:text-yellow-900">log in</a> to post a reply.</p>
@@ -77,15 +84,17 @@
 
 <script>
 import ReplyForm from './ReplyForm.vue';
-import {PhHeart, PhPencil, PhTrash} from "@phosphor-icons/vue";
+import {PhHeart, PhPencil, PhTrash, PhChatCircleDots} from "@phosphor-icons/vue";
 import axios from 'axios';
 import {toast} from 'vue3-toastify';
+import moment from "moment";
 
 export default {
     components: {
         PhPencil,
         PhTrash,
         PhHeart,
+        PhChatCircleDots,
         ReplyForm
     },
     props: {
@@ -224,25 +233,7 @@ export default {
         },
         formatDate(dateString) {
             if (!dateString) return 'Unknown date';
-
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffInSeconds = Math.floor((now - date) / 1000);
-            const diffInMinutes = Math.floor(diffInSeconds / 60);
-            const diffInHours = Math.floor(diffInMinutes / 60);
-            const diffInDays = Math.floor(diffInHours / 24);
-
-            if (diffInSeconds < 60) {
-                return 'Just now';
-            } else if (diffInMinutes < 60) {
-                return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
-            } else if (diffInHours < 24) {
-                return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
-            } else if (diffInDays < 7) {
-                return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
-            } else {
-                return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-            }
+            return moment(dateString).fromNow();
         }
     }
 };

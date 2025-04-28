@@ -21,8 +21,7 @@
                 <profile-activities
                     :user-with-activities="{{ json_encode($user) }}"
                     :user-id="{{ (int)auth()->id() }}"
-                >
-                </profile-activities>
+                / >
             </div>
         </div>
     </div>
