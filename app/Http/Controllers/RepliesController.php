@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Channel;
 use App\Models\Reply;
 use App\Models\Thread;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -12,6 +13,18 @@ use Illuminate\Support\Facades\Log;
 
 class RepliesController extends Controller
 {
+    public function index(Channel $channel, Thread $thread, Request $request)
+    {
+        return Reply::with([
+            'user',
+            'favoritedBy' => function ($query) {
+                $query->where('user_id', auth()->id());
+            }
+        ])->where('thread_id', $thread->id)
+            ->latest()
+            ->paginate($request->per_page);
+    }
+
     public function store($channel, Thread $thread, Request $request)
     {
         $request->validate([

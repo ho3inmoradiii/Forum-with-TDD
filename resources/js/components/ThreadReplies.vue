@@ -53,6 +53,37 @@
                     </button>
                 </div>
             </div>
+            <nav class="px-2 m-w-1/2">
+                <div class="flex justify-center items-center py-2 px-4 rounded-4xl gap-2">
+                    <button
+                        class="text-green-500 disabled:bg-green-200 hover:bg-green-900 flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear"
+                        :disabled="page === 1"
+                        @click="page -= 1"
+                    >
+                        <span class="inline-block scale-y-125">❮</span>
+                    </button>
+                    <button
+                        v-for="(pageNumber, index) in paginationNumbers"
+                        :class="{
+                            'bg-green-900': page === pageNumber,
+                            'hover:bg-green-900': pageNumber !== '...',
+                            'cursor-default': pageNumber === '...'
+                        }"
+                        @click="setPage(pageNumber)"
+                        class="text-green-500 disabled:bg-green-700 flex items-center justify-center w-8 h-8 leading-10 text-center select-none rounded-full transition-all ease-linear"
+                        :key="`page-${index}`"
+                    >
+                        {{ pageNumber }}
+                    </button>
+                    <button
+                        class="text-green-500 disabled:bg-green-200 hover:bg-green-900 flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear"
+                        :disabled="page === lastPage"
+                        @click="page += 1"
+                    >
+                        <span class="inline-block scale-y-125">❯</span>
+                    </button>
+                </div>
+            </nav>
         </template>
         <div v-else class="flex items-center gap-2 bg-gray-100 border-l-4 border-gray-300 text-gray-700 p-4 shadow-lg rounded-xl">
             <PhChatCircleDots :size="20" color="#4B5563" weight="bold" />
@@ -84,9 +115,9 @@
 
 <script>
 import ReplyForm from './ReplyForm.vue';
-import {PhHeart, PhPencil, PhTrash, PhChatCircleDots} from "@phosphor-icons/vue";
+import { PhHeart, PhPencil, PhTrash, PhChatCircleDots } from "@phosphor-icons/vue";
 import axios from 'axios';
-import {toast} from 'vue3-toastify';
+import { toast } from 'vue3-toastify';
 import moment from "moment";
 
 export default {
@@ -127,20 +158,87 @@ export default {
             required: true
         }
     },
+    created() {
+        this.getReplies();
+    },
     data() {
         return {
-            replies: this.initialReplies.map(reply => ({
-                ...reply,
-                is_favorited: reply.is_favorited || false
-            })),
+            replies: [],
             replyCount: this.initialReplyCount,
             isDeleting: null,
             isEditing: null,
             showDeleteReplyDialog: false,
             replyToDelete: null,
+            paginationNumbers: [],
+            page: 1,
+            limit: 15,
+            lastPage: 1,
         };
     },
+    watch: {
+        // Whenever page changes, this function will run
+        page(newQuestion, oldQuestion) {
+            this.getReplies();
+        }
+    },
     methods: {
+        async getReplies() {
+            const baseUrl = window.location.href;
+            let url = new URL(baseUrl);
+
+            url.pathname = url.pathname.endsWith('/')
+                ? `${url.pathname}replies`
+                : `${url.pathname}/replies`;
+
+            url.searchParams.append("per_page", this.limit);
+            url.searchParams.append("page", this.page);
+
+            const response = await axios.get(url.toString());
+            this.replies = response.data.data;
+            this.lastPage = response.data.last_page;
+            this.paginationNumbers = this.generatePaginationNumbers(this.page, this.lastPage);
+        },
+        generatePaginationNumbers(currentPage, lastPage) {
+            const maxButtons = 5; // Maximum number of buttons to show (excluding first, last, and ellipsis)
+            const buttons = [];
+
+            // Always show the first page
+            buttons.push(1);
+
+            // Calculate the range of pages to show around the current page
+            let start = Math.max(2, currentPage - Math.floor(maxButtons / 2));
+            let end = Math.min(lastPage - 1, start + maxButtons - 1);
+
+            // Adjust start if we're near the end
+            start = Math.max(2, end - maxButtons + 1);
+
+            // Add ellipsis after the first page if needed
+            if (start > 2) {
+                buttons.push('...');
+            }
+
+            // Add pages in the calculated range
+            for (let i = start; i <= end; i++) {
+                buttons.push(i);
+            }
+
+            // Add ellipsis before the last page if needed
+            if (end < lastPage - 1) {
+                buttons.push('...');
+            }
+
+            // Always show the last page if it's not already included
+            if (lastPage > 1 && end < lastPage) {
+                buttons.push(lastPage);
+            }
+
+            return buttons;
+        },
+        setPage(pageNumber) {
+            if (pageNumber !== '...') {
+                this.page = pageNumber;
+            }
+        },
         getEditUrl(reply) {
             return this.submitEditUrl + '/' + reply.id;
         },
@@ -160,10 +258,9 @@ export default {
                 toast.success(response.data.message);
                 this.replies = this.replies.filter(item => {
                     return item.id !== reply.id;
-                })
+                });
                 this.replyCount--;
                 window.emitter.emit('reply-count-updated', this.replyCount);
-
             } catch (error) {
                 console.error('Error deleting reply:', error);
                 toast.error(error.response?.data?.message || 'Something went wrong.');

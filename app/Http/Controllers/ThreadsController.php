@@ -33,6 +33,8 @@ class ThreadsController extends Controller
             $threads = $threads->latest()->get();
         }
 
+        dump($threads->count());
+
         return view('threads.index', compact('threads'));
     }
 
@@ -79,6 +81,9 @@ class ThreadsController extends Controller
     {
         $thread->load([
             'channel',
+            'replies' => function ($query) {
+                $query->orderBy('created_at', 'desc')->take(5);
+            },
             'replies.user',
             'replies.favoritedBy' => function ($query) {
                 $query->where('user_id', auth()->id());
