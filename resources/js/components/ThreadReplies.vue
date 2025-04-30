@@ -196,40 +196,72 @@ export default {
             const response = await axios.get(url.toString());
             this.replies = response.data.data;
             this.lastPage = response.data.last_page;
-            this.paginationNumbers = this.generatePaginationNumbers(this.page, this.lastPage);
+            this.paginationNumbers = this.generatePaginationNumbers(this.page, 15);
         },
         generatePaginationNumbers(currentPage, lastPage) {
-            const maxButtons = 5; // Maximum number of buttons to show (excluding first, last, and ellipsis)
+            // const buttons = [];
+            //
+            // let start = 0;
+            // let end = 0;
+            //
+            // // Always show the first page
+            // buttons.push(1);
+            //
+            // if (currentPage <= 3) {
+            //     start = 2;
+            //     end = Math.min(5, lastPage);
+            // } else if (currentPage >= 4 && currentPage < 8) {
+            //     buttons.push('...');
+            //     start = 3;
+            //     end = currentPage + 1;
+            // } else if (currentPage >= 8) {
+            //     buttons.push(...['...', 3, '...', 5, '...']);
+            //     start = currentPage - 1;
+            //     end = currentPage + 1;
+            // }
+            //
+            // for (let i = start; i <= end; i++) {
+            //     buttons.push(i);
+            // }
+            // if (end < lastPage - 1) {
+            //     buttons.push('...');
+            // }
+            // if (lastPage > 1 && end < lastPage) {
+            //     buttons.push(lastPage);
+            // }
+
             const buttons = [];
 
-            // Always show the first page
-            buttons.push(1);
+            if (lastPage <= 5) {
+                for (let i = 1; i <= lastPage; i++) {
+                    buttons.push(i);
+                }
+            } else {
+                let start = 0;
+                let end = 0;
 
-            // Calculate the range of pages to show around the current page
-            let start = Math.max(2, currentPage - Math.floor(maxButtons / 2));
-            let end = Math.min(lastPage - 1, start + maxButtons - 1);
+                // Always show the first page
+                buttons.push(1);
 
-            // Adjust start if we're near the end
-            start = Math.max(2, end - maxButtons + 1);
-
-            // Add ellipsis after the first page if needed
-            if (start > 2) {
-                buttons.push('...');
-            }
-
-            // Add pages in the calculated range
-            for (let i = start; i <= end; i++) {
-                buttons.push(i);
-            }
-
-            // Add ellipsis before the last page if needed
-            if (end < lastPage - 1) {
-                buttons.push('...');
-            }
-
-            // Always show the last page if it's not already included
-            if (lastPage > 1 && end < lastPage) {
-                buttons.push(lastPage);
+                if (currentPage <= 4) {
+                    start = 2;
+                    end = Math.min(6, lastPage);
+                } else if (currentPage > 4) {
+                    start = currentPage - 2;
+                    end = (currentPage + 2 < lastPage) ? currentPage + 2 : lastPage;
+                    if (start > 2) {
+                        buttons.push('...');
+                    }
+                }
+                for (let i = start; i <= end; i++) {
+                    buttons.push(i);
+                }
+                if (end < lastPage - 1) {
+                    buttons.push('...');
+                }
+                if (lastPage > 1 && end < lastPage) {
+                    buttons.push(lastPage);
+                }
             }
 
             return buttons;

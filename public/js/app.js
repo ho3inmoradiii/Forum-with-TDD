@@ -25686,7 +25686,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               response = _context.sent;
               _this.replies = response.data.data;
               _this.lastPage = response.data.last_page;
-              _this.paginationNumbers = _this.generatePaginationNumbers(_this.page, _this.lastPage);
+              _this.paginationNumbers = _this.generatePaginationNumbers(_this.page, 15);
             case 11:
             case "end":
               return _context.stop();
@@ -25695,37 +25695,67 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       }))();
     },
     generatePaginationNumbers: function generatePaginationNumbers(currentPage, lastPage) {
-      var maxButtons = 5; // Maximum number of buttons to show (excluding first, last, and ellipsis)
+      // const buttons = [];
+      //
+      // let start = 0;
+      // let end = 0;
+      //
+      // // Always show the first page
+      // buttons.push(1);
+      //
+      // if (currentPage <= 3) {
+      //     start = 2;
+      //     end = Math.min(5, lastPage);
+      // } else if (currentPage >= 4 && currentPage < 8) {
+      //     buttons.push('...');
+      //     start = 3;
+      //     end = currentPage + 1;
+      // } else if (currentPage >= 8) {
+      //     buttons.push(...['...', 3, '...', 5, '...']);
+      //     start = currentPage - 1;
+      //     end = currentPage + 1;
+      // }
+      //
+      // for (let i = start; i <= end; i++) {
+      //     buttons.push(i);
+      // }
+      // if (end < lastPage - 1) {
+      //     buttons.push('...');
+      // }
+      // if (lastPage > 1 && end < lastPage) {
+      //     buttons.push(lastPage);
+      // }
+
       var buttons = [];
+      if (lastPage <= 5) {
+        for (var i = 1; i <= lastPage; i++) {
+          buttons.push(i);
+        }
+      } else {
+        var start = 0;
+        var end = 0;
 
-      // Always show the first page
-      buttons.push(1);
-
-      // Calculate the range of pages to show around the current page
-      var start = Math.max(2, currentPage - Math.floor(maxButtons / 2));
-      var end = Math.min(lastPage - 1, start + maxButtons - 1);
-
-      // Adjust start if we're near the end
-      start = Math.max(2, end - maxButtons + 1);
-
-      // Add ellipsis after the first page if needed
-      if (start > 2) {
-        buttons.push('...');
-      }
-
-      // Add pages in the calculated range
-      for (var i = start; i <= end; i++) {
-        buttons.push(i);
-      }
-
-      // Add ellipsis before the last page if needed
-      if (end < lastPage - 1) {
-        buttons.push('...');
-      }
-
-      // Always show the last page if it's not already included
-      if (lastPage > 1 && end < lastPage) {
-        buttons.push(lastPage);
+        // Always show the first page
+        buttons.push(1);
+        if (currentPage <= 4) {
+          start = 2;
+          end = Math.min(6, lastPage);
+        } else if (currentPage > 4) {
+          start = currentPage - 2;
+          end = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
+          if (start > 2) {
+            buttons.push('...');
+          }
+        }
+        for (var _i = start; _i <= end; _i++) {
+          buttons.push(_i);
+        }
+        if (end < lastPage - 1) {
+          buttons.push('...');
+        }
+        if (lastPage > 1 && end < lastPage) {
+          buttons.push(lastPage);
+        }
       }
       return buttons;
     },
