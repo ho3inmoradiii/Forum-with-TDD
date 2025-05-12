@@ -332,26 +332,72 @@ class ReadThreadsTest extends TestCase
         $user = $this->user;
         $this->actingAs($user);
 
-        $thread = $this->thread;
-
         $reply1 = Reply::factory()->create([
-            'thread_id' => $thread->id
+            'thread_id' => $this->thread->id
         ]);
 
         $reply2 = Reply::factory()->create([
-            'thread_id' => $thread->id
+            'thread_id' => $this->thread->id
         ]);
 
         $reply1->favoritedBy()->attach($user->id);
 
-        $response = $this->get(route('threads.show', ['channel' => $this->channel->slug, 'thread' => $thread->id]));
-
+        $response = $this->getJson(route('replies.index', ['channel' => $this->channel->slug, 'thread' => $this->thread->id]));
         $response->assertStatus(200);
-        $threadData = $response->viewData('thread');
-        $replies = $threadData->replies;
 
-        $this->assertTrue($replies->firstWhere('id', $reply1->id)->is_favorited);
-        $this->assertFalse($replies->firstWhere('id', $reply2->id)->is_favorited);
+        $responseData = $response->json('data');
+        $reply1Data = collect($responseData)->firstWhere('id', $reply1->id);
+        $reply2Data = collect($responseData)->firstWhere('id', $reply2->id);
+
+        $this->assertNotEmpty($reply1Data['favorited_by']);
+        $this->assertEquals($reply1Data['favorited_by'][0]['pivot']['user_id'], $user->id);
+        $this->assertEmpty($reply2Data['favorited_by']);
+    }
+
+    /** @test */
+    public function index_returns_empty_data_when_no_replies_exist()
+    {
+        $user = $this->user;
+        $this->actingAs($user);
+
+        $response = $this->getJson(route('replies.index', [
+            'channel' => $this->channel->slug,
+            'thread' => $this->thread->id
+        ]));
+
+        $response->assertStatus(200)
+            ->assertJson(['data' => []]);
+    }
+
+    /** @test */
+    public function index_paginates_replies_correctly_with_many_replies()
+    {
+        $user = $this->user;
+        $this->actingAs($user);
+
+        // 50 پاسخ برای thread ایجاد کن
+        Reply::factory()->count(50)->create([
+            'thread_id' => $this->thread->id
+        ]);
+
+        // درخواست با per_page=10
+        $response = $this->getJson(route('replies.index', [
+            'channel' => $this->channel->slug,
+            'thread' => $this->thread->id,
+            'per_page' => 10
+        ]));
+
+        $response->assertStatus(200)
+            ->assertJsonCount(10, 'data')
+            ->assertJsonStructure([
+                'data' => ['*' => ['id', 'thread_id', 'user', 'favorited_by']],
+                'links',
+            ]);
+
+        // چک کن که meta اطلاعات درستی داره
+        $this->assertEquals(10, $response->json('per_page'));
+        $this->assertEquals(51, $response->json('total'));
+        $this->assertEquals(1, $response->json('current_page'));
     }
 
     /** @test */
@@ -371,13 +417,14 @@ class ReadThreadsTest extends TestCase
 
         $reply1->favoritedBy()->attach($user->id);
 
-        $response = $this->get(route('threads.show', ['channel' => $this->channel->slug, 'thread' => $thread->id]));
-
+        $response = $this->getJson(route('replies.index', ['channel' => $this->channel->slug, 'thread' => $this->thread->id]));
         $response->assertStatus(200);
-        $threadData = $response->viewData('thread');
-        $replies = $threadData->replies;
 
-        $this->assertFalse($replies->firstWhere('id', $reply1->id)->is_favorited);
-        $this->assertFalse($replies->firstWhere('id', $reply2->id)->is_favorited);
+        $responseData = $response->json('data');
+        $reply1Data = collect($responseData)->firstWhere('id', $reply1->id);
+        $reply2Data = collect($responseData)->firstWhere('id', $reply2->id);
+
+        $this->assertEmpty($reply1Data['favorited_by']);
+        $this->assertEmpty($reply2Data['favorited_by']);
     }
 }

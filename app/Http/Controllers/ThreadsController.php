@@ -81,17 +81,7 @@ class ThreadsController extends Controller
     {
         $thread->load([
             'channel',
-            'replies' => function ($query) {
-                $query->orderBy('created_at', 'desc')->take(5);
-            },
-            'replies.user',
-            'replies.favoritedBy' => function ($query) {
-                $query->where('user_id', auth()->id());
-            }
         ]);
-        $thread->replies->each(function ($reply) {
-            $reply->is_favorited = auth()->check() && $reply->favoritedBy->isNotEmpty();
-        });
         return view('threads.show', compact('thread'));
     }
 

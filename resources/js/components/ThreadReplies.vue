@@ -53,10 +53,10 @@
                     </button>
                 </div>
             </div>
-            <nav class="px-2 m-w-1/2">
+            <nav class="px-2 m-w-1/2 mb-4">
                 <div class="flex justify-center items-center py-2 px-4 rounded-4xl gap-2">
                     <button
-                        class="text-green-500 disabled:bg-green-200 hover:bg-green-900 flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear"
+                        class="text-blue-500 disabled:text-blue-500 disabled:bg-blue-200 hover:bg-blue-700 hover:text-white flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear"
                         :disabled="page === 1"
                         @click="page -= 1"
                     >
@@ -65,18 +65,19 @@
                     <button
                         v-for="(pageNumber, index) in paginationNumbers"
                         :class="{
-                            'bg-green-900': page === pageNumber,
-                            'hover:bg-green-900': pageNumber !== '...',
-                            'cursor-default': pageNumber === '...'
+                            'bg-blue-900 text-white': page === pageNumber,
+                            'text-blue-500 hover:text-white': page !== pageNumber && pageNumber !== '...',
+                            'hover:bg-blue-900': pageNumber !== '...',
+                            'cursor-default hover:text-blue-500': pageNumber === '...'
                         }"
                         @click="setPage(pageNumber)"
-                        class="text-green-500 disabled:bg-green-700 flex items-center justify-center w-8 h-8 leading-10 text-center select-none rounded-full transition-all ease-linear"
+                        class="disabled:bg-blue-700 flex items-center justify-center w-8 h-8 leading-10 text-center select-none rounded-full transition-all ease-linear"
                         :key="`page-${index}`"
                     >
                         {{ pageNumber }}
                     </button>
                     <button
-                        class="text-green-500 disabled:bg-green-200 hover:bg-green-900 flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear"
+                        class="text-blue-500 disabled:text-blue-500 disabled:bg-blue-200 hover:bg-blue-700 hover:text-white flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear"
                         :disabled="page === lastPage"
                         @click="page += 1"
                     >
@@ -196,7 +197,7 @@ export default {
             const response = await axios.get(url.toString());
             this.replies = response.data.data;
             this.lastPage = response.data.last_page;
-            this.paginationNumbers = this.generatePaginationNumbers(this.page, 15);
+            this.paginationNumbers = this.generatePaginationNumbers(this.page, this.lastPage);
         },
         generatePaginationNumbers(currentPage, lastPage) {
             // const buttons = [];

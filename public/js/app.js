@@ -25686,7 +25686,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               response = _context.sent;
               _this.replies = response.data.data;
               _this.lastPage = response.data.last_page;
-              _this.paginationNumbers = _this.generatePaginationNumbers(_this.page, 15);
+              _this.paginationNumbers = _this.generatePaginationNumbers(_this.page, _this.lastPage);
             case 11:
             case "end":
               return _context.stop();
@@ -26334,7 +26334,7 @@ var _hoisted_12 = {
 var _hoisted_13 = ["onClick", "disabled"];
 var _hoisted_14 = ["onClick"];
 var _hoisted_15 = {
-  "class": "px-2 m-w-1/2"
+  "class": "px-2 m-w-1/2 mb-4"
 };
 var _hoisted_16 = {
   "class": "flex justify-center items-center py-2 px-4 rounded-4xl gap-2"
@@ -26423,7 +26423,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       weight: "bold"
     }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isEditing === reply.id ? 'Editing...' : 'Edit'), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_14)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
   }), 128 /* KEYED_FRAGMENT */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("nav", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    "class": "text-green-500 disabled:bg-green-200 hover:bg-green-900 flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear",
+    "class": "text-blue-500 disabled:text-blue-500 disabled:bg-blue-200 hover:bg-blue-700 hover:text-white flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear",
     disabled: $data.page === 1,
     onClick: _cache[0] || (_cache[0] = function ($event) {
       return $data.page -= 1;
@@ -26431,17 +26431,18 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, _hoisted_19, 8 /* PROPS */, _hoisted_17), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.paginationNumbers, function (pageNumber, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([{
-        'bg-green-900': $data.page === pageNumber,
-        'hover:bg-green-900': pageNumber !== '...',
-        'cursor-default': pageNumber === '...'
-      }, "text-green-500 disabled:bg-green-700 flex items-center justify-center w-8 h-8 leading-10 text-center select-none rounded-full transition-all ease-linear"]),
+        'bg-blue-900 text-white': $data.page === pageNumber,
+        'text-blue-500 hover:text-white': $data.page !== pageNumber && pageNumber !== '...',
+        'hover:bg-blue-900': pageNumber !== '...',
+        'cursor-default hover:text-blue-500': pageNumber === '...'
+      }, "disabled:bg-blue-700 flex items-center justify-center w-8 h-8 leading-10 text-center select-none rounded-full transition-all ease-linear"]),
       onClick: function onClick($event) {
         return $options.setPage(pageNumber);
       },
       key: "page-".concat(index)
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(pageNumber), 11 /* TEXT, CLASS, PROPS */, _hoisted_20);
   }), 128 /* KEYED_FRAGMENT */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    "class": "text-green-500 disabled:bg-green-200 hover:bg-green-900 flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear",
+    "class": "text-blue-500 disabled:text-blue-500 disabled:bg-blue-200 hover:bg-blue-700 hover:text-white flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear",
     disabled: $data.page === $data.lastPage,
     onClick: _cache[1] || (_cache[1] = function ($event) {
       return $data.page += 1;
