@@ -4,6 +4,7 @@ namespace App\Filters;
 
 use App\Models\Channel;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class ThreadFilters extends ThreadFilter
 {
@@ -36,6 +37,16 @@ class ThreadFilters extends ThreadFilter
             return $this->builder->orderBy('replies_count', 'desc');
         } elseif ($popularStatus === 'false' || $popularStatus === false) {
             return $this->builder->orderBy('replies_count', 'asc');
+        }
+        return $this->builder;
+    }
+
+    public function unanswered($unansweredStatus)
+    {
+        Log::info('unanswered called with status: ' . json_encode($unansweredStatus));
+        if (in_array($unansweredStatus, ['true', true, '1'])) {
+            Log::info('Applying where clause for unanswered');
+            return $this->builder->whereDoesntHave('replies');
         }
         return $this->builder;
     }

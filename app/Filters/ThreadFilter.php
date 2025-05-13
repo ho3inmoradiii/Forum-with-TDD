@@ -4,6 +4,7 @@ namespace App\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 abstract class ThreadFilter
 {
@@ -25,7 +26,7 @@ abstract class ThreadFilter
             }
         }
 
-        return $this->builder;
+        return $this->builder->latest();
     }
 
     protected function getFilters()

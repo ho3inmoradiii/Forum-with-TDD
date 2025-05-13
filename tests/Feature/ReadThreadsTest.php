@@ -309,8 +309,9 @@ class ReadThreadsTest extends TestCase
         $thread2 = $this->createThreadWithReplies(2, now()->addSeconds(10));
         $thread3 = $this->createThreadWithReplies(5, now()->addSeconds(20));
 
-        $this->get(route('threads.index'))
-            ->assertStatus(200)
+        $response = $this->get(route('threads.index'));
+
+        $response->assertStatus(200)
             ->assertSeeInOrder([$thread3->title, $thread2->title, $thread1->title]);
     }
 
@@ -324,6 +325,21 @@ class ReadThreadsTest extends TestCase
         $this->get(route('threads.index', ['popular' => 'invalid123']))
             ->assertStatus(200)
             ->assertSeeInOrder([$thread3->title, $thread2->title, $thread1->title]);
+    }
+
+    /** @test  */
+    public function a_user_can_filter_threads_according_unanswered()
+    {
+        $thread1 = $this->createThreadWithReplies(5, now()->subSeconds(2));
+        $thread2 = $this->createThreadWithReplies(2, now()->subSecond(1));
+        $thread3 = $this->createThreadWithReplies(0, now()->addSeconds(20));
+        $thread4 = $this->createThreadWithReplies(0, now()->addSeconds(30));
+
+        $response = $this->get(route('threads.index', ['unanswered' => true]));
+
+        $response->assertStatus(200)
+            ->assertSeeInOrder([$thread4->title, $thread3->title])
+            ->assertDontSee([$thread1->title, $thread2->title]);
     }
 
     /** @test */
@@ -375,12 +391,10 @@ class ReadThreadsTest extends TestCase
         $user = $this->user;
         $this->actingAs($user);
 
-        // 50 پاسخ برای thread ایجاد کن
         Reply::factory()->count(50)->create([
             'thread_id' => $this->thread->id
         ]);
 
-        // درخواست با per_page=10
         $response = $this->getJson(route('replies.index', [
             'channel' => $this->channel->slug,
             'thread' => $this->thread->id,
@@ -394,7 +408,6 @@ class ReadThreadsTest extends TestCase
                 'links',
             ]);
 
-        // چک کن که meta اطلاعات درستی داره
         $this->assertEquals(10, $response->json('per_page'));
         $this->assertEquals(51, $response->json('total'));
         $this->assertEquals(1, $response->json('current_page'));
