@@ -194,6 +194,82 @@ class ReadThreadsTest extends TestCase
     }
 
     /** @test */
+    public function a_user_can_filter_threads_by_all_filters_combined()
+    {
+        // Create a user
+        $user = User::factory()->create(['name' => 'حسین']);
+
+        // Create a channel
+        $channel = Channel::factory()->create(['name' => 'dolore']);
+
+        // Create threads with different reply counts
+        $thread1 = $this->createThreadWithRepliesAndChannel(5, $user->id, $channel->id, now()->subSeconds(10));
+        $thread2 = $this->createThreadWithRepliesAndChannel(2, $user->id, $channel->id, now()->subSeconds(5));
+        $thread3 = $this->createThreadWithRepliesAndChannel(0, $user->id, $channel->id, now()->addSeconds(10));
+        $thread5 = $this->createThreadWithRepliesAndChannel(0, $user->id, $channel->id, now()->addSeconds(15));
+        $thread4 = Thread::factory()->create([
+            'user_id' => User::factory()->create()->id,
+            'channel_id' => Channel::factory()->create()->id,
+            'created_at' => now()->addSeconds(20)
+        ]);
+
+        // Make the request with all filters
+        $response = $this->get(route('threads.index', [
+            'channel' => 'dolore',
+            'by' => 'حسین',
+            'popular' => true,
+            'unanswered' => false
+        ]));
+
+        // Assert the response
+        $response->assertStatus(200)
+            ->assertSeeInOrder([$thread2->title, $thread1->title])
+            ->assertDontSee($thread3->title)
+            ->assertDontSee($thread4->title)
+            ->assertViewHas('threads', function ($threads) {
+                return $threads->count() === 2;
+            });
+
+        $response = $this->get(route('threads.index', [
+            'channel' => 'dolore',
+            'by' => 'حسین',
+            'popular' => false,
+            'unanswered' => true
+        ]));
+
+        // Assert the response
+        $response->assertStatus(200)
+            ->assertSeeInOrder([$thread5->title, $thread3->title])
+            ->assertDontSee($thread2->title)
+            ->assertDontSee($thread1->title)
+            ->assertViewHas('threads', function ($threads) {
+                return $threads->count() === 2;
+            });
+
+        $response = $this->get(route('threads.index', [
+            'channel' => 'dolore',
+            'by' => 'test1',
+            'popular' => false,
+            'unanswered' => true
+        ]));
+        $response->assertSee("User 'test1' not found. Showing all threads.");
+    }
+
+    protected function createThreadWithRepliesAndChannel($replyCount, $userId, $channelId, $createdAt)
+    {
+        $thread = Thread::factory()->create([
+            'user_id' => $userId,
+            'channel_id' => $channelId,
+            'created_at' => $createdAt
+        ]);
+        Reply::factory()->count($replyCount)->create([
+            'thread_id' => $thread->id,
+            'created_at' => $createdAt
+        ]);
+        return $thread;
+    }
+
+    /** @test */
     public function a_user_can_filter_threads_according_channel()
     {
         $channel1 = $this->channel;
@@ -340,6 +416,46 @@ class ReadThreadsTest extends TestCase
         $response->assertStatus(200)
             ->assertSeeInOrder([$thread4->title, $thread3->title])
             ->assertDontSee([$thread1->title, $thread2->title]);
+    }
+
+    /** @test  */
+    public function a_user_can_filter_threads_according_unanswered_is_false()
+    {
+        $thread1 = $this->createThreadWithReplies(5, now()->addSeconds(10));
+        $thread2 = $this->createThreadWithReplies(2, now()->addSeconds(20));
+        $thread3 = $this->createThreadWithReplies(0, now()->addSeconds(30));
+        $thread4 = $this->createThreadWithReplies(0, now()->addSeconds(40));
+
+        $response = $this->get(route('threads.index', ['unanswered' => false]));
+
+        $response->assertStatus(200)
+            ->assertSeeInOrder([$thread2->title, $thread1->title])
+            ->assertDontSee([$thread3->title, $thread4->title]);
+    }
+
+    /** @test */
+    public function show_threads_according_latest_if_unanswered_not_exist()
+    {
+        $thread1 = $this->createThreadWithReplies(0, now());
+        $thread2 = $this->createThreadWithReplies(2, now()->addSeconds(10));
+        $thread3 = $this->createThreadWithReplies(5, now()->addSeconds(20));
+
+        $response = $this->get(route('threads.index'));
+
+        $response->assertStatus(200)
+            ->assertSeeInOrder([$thread3->title, $thread2->title, $thread1->title]);
+    }
+
+    /** @test */
+    public function show_threads_according_latest_if_unanswered_not_valid()
+    {
+        $thread1 = $this->createThreadWithReplies(0, now());
+        $thread2 = $this->createThreadWithReplies(2, now()->addSeconds(10));
+        $thread3 = $this->createThreadWithReplies(5, now()->addSeconds(20));
+
+        $this->get(route('threads.index', ['popular' => 'invalid123']))
+            ->assertStatus(200)
+            ->assertSeeInOrder([$thread3->title, $thread2->title, $thread1->title]);
     }
 
     /** @test */

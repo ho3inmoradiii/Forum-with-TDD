@@ -43,10 +43,10 @@ class ThreadFilters extends ThreadFilter
 
     public function unanswered($unansweredStatus)
     {
-        Log::info('unanswered called with status: ' . json_encode($unansweredStatus));
-        if (in_array($unansweredStatus, ['true', true, '1'])) {
-            Log::info('Applying where clause for unanswered');
+        if ($unansweredStatus === true || $unansweredStatus === 'true' || $unansweredStatus === '1') {
             return $this->builder->whereDoesntHave('replies');
+        } elseif ($unansweredStatus === false || $unansweredStatus === 'false' || $unansweredStatus === '0') {
+            return $this->builder->whereHas('replies');
         }
         return $this->builder;
     }
