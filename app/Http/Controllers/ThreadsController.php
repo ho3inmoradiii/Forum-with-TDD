@@ -21,7 +21,6 @@ class ThreadsController extends Controller
     public function index(Request $request, ThreadFilters $filters)
     {
         $threads = Thread::with('channel')->withCount('replies')->filter($filters)->get();
-//        echo $threads->toSql();
         return view('threads.index', compact('threads'));
     }
 

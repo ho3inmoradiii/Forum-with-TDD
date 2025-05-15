@@ -25687,7 +25687,12 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _this.replies = response.data.data;
               _this.lastPage = response.data.last_page;
               _this.paginationNumbers = _this.generatePaginationNumbers(_this.page, _this.lastPage);
-            case 11:
+              globalThis.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: "smooth"
+              });
+            case 12:
             case "end":
               return _context.stop();
           }
@@ -25695,37 +25700,6 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       }))();
     },
     generatePaginationNumbers: function generatePaginationNumbers(currentPage, lastPage) {
-      // const buttons = [];
-      //
-      // let start = 0;
-      // let end = 0;
-      //
-      // // Always show the first page
-      // buttons.push(1);
-      //
-      // if (currentPage <= 3) {
-      //     start = 2;
-      //     end = Math.min(5, lastPage);
-      // } else if (currentPage >= 4 && currentPage < 8) {
-      //     buttons.push('...');
-      //     start = 3;
-      //     end = currentPage + 1;
-      // } else if (currentPage >= 8) {
-      //     buttons.push(...['...', 3, '...', 5, '...']);
-      //     start = currentPage - 1;
-      //     end = currentPage + 1;
-      // }
-      //
-      // for (let i = start; i <= end; i++) {
-      //     buttons.push(i);
-      // }
-      // if (end < lastPage - 1) {
-      //     buttons.push('...');
-      // }
-      // if (lastPage > 1 && end < lastPage) {
-      //     buttons.push(lastPage);
-      // }
-
       var buttons = [];
       if (lastPage <= 5) {
         for (var i = 1; i <= lastPage; i++) {
@@ -26426,7 +26400,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": "text-blue-500 disabled:text-blue-500 disabled:bg-blue-200 hover:bg-blue-700 hover:text-white flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear",
     disabled: $data.page === 1,
     onClick: _cache[0] || (_cache[0] = function ($event) {
-      return $data.page -= 1;
+      return $options.setPage($data.page - 1);
     })
   }, _hoisted_19, 8 /* PROPS */, _hoisted_17), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.paginationNumbers, function (pageNumber, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
@@ -26445,7 +26419,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": "text-blue-500 disabled:text-blue-500 disabled:bg-blue-200 hover:bg-blue-700 hover:text-white flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear",
     disabled: $data.page === $data.lastPage,
     onClick: _cache[1] || (_cache[1] = function ($event) {
-      return $data.page += 1;
+      return $options.setPage($data.page + 1);
     })
   }, _hoisted_23, 8 /* PROPS */, _hoisted_21)])])], 64 /* STABLE_FRAGMENT */)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_PhChatCircleDots, {
     size: 20,

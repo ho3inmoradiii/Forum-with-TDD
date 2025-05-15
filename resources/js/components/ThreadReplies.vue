@@ -58,7 +58,7 @@
                     <button
                         class="text-blue-500 disabled:text-blue-500 disabled:bg-blue-200 hover:bg-blue-700 hover:text-white flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear"
                         :disabled="page === 1"
-                        @click="page -= 1"
+                        @click="setPage(page - 1)"
                     >
                         <span class="inline-block scale-y-125">❮</span>
                     </button>
@@ -79,7 +79,7 @@
                     <button
                         class="text-blue-500 disabled:text-blue-500 disabled:bg-blue-200 hover:bg-blue-700 hover:text-white flex items-center justify-center w-8 h-8 leading-10 text-center select-none cursor-pointer rounded-full transition-all ease-linear"
                         :disabled="page === lastPage"
-                        @click="page += 1"
+                        @click="setPage(page + 1)"
                     >
                         <span class="inline-block scale-y-125">❯</span>
                     </button>
@@ -198,39 +198,9 @@ export default {
             this.replies = response.data.data;
             this.lastPage = response.data.last_page;
             this.paginationNumbers = this.generatePaginationNumbers(this.page, this.lastPage);
+            globalThis.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         },
         generatePaginationNumbers(currentPage, lastPage) {
-            // const buttons = [];
-            //
-            // let start = 0;
-            // let end = 0;
-            //
-            // // Always show the first page
-            // buttons.push(1);
-            //
-            // if (currentPage <= 3) {
-            //     start = 2;
-            //     end = Math.min(5, lastPage);
-            // } else if (currentPage >= 4 && currentPage < 8) {
-            //     buttons.push('...');
-            //     start = 3;
-            //     end = currentPage + 1;
-            // } else if (currentPage >= 8) {
-            //     buttons.push(...['...', 3, '...', 5, '...']);
-            //     start = currentPage - 1;
-            //     end = currentPage + 1;
-            // }
-            //
-            // for (let i = start; i <= end; i++) {
-            //     buttons.push(i);
-            // }
-            // if (end < lastPage - 1) {
-            //     buttons.push('...');
-            // }
-            // if (lastPage > 1 && end < lastPage) {
-            //     buttons.push(lastPage);
-            // }
-
             const buttons = [];
 
             if (lastPage <= 5) {
