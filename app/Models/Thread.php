@@ -62,4 +62,9 @@ class Thread extends Model
     {
         return $this->morphMany(Activity::class, 'target');
     }
+
+    public function subscribers()
+    {
+        return $this->belongsToMany(User::class, 'subscribe_threads')->withTimestamps();
+    }
 }

@@ -66,4 +66,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Activity::class);
     }
+
+    public function subscribedThreads()
+    {
+        return $this->belongsToMany(Thread::class, 'subscribe_threads')->withTimestamps();
+    }
 }

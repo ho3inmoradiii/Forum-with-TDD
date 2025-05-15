@@ -42,6 +42,8 @@ app.component('thread-replies', ThreadReplies);
 app.component('create-thread', CreateThread);
 app.component('profile-activities', ProfileActivities);
 app.component('confirm-dialog', ConfirmDialog);
+const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
 
 app.mount('#app');
 

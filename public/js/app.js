@@ -26508,6 +26508,8 @@ app.component('thread-replies', _components_ThreadReplies_vue__WEBPACK_IMPORTED_
 app.component('create-thread', _components_CreateThread_vue__WEBPACK_IMPORTED_MODULE_6__["default"]);
 app.component('profile-activities', _components_ProfileActivities_vue__WEBPACK_IMPORTED_MODULE_7__["default"]);
 app.component('confirm-dialog', _components_ConfirmDialog_vue__WEBPACK_IMPORTED_MODULE_8__["default"]);
+var csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
 app.mount('#app');
 alpinejs__WEBPACK_IMPORTED_MODULE_11__["default"].start();
 

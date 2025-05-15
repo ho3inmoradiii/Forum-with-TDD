@@ -15,7 +15,7 @@ class RepliesController extends Controller
 {
     public function index(Channel $channel, Thread $thread, Request $request)
     {
-        return Reply::with([
+        $replies = Reply::with([
             'user',
             'favoritedBy' => function ($query) {
                 $query->where('user_id', auth()->id());
@@ -23,6 +23,14 @@ class RepliesController extends Controller
         ])->where('thread_id', $thread->id)
             ->latest()
             ->paginate($request->per_page);
+
+        $modifiedReplies = $replies->getCollection()->map(function ($reply) {
+            $reply->is_favorited = $reply->favoritedBy->isNotEmpty();
+            return $reply;
+        });
+
+        $replies->setCollection($modifiedReplies);
+        return $replies;
     }
 
     public function store($channel, Thread $thread, Request $request)

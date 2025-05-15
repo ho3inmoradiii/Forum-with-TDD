@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SubscribeController;
 use App\Http\Controllers\ThreadsController;
 use App\Http\Controllers\RepliesController;
 use App\Http\Controllers\ChannelsController;
@@ -35,6 +36,8 @@ Route::group(['prefix' => 'threads', 'middleware' => 'auth'], function () {
 Route::group(['middleware' => 'auth'], function () {
     Route::post('/replies/{reply}/favorite', [FavoriteController::class, 'store'])->name('reply.favorite.store');
     Route::delete('/replies/{reply}/favorite', [FavoriteController::class, 'delete'])->name('reply.favorite.delete');
+
+    Route::post('/threads/{thread}/subscribe', [SubscribeController::class, 'store'])->name('subscribe.thread.store');
 
     Route::delete('/threads/{thread}', [ThreadsController::class, 'destroy'])->name('threads.destroy');
 
