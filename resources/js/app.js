@@ -8,6 +8,7 @@ import CreateThread from './components/CreateThread.vue';
 import ProfileActivities from './components/ProfileActivities.vue';
 import ConfirmDialog from './components/ConfirmDialog.vue';
 import Vue3Toastify from 'vue3-toastify';
+import SubscriptionButton from "./components/SubscriptionButton.vue";
 import 'vue3-toastify/dist/index.css';
 import Alpine from 'alpinejs';
 
@@ -42,6 +43,7 @@ app.component('thread-replies', ThreadReplies);
 app.component('create-thread', CreateThread);
 app.component('profile-activities', ProfileActivities);
 app.component('confirm-dialog', ConfirmDialog);
+app.component('subscription-button', SubscriptionButton);
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
 

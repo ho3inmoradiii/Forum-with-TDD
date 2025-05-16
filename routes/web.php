@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/replies/{reply}/favorite', [FavoriteController::class, 'delete'])->name('reply.favorite.delete');
 
     Route::post('/threads/{thread}/subscribe', [SubscribeController::class, 'store'])->name('subscribe.thread.store');
+    Route::delete('/threads/{thread}/subscribe', [SubscribeController::class, 'delete'])->name('subscribe.thread.delete');
 
     Route::delete('/threads/{thread}', [ThreadsController::class, 'destroy'])->name('threads.destroy');
 

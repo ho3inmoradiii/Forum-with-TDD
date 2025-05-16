@@ -27,4 +27,22 @@ class SubscribeThreadsTest extends TestCase
             'thread_id' => $thread->id
         ]);
     }
+
+    /** @test */
+    public function an_authenticated_user_can_remove_the_thread_subscription()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $thread = Thread::factory()->create();
+        $thread->subscribers()->attach($user->id);
+
+        $response = $this->delete(route('subscribe.thread.delete', $thread));
+        $response->assertStatus(200)->assertJson(['message' => 'Thread Subscription deleted successfully']);
+
+        $this->assertDatabaseMissing('subscribe_threads', [
+            'user_id' => $user->id,
+            'thread_id' => $thread->id
+        ]);
+    }
 }

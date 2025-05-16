@@ -67,6 +67,9 @@ class ThreadsController extends Controller
     {
         $thread->load([
             'channel',
+            'subscribers' => function ($query) {
+                $query->where('user_id', Auth::id());
+            }
         ]);
         return view('threads.show', compact('thread'));
     }

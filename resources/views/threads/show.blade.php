@@ -45,6 +45,11 @@
                         Created:
                         <span class="text-gray-600">{{ $thread->created_at->diffForHumans() }}</span>
                     </p>
+                    <subscription-button
+                        :is-subscribed="{{ Auth::check() && $thread->subscribers->contains(Auth::id()) ? 'true' : 'false' }}"
+                        :thread-id="{{ $thread->id }}"
+                        :is-authenticated="{{ json_encode(Auth::check()) }}"
+                    />
                 </div>
             </div>
         </div>
