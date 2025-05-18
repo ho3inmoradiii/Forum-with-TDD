@@ -25644,75 +25644,63 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     subscribeThread: function subscribeThread() {
       var _this = this;
       return _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var csrfToken;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
               _this.isLoading = true;
-              csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-              _context.next = 5;
-              return axios__WEBPACK_IMPORTED_MODULE_0___default().post("/threads/".concat(_this.threadId, "/subscribe"), {}, {
-                headers: {
-                  'X-CSRF-TOKEN': csrfToken
-                }
-              });
-            case 5:
+              _context.next = 4;
+              return axios__WEBPACK_IMPORTED_MODULE_0___default().post("/threads/".concat(_this.threadId, "/subscribe"), {});
+            case 4:
               _this.subscribedStatus = true;
               vue3_toastify__WEBPACK_IMPORTED_MODULE_1__.toast.success('Thread Subscribed.');
-              _context.next = 13;
+              _context.next = 12;
               break;
-            case 9:
-              _context.prev = 9;
+            case 8:
+              _context.prev = 8;
               _context.t0 = _context["catch"](0);
               console.error('Error subscribing to thread:', _context.t0);
               vue3_toastify__WEBPACK_IMPORTED_MODULE_1__.toast.error('Something went wrong. Please try again.');
-            case 13:
-              _context.prev = 13;
+            case 12:
+              _context.prev = 12;
               _this.isLoading = false;
-              return _context.finish(13);
-            case 16:
+              return _context.finish(12);
+            case 15:
             case "end":
               return _context.stop();
           }
-        }, _callee, null, [[0, 9, 13, 16]]);
+        }, _callee, null, [[0, 8, 12, 15]]);
       }))();
     },
     unsubscribeThread: function unsubscribeThread() {
       var _this2 = this;
       return _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var csrfToken;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
               _context2.prev = 0;
               _this2.isLoading = true;
-              csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-              _context2.next = 5;
-              return axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/threads/".concat(_this2.threadId, "/subscribe"), {
-                headers: {
-                  'X-CSRF-TOKEN': csrfToken
-                }
-              });
-            case 5:
+              _context2.next = 4;
+              return axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/threads/".concat(_this2.threadId, "/subscribe"));
+            case 4:
               _this2.subscribedStatus = false;
               vue3_toastify__WEBPACK_IMPORTED_MODULE_1__.toast.success('Thread Subscription deleted successfully.');
-              _context2.next = 13;
+              _context2.next = 12;
               break;
-            case 9:
-              _context2.prev = 9;
+            case 8:
+              _context2.prev = 8;
               _context2.t0 = _context2["catch"](0);
               console.error('Error unsubscribing from thread:', _context2.t0);
               vue3_toastify__WEBPACK_IMPORTED_MODULE_1__.toast.error('Something went wrong. Please try again.');
-            case 13:
-              _context2.prev = 13;
+            case 12:
+              _context2.prev = 12;
               _this2.isLoading = false;
-              return _context2.finish(13);
-            case 16:
+              return _context2.finish(12);
+            case 15:
             case "end":
               return _context2.stop();
           }
-        }, _callee2, null, [[0, 9, 13, 16]]);
+        }, _callee2, null, [[0, 8, 12, 15]]);
       }))();
     }
   }
@@ -26522,7 +26510,7 @@ var _hoisted_24 = {
 var _hoisted_25 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "No replies have been posted for this thread.", -1 /* HOISTED */);
 var _hoisted_26 = {
   key: 3,
-  "class": "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg",
+  "class": "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg mt-6",
   role: "alert"
 };
 var _hoisted_27 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Please "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {

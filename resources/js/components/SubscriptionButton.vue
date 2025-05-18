@@ -68,10 +68,7 @@ export default {
         async subscribeThread() {
             try {
                 this.isLoading = true;
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-                await axios.post(`/threads/${this.threadId}/subscribe`, {}, {
-                    headers: { 'X-CSRF-TOKEN': csrfToken }
-                });
+                await axios.post(`/threads/${this.threadId}/subscribe`, {});
                 this.subscribedStatus = true;
                 toast.success('Thread Subscribed.');
             } catch (error) {
@@ -84,10 +81,7 @@ export default {
         async unsubscribeThread() {
             try {
                 this.isLoading = true;
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-                await axios.delete(`/threads/${this.threadId}/subscribe`, {
-                    headers: { 'X-CSRF-TOKEN': csrfToken }
-                });
+                await axios.delete(`/threads/${this.threadId}/subscribe`);
                 this.subscribedStatus = false;
                 toast.success('Thread Subscription deleted successfully.');
             } catch (error) {

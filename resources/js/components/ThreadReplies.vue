@@ -108,7 +108,7 @@
             v-if="isAuthenticated"
             class="mt-4"
         ></reply-form>
-        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg" role="alert" v-else>
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg mt-6" role="alert" v-else>
             <p>Please <a href="/login" class="font-bold underline hover:text-yellow-900">log in</a> to post a reply.</p>
         </div>
     </div>
