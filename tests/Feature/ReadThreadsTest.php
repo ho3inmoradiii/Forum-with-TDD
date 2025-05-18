@@ -8,6 +8,7 @@ use App\Models\Thread;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class ReadThreadsTest extends TestCase
@@ -64,6 +65,11 @@ class ReadThreadsTest extends TestCase
     /** @test */
     public function thread_show_route_pass_correct_data_to_view()
     {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $this->thread->subscribers()->attach($user->id);
+
         $response = $this->get(route('threads.show', [
             'channel' => $this->channel->slug,
             'thread' => $this->thread->id
@@ -72,7 +78,7 @@ class ReadThreadsTest extends TestCase
         $response->assertViewHas('thread', function ($viewThread) {
             return $viewThread instanceof Thread
                 && $viewThread->id === $this->thread->id
-                && $viewThread->replies->contains($this->reply);
+                && $viewThread->subscribers->contains(Auth::id());
         });
     }
 
