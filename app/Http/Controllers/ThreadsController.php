@@ -65,6 +65,13 @@ class ThreadsController extends Controller
      */
     public function show($channel, Thread $thread)
     {
+        if ($notificationId = request()->query('notification_id')) {
+            $notification = Auth::user()->notifications()->where('id', $notificationId)->first();
+            if ($notification) {
+                $notification->markAsRead();
+            }
+        }
+
         $thread->load([
             'channel',
             'subscribers' => function ($query) {

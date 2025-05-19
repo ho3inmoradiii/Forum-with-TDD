@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ReplyAdded;
 use App\Models\Channel;
 use App\Models\Reply;
 use App\Models\Thread;
@@ -49,6 +50,9 @@ class RepliesController extends Controller
             ]);
 
             $reply->load('user');
+
+            event(new ReplyAdded($thread->load('channel'), $reply));
+
             return response()->json($reply, 201);
         } catch (\Exception $e) {
             Log::error('Failed to add reply for thread: Thread ID ' . $thread->id . ', Error: ' . $e->getMessage());
