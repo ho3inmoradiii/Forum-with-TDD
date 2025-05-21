@@ -88,14 +88,15 @@
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6 gap-3">
                 @auth
-                    <x-dropdown align="right" width="48">
+                    <!-- Notifications Dropdown -->
+                    <x-dropdown align="right" width="64">
                         <x-slot name="trigger">
-                            <button class="flex items-center text-sm font-semibold text-gray-700 hover:text-green-600 focus:outline-none focus:text-green-600 transition duration-300 ease-in-out">
+                            <button class="flex items-center text-sm font-semibold text-gray-700 hover:text-blue-600 focus:outline-none focus:text-blue-600 transition duration-300 ease-in-out">
                                 <div class="flex gap-1 flex-row items-center">
-                                    <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-blue-700/10 ring-inset">{{auth()->user()->unreadNotifications->count()}}</span>
+                                    <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-blue-700/10 ring-inset">{{ auth()->user()->unreadNotifications->count() }}</span>
                                     <i class="fa fa-bell"></i>
                                 </div>
-                                <div>
+                                <div class="ml-2">
                                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                     </svg>
@@ -104,11 +105,13 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            @foreach(auth()->user()->unreadNotifications as $notification)
-                                <x-nav-link :href="route('threads.show', [$notification->data['channel_name'], $notification->data['thread_id'], 'notification_id' => $notification->id])">
-                                    {{ $notification->data['message'] }}
-                                </x-nav-link>
-                            @endforeach
+                            <div class="w-80">
+                                @foreach(auth()->user()->unreadNotifications as $notification)
+                                    <x-dropdown-link :href="route('threads.show', [$notification->data['channel_name'], $notification->data['thread_id'], 'notification_id' => $notification->id])" class="hover:bg-gray-100 hover:text-gray-900">
+                                        {{ $notification->data['message'] }}
+                                    </x-dropdown-link>
+                                @endforeach
+                            </div>
                         </x-slot>
                     </x-dropdown>
                     <x-dropdown align="right" width="48">
