@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Channel;
 use App\Models\Thread;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,7 +24,7 @@ class SubscribeThreadsTest extends TestCase
     }
 
     /** @test */
-    public function an_authenticated_user_can_subscribe_a_test()
+    public function an_authenticated_user_can_subscribe_a_thread()
     {
         $user = $this->user;
         $this->actingAs($user);
@@ -36,6 +37,37 @@ class SubscribeThreadsTest extends TestCase
             'user_id' => $user->id,
             'thread_id' => $thread->id
         ]);
+    }
+
+    /** @test */
+    public function it_registers_notification_for_subscriptions_when_reply_is_added_to_thread()
+    {
+        $user = $this->user;
+        $channel = Channel::factory()->create();
+        $thread = Thread::factory()->create([
+            'channel_id' => $channel->id
+        ]);
+        $thread->subscribers()->attach($user->id);
+
+        $authenticatedUser  = User::factory()->create();
+        $this->actingAs($authenticatedUser);
+
+        $replyData = ['body' => 'This is a reply'];
+        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $replyData);
+
+        $response->assertStatus(201)
+            ->assertJson([
+                'body' => $replyData['body'],
+                'user_id' => $authenticatedUser->id,
+                'thread_id' => $thread->id,
+            ]);
+
+        $this->assertDatabaseCount('notifications', 1)
+            ->assertDatabaseHas('notifications', [
+                'type' => 'App\Notifications\NewReplyNotification',
+                'notifiable_type' => 'App\Models\User',
+                'notifiable_id' => $user->id
+            ]);
     }
 
     /** @test */
