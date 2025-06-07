@@ -29,7 +29,12 @@ class SendNewReplyNotification
      */
     public function handle(ReplyAdded $event)
     {
-        $subscribers = $event->thread->subscribers;
+        $subscribersQuery = $event->thread->subscribers();
+
+        $subscribers = $subscribersQuery
+            ->where('users.id', '!=', $event->reply->user_id)
+            ->get();
+
         Notification::send($subscribers, new NewReplyNotification($event->thread, $event->reply));
     }
 }

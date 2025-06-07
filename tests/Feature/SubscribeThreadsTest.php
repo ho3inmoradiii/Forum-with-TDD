@@ -7,6 +7,7 @@ use App\Models\Thread;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class SubscribeThreadsTest extends TestCase
@@ -62,8 +63,53 @@ class SubscribeThreadsTest extends TestCase
                 'thread_id' => $thread->id,
             ]);
 
-        $this->assertDatabaseCount('notifications', 1)
+        Auth::logout();
+
+        $authenticatedUser  = User::factory()->create();
+        $this->actingAs($authenticatedUser);
+
+        $replyData = ['body' => 'This is a reply for another user'];
+        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $replyData);
+
+        $response->assertStatus(201)
+            ->assertJson([
+                'body' => $replyData['body'],
+                'user_id' => $authenticatedUser->id,
+                'thread_id' => $thread->id,
+            ]);
+
+        $this->assertDatabaseCount('notifications', 2)
             ->assertDatabaseHas('notifications', [
+                'type' => 'App\Notifications\NewReplyNotification',
+                'notifiable_type' => 'App\Models\User',
+                'notifiable_id' => $user->id
+            ]);
+    }
+
+    /** @test */
+    public function a_subscriber_is_not_notified_of_their_own_reply()
+    {
+        $user = $this->user;
+        $channel = Channel::factory()->create();
+        $thread = Thread::factory()->create([
+            'channel_id' => $channel->id
+        ]);
+        $thread->subscribers()->attach($user->id);
+
+        $this->actingAs($user);
+
+        $replyData = ['body' => 'This is a reply'];
+        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $replyData);
+
+        $response->assertStatus(201)
+            ->assertJson([
+                'body' => $replyData['body'],
+                'user_id' => $user->id,
+                'thread_id' => $thread->id,
+            ]);
+
+        $this->assertDatabaseCount('notifications', 0)
+            ->assertDatabaseMissing('notifications', [
                 'type' => 'App\Notifications\NewReplyNotification',
                 'notifiable_type' => 'App\Models\User',
                 'notifiable_id' => $user->id
