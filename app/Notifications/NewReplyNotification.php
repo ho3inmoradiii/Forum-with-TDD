@@ -31,7 +31,9 @@ class NewReplyNotification extends Notification
             'thread_title' => $this->thread->title,
             'reply_id' => $this->reply->id,
             'reply_user' => $this->reply->user->name,
+            'reply_user_id' => $this->reply->user->id,
             'message' => " New reply added to '{$this->thread->title}' ",
+            'link' => route('threads.show', ['channel' => $this->thread->channel->slug, 'thread' => $this->thread->id]),
             'created_at' => now(),
         ];
     }

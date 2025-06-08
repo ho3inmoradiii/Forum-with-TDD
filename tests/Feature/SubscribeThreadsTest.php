@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Channel;
+use App\Models\Reply;
 use App\Models\Thread;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -235,5 +236,92 @@ class SubscribeThreadsTest extends TestCase
 
         $response2 = $this->post(route('reply.favorite.store', 999));
         $response2->assertStatus(404);
+    }
+
+    /** @test */
+    public function an_authenticated_user_can_see_their_unread_notifications_in_the_header()
+    {
+        $user = $this->user;
+
+        $channel = Channel::factory()->create();
+        $thread = Thread::factory()->create([
+            'channel_id' => $channel->id
+        ]);
+
+        $thread->subscribers()->attach($user->id);
+
+        $authenticatedUser  = User::factory()->create();
+        $this->actingAs($authenticatedUser);
+
+        $replyData = ['body' => 'This is a reply'];
+        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $replyData);
+
+        $response->assertStatus(201)
+            ->assertJson([
+                'body' => $replyData['body'],
+                'user_id' => $authenticatedUser->id,
+                'thread_id' => $thread->id,
+            ]);
+
+        Auth::logout();
+
+        $this->actingAs($user);
+
+        $notification = \auth()->user()->unreadNotifications()->first();
+
+        $response = $this->get(route('dashboard'));
+
+        $expectedUrl = route('threads.show', ['channel' => $channel->slug, 'thread' => $thread->id, 'notification_id' => $notification->id]);
+
+        $response->assertOk();
+        $response->assertSee($expectedUrl, false);
+
+        $this->assertEquals(" New reply added to '" . $thread->title . "' ", $notification->data['message']);
+    }
+
+    /** @test */
+    public function a_user_can_navigate_to_the_thread_page_and_mark_as_read_notification_from_the_header()
+    {
+        $user = $this->user;
+
+        $channel = Channel::factory()->create();
+        $thread = Thread::factory()->create([
+            'channel_id' => $channel->id
+        ]);
+
+        $thread->subscribers()->attach($user->id);
+
+        $authenticatedUser  = User::factory()->create();
+        $this->actingAs($authenticatedUser);
+
+        $replyData = ['body' => 'This is a reply'];
+        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $replyData);
+
+        $response->assertStatus(201)
+            ->assertJson([
+                'body' => $replyData['body'],
+                'user_id' => $authenticatedUser->id,
+                'thread_id' => $thread->id,
+            ]);
+
+        Auth::logout();
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('dashboard'));
+
+        $notification = \auth()->user()->unreadNotifications()->first();
+
+        $expectedUrl = route('threads.show', ['channel' => $channel->slug, 'thread' => $thread->id, 'notification_id' => $notification->id]);
+
+        $response->assertOk();
+        $response->assertSee($expectedUrl, false);
+
+        $response = $this->get(route('threads.show', ['channel' => $channel->slug, 'thread' => $thread->id, 'notification_id' => $notification->id]));
+
+        $response->assertOk();
+
+        $unreadNotifications = \auth()->user()->unreadNotifications()->count();
+        $this->assertEquals(0, $unreadNotifications);
     }
 }
