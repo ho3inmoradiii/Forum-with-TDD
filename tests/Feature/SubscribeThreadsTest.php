@@ -8,6 +8,7 @@ use App\Models\Thread;
 use App\Models\User;
 use App\Notifications\NewReplyNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -85,6 +86,35 @@ class SubscribeThreadsTest extends TestCase
             'user_id' => $user->id,
             'thread_id' => $thread->id
         ]);
+    }
+
+    /** @test */
+    public function it_deletes_thread_related_notifications_when_a_user_unsubscribes()
+    {
+        // 1. Arrange: Create the necessary data.
+        // DO NOT use Notification::fake() here, as we need real database records.
+        $subscriber = User::factory()->create();
+        $thread = Thread::factory()->create();
+        $thread->subscribers()->attach($subscriber->id);
+
+        // Another user posts a reply to generate a notification
+        $this->signIn(User::factory()->create());
+        $this->postJson(route('replies.store', [$thread->channel, $thread]), ['body' => 'A reply to trigger a notification.']);
+
+        // 2. Assert Before State: Confirm the notification exists and is correct.
+        // Instead of a direct DB check which can fail on SQLite, we check the model's relationship.
+        $this->assertCount(1, $subscriber->notifications);
+        $this->assertEquals($thread->id, $subscriber->notifications->first()->data['thread_id']);
+
+
+        // 3. Act: The subscriber unsubscribes from the thread.
+        $this->signIn($subscriber);
+        $this->delete(route('subscribe.thread.delete', $thread))
+            ->assertStatus(200);
+
+        // 4. Assert After State: Confirm the notification has been deleted.
+        // This is the most robust check. We refresh the model and check its notification count.
+        $this->assertCount(0, $subscriber->fresh()->notifications);
     }
 
     /** @test */

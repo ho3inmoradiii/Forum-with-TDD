@@ -49,6 +49,7 @@ class SubscribeController extends Controller
             DB::transaction(function () use ($thread) {
                 // Attach the reply to the user's favorites
                 Auth::user()->subscribedThreads()->detach($thread->id);
+                Auth::user()->notifications()->where('data->thread_id', $thread->id)->delete();
 //                $this->deleteActivity($thread);
             });
 
