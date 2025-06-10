@@ -107,7 +107,7 @@
                         <x-slot name="content">
                             <div class="w-80">
                                 @foreach(auth()->user()->unreadNotifications as $notification)
-                                    <x-dropdown-link :href="route('threads.show', [$notification->data['channel_name'], $notification->data['thread_id'], 'notification_id' => $notification->id])" class="hover:bg-gray-100 hover:text-gray-900">
+                                    <x-dropdown-link :href="route('notifications.read', [$notification->id])" class="hover:bg-gray-100 hover:text-gray-900">
                                         {{ $notification->data['message'] }}
                                     </x-dropdown-link>
                                 @endforeach

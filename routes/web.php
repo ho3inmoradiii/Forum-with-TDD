@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SubscribeController;
 use App\Http\Controllers\ThreadsController;
 use App\Http\Controllers\RepliesController;
@@ -45,6 +46,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/threads/{channel}/{thread}/replies', [RepliesController::class, 'store'])->name('replies.store');
     Route::delete('/replies/{reply}', [RepliesController::class, 'destroy'])->name('replies.destroy');
     Route::put('/replies/{reply}', [RepliesController::class, 'update'])->name('replies.update');
+
+    Route::get('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 });
 
 Route::get('/threads', [ThreadsController::class, 'index'])->name('threads.index');

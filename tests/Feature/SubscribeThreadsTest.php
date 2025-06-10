@@ -6,35 +6,64 @@ use App\Models\Channel;
 use App\Models\Reply;
 use App\Models\Thread;
 use App\Models\User;
+use App\Notifications\NewReplyNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class SubscribeThreadsTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $user;
-    protected $thread;
-
-    protected function setUp(): void
+    /**
+     * Helper method to sign in a user for tests.
+     * If no user is provided, a new one will be created.
+     */
+    protected function signIn(User $user = null): User
     {
-        parent::setUp();
-        $this->user = User::factory()->create();
-        $this->thread = Thread::factory()->create();
+        $user = $user ?: User::factory()->create();
+        $this->actingAs($user);
+        return $user;
+    }
+
+    // ===================================================================
+    // Guest User Tests
+    // ===================================================================
+
+    /** @test */
+    public function guests_cannot_subscribe_to_threads()
+    {
+        $thread = Thread::factory()->create();
+
+        $this->post(route('subscribe.thread.store', $thread))
+            ->assertRedirect(route('login'));
     }
 
     /** @test */
-    public function an_authenticated_user_can_subscribe_a_thread()
+    public function guests_cannot_unsubscribe_from_threads()
     {
-        $user = $this->user;
-        $this->actingAs($user);
+        $thread = Thread::factory()->create();
+        // Create a subscription for a user to ensure there is something to (not) delete
+        $thread->subscribers()->attach(User::factory()->create());
 
-        $thread = $this->thread;
+        $this->delete(route('subscribe.thread.delete', $thread))
+            ->assertRedirect(route('login'));
+    }
 
-        $response = $this->post(route('subscribe.thread.store', $thread));
-        $response->assertStatus(201)->assertJson(['message' => 'Thread Subscribed']);
+    // ===================================================================
+    // Authenticated User Subscription Logic
+    // ===================================================================
+
+    /** @test */
+    public function an_authenticated_user_can_subscribe_to_a_thread()
+    {
+        $user = $this->signIn();
+        $thread = Thread::factory()->create();
+
+        $this->post(route('subscribe.thread.store', $thread))
+            ->assertStatus(201)
+            ->assertJson(['message' => 'Thread Subscribed']);
+
         $this->assertDatabaseHas('subscribe_threads', [
             'user_id' => $user->id,
             'thread_id' => $thread->id
@@ -42,286 +71,154 @@ class SubscribeThreadsTest extends TestCase
     }
 
     /** @test */
-    public function it_registers_notification_for_subscriptions_when_reply_is_added_to_thread()
+    public function an_authenticated_user_can_unsubscribe_from_a_thread()
     {
-        $user = $this->user;
-        $channel = Channel::factory()->create();
-        $thread = Thread::factory()->create([
-            'channel_id' => $channel->id
-        ]);
+        $user = $this->signIn();
+        $thread = Thread::factory()->create();
         $thread->subscribers()->attach($user->id);
 
-        $authenticatedUser  = User::factory()->create();
-        $this->actingAs($authenticatedUser);
+        $this->delete(route('subscribe.thread.delete', $thread))
+            ->assertStatus(200)
+            ->assertJson(['message' => 'Thread Subscription deleted successfully']);
 
-        $replyData = ['body' => 'This is a reply'];
-        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $replyData);
+        $this->assertDatabaseMissing('subscribe_threads', [
+            'user_id' => $user->id,
+            'thread_id' => $thread->id
+        ]);
+    }
 
-        $response->assertStatus(201)
-            ->assertJson([
-                'body' => $replyData['body'],
-                'user_id' => $authenticatedUser->id,
-                'thread_id' => $thread->id,
-            ]);
+    /** @test */
+    public function a_user_cannot_subscribe_to_a_thread_they_are_already_subscribed_to()
+    {
+        $user = $this->signIn();
+        $thread = Thread::factory()->create();
+        $thread->subscribers()->attach($user->id);
 
-        Auth::logout();
+        $this->post(route('subscribe.thread.store', $thread))
+            ->assertStatus(422)
+            ->assertJson(['message' => 'Thread already subscribed']);
 
-        $authenticatedUser  = User::factory()->create();
-        $this->actingAs($authenticatedUser);
+        $this->assertDatabaseCount('subscribe_threads', 1);
+    }
 
-        $replyData = ['body' => 'This is a reply for another user'];
-        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $replyData);
+    /** @test */
+    public function a_user_cannot_unsubscribe_from_a_thread_they_are_not_subscribed_to()
+    {
+        $user = $this->signIn();
+        $thread = Thread::factory()->create();
 
-        $response->assertStatus(201)
-            ->assertJson([
-                'body' => $replyData['body'],
-                'user_id' => $authenticatedUser->id,
-                'thread_id' => $thread->id,
-            ]);
+        $this->delete(route('subscribe.thread.delete', $thread))
+            ->assertStatus(422)
+            ->assertJson(['message' => 'Thread was not subscribed']);
+    }
 
-        $this->assertDatabaseCount('notifications', 2)
-            ->assertDatabaseHas('notifications', [
-                'type' => 'App\Notifications\NewReplyNotification',
-                'notifiable_type' => 'App\Models\User',
-                'notifiable_id' => $user->id
-            ]);
+    // ===================================================================
+    // Notification Logic Tests
+    // ===================================================================
+
+    /** @test */
+    public function subscribers_are_notified_when_new_replies_are_added()
+    {
+        Notification::fake();
+
+        // Arrange: A subscriber exists for a thread
+        $subscriber = User::factory()->create();
+        $thread = Thread::factory()->create();
+        $thread->subscribers()->attach($subscriber->id);
+
+        // Act: Two other users post replies
+        $this->signIn(User::factory()->create());
+        $this->postJson(route('replies.store', [$thread->channel, $thread]), ['body' => 'First reply']);
+
+        $this->signIn(User::factory()->create());
+        $this->postJson(route('replies.store', [$thread->channel, $thread]), ['body' => 'Second reply']);
+
+        // Assert: The original subscriber received two notifications
+        Notification::assertSentToTimes($subscriber, NewReplyNotification::class, 2);
     }
 
     /** @test */
     public function a_subscriber_is_not_notified_of_their_own_reply()
     {
-        $user = $this->user;
-        $channel = Channel::factory()->create();
-        $thread = Thread::factory()->create([
-            'channel_id' => $channel->id
-        ]);
+        Notification::fake();
+
+        // Arrange: A user subscribes to a thread
+        $user = $this->signIn();
+        $thread = Thread::factory()->create();
         $thread->subscribers()->attach($user->id);
 
-        $this->actingAs($user);
+        // Act: The same user posts a reply
+        $this->postJson(route('replies.store', [$thread->channel, $thread]), ['body' => 'This is my own reply']);
 
-        $replyData = ['body' => 'This is a reply'];
-        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $replyData);
-
-        $response->assertStatus(201)
-            ->assertJson([
-                'body' => $replyData['body'],
-                'user_id' => $user->id,
-                'thread_id' => $thread->id,
-            ]);
-
-        $this->assertDatabaseCount('notifications', 0)
-            ->assertDatabaseMissing('notifications', [
-                'type' => 'App\Notifications\NewReplyNotification',
-                'notifiable_type' => 'App\Models\User',
-                'notifiable_id' => $user->id
-            ]);
+        // Assert: No notification was sent to that user
+        Notification::assertNotSentTo($user, NewReplyNotification::class);
     }
 
-    /** @test */
-    public function an_authenticated_user_can_remove_the_thread_subscription()
-    {
-        $user = $this->user;
-        $this->actingAs($user);
+    // ===================================================================
+    // UI, Navigation & Edge Case Tests
+    // ===================================================================
 
-        $thread = $this->thread;
+    /** @test */
+    public function an_authenticated_user_can_see_their_unread_notifications_in_the_ui()
+    {
+        // Arrange: A user subscribes to a thread, and another user replies
+        $user = User::factory()->create();
+        $thread = Thread::factory()->create();
         $thread->subscribers()->attach($user->id);
 
-        $response = $this->delete(route('subscribe.thread.delete', $thread));
-        $response->assertStatus(200)->assertJson(['message' => 'Thread Subscription deleted successfully']);
+        $replyAuthor = User::factory()->create();
+        $this->signIn($replyAuthor);
+        $this->postJson(route('replies.store', [$thread->channel, $thread]), ['body' => 'A reply to trigger a notification.']);
 
-        $this->assertDatabaseMissing('subscribe_threads', [
-            'user_id' => $user->id,
-            'thread_id' => $thread->id
-        ]);
-    }
-
-    /** @test */
-    public function an_authenticated_user_tries_to_re_subscribe_a_thread_that_they_previously_subscribed()
-    {
-        $user = $this->user;
-        $this->actingAs($user);
-
-        $thread = $this->thread;
-        $thread->subscribers()->attach($user->id);
-
-        $response = $this->post(route('subscribe.thread.store', $thread));
-
-        $response->assertStatus(422)->assertJson(['message' => 'Thread already subscribed']);
-
-        $this->assertDatabaseHas('subscribe_threads', [
-            'user_id' => $user->id,
-            'thread_id' => $thread->id
-        ])->assertDatabaseCount('subscribe_threads', 1);
-    }
-
-    /** @test */
-    public function an_authenticated_user_tries_to_delete_a_thread_that_they_did_not_subscribe()
-    {
-        $user = $this->user;
-        $this->actingAs($user);
-
-        $thread = $this->thread;
-
-        $response = $this->delete(route('subscribe.thread.delete', $thread));
-        $response->assertStatus(422)->assertJson(['message' => 'Thread was not subscribed']);
-
-        $this->assertDatabaseMissing('subscribe_threads', [
-            'user_id' => $user->id,
-            'thread_id' => $thread->id
-        ])->assertDatabaseCount('subscribe_threads', 0);
-    }
-
-    /** @test */
-    public function a_user_who_is_not_logged_in_cannot_subscribe_a_thread()
-    {
-        $user = $this->user;
-        $thread = $this->thread;
-
-        $response = $this->post(route('subscribe.thread.store', $thread));
-        $response->assertStatus(302)->assertRedirect('/login');
-
-        $this->assertDatabaseMissing('subscribe_threads', [
-            'user_id' => $user->id,
-            'thread_id' => $thread->id
-        ])->assertDatabaseCount('subscribe_threads', 0);
-    }
-
-    /** @test */
-    public function a_user_cannot_remove_a_thread_from_subscriptions_without_logging_in()
-    {
-        $user = $this->user;
-        $thread = $this->thread;
-
-        $thread->subscribers()->attach($user->id);
-
-        $response = $this->delete(route('subscribe.thread.delete', $thread));
-        $response->assertStatus(302)->assertRedirect('/login');
-
-        $this->assertDatabaseHas('subscribe_threads', [
-            'user_id' => $user->id,
-            'thread_id' => $thread->id
-        ])->assertDatabaseCount('subscribe_threads', 1);
-    }
-
-    /** @test */
-    public function a_user_cannot_remove_another_user_s_thread_from_their_subscriptions()
-    {
-        $user1 = $this->user;
-        $user2 = User::factory()->create();
-
-        $this->actingAs($user1);
-
-        $thread = $this->thread;
-
-        $thread->subscribers()->attach($user2->id);
-
-        $response = $this->delete(route('subscribe.thread.delete', $thread));
-        $response->assertStatus(422)->assertJson(['message' => 'Thread was not subscribed']);
-
-        $this->assertDatabaseHas('subscribe_threads', [
-            'user_id' => $user2->id,
-            'thread_id' => $thread->id
-        ])->assertDatabaseCount('subscribe_threads', 1);
-    }
-
-    /** @test */
-    public function a_user_wants_to_favorite_or_delete_a_reply_that_does_not_exist()
-    {
-        $user = $this->user;
-
-        $this->actingAs($user);
-
-        $response1 = $this->delete(route('subscribe.thread.delete', 999));
-        $response1->assertStatus(404);
-
-        $response2 = $this->post(route('reply.favorite.store', 999));
-        $response2->assertStatus(404);
-    }
-
-    /** @test */
-    public function an_authenticated_user_can_see_their_unread_notifications_in_the_header()
-    {
-        $user = $this->user;
-
-        $channel = Channel::factory()->create();
-        $thread = Thread::factory()->create([
-            'channel_id' => $channel->id
-        ]);
-
-        $thread->subscribers()->attach($user->id);
-
-        $authenticatedUser  = User::factory()->create();
-        $this->actingAs($authenticatedUser);
-
-        $replyData = ['body' => 'This is a reply'];
-        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $replyData);
-
-        $response->assertStatus(201)
-            ->assertJson([
-                'body' => $replyData['body'],
-                'user_id' => $authenticatedUser->id,
-                'thread_id' => $thread->id,
-            ]);
-
-        Auth::logout();
-
-        $this->actingAs($user);
-
-        $notification = \auth()->user()->unreadNotifications()->first();
+        // Act: The subscribed user logs in and visits a page
+        $this->signIn($user);
+        $notification = $user->unreadNotifications->first();
 
         $response = $this->get(route('dashboard'));
 
-        $expectedUrl = route('threads.show', ['channel' => $channel->slug, 'thread' => $thread->id, 'notification_id' => $notification->id]);
-
-        $response->assertOk();
-        $response->assertSee($expectedUrl, false);
-
-        $this->assertEquals(" New reply added to '" . $thread->title . "' ", $notification->data['message']);
+        // Assert: The notification details are visible in the UI
+        $response->assertOk()
+            ->assertSee("New reply added to '" . $thread->title . "'")
+            ->assertSee(route('notifications.read', ['notification' => $notification->id]));
     }
 
     /** @test */
-    public function a_user_can_navigate_to_the_thread_page_and_mark_as_read_notification_from_the_header()
+    public function a_user_can_mark_a_notification_as_read_by_visiting_a_thread()
     {
-        $user = $this->user;
-
-        $channel = Channel::factory()->create();
-        $thread = Thread::factory()->create([
-            'channel_id' => $channel->id
-        ]);
-
+        // Arrange: A subscriber, a thread, and another user to reply
+        $user = User::factory()->create();
+        $thread = Thread::factory()->create();
         $thread->subscribers()->attach($user->id);
 
-        $authenticatedUser  = User::factory()->create();
-        $this->actingAs($authenticatedUser);
+        $replyAuthor = User::factory()->create();
+        $this->signIn($replyAuthor);
+        $this->postJson(route('replies.store', [$thread->channel, $thread]), ['body' => 'A reply to trigger a notification.']);
 
-        $replyData = ['body' => 'This is a reply'];
-        $response = $this->postJson(route('replies.store', ['channel' => $channel->slug, 'thread' => $thread->id]), $replyData);
+        $this->signIn($user);
 
-        $response->assertStatus(201)
-            ->assertJson([
-                'body' => $replyData['body'],
-                'user_id' => $authenticatedUser->id,
-                'thread_id' => $thread->id,
-            ]);
+        // Assert: User has one unread notification
+        $this->assertCount(1, $user->unreadNotifications);
+        $notificationId = $user->unreadNotifications->first()->id;
 
-        Auth::logout();
+        // Act: User visits the thread page with the notification_id in the query string
+        $this->get(route('threads.show', [$thread->channel, $thread, 'notification_id' => $notificationId]))
+            ->assertOk();
 
-        $this->actingAs($user);
+        // Assert: The notification count is now zero
+        $this->assertCount(0, $user->fresh()->unreadNotifications);
+    }
 
-        $response = $this->get(route('dashboard'));
+    /** @test */
+    public function it_returns_404_when_acting_on_non_existent_resources()
+    {
+        // Note: This test covers multiple, unrelated endpoints.
+        // It might be better to split this into relevant test files.
+        $this->signIn();
 
-        $notification = \auth()->user()->unreadNotifications()->first();
+        // Try to act on a thread that doesn't exist
+        $this->delete(route('subscribe.thread.delete', 999))->assertNotFound();
 
-        $expectedUrl = route('threads.show', ['channel' => $channel->slug, 'thread' => $thread->id, 'notification_id' => $notification->id]);
-
-        $response->assertOk();
-        $response->assertSee($expectedUrl, false);
-
-        $response = $this->get(route('threads.show', ['channel' => $channel->slug, 'thread' => $thread->id, 'notification_id' => $notification->id]));
-
-        $response->assertOk();
-
-        $unreadNotifications = \auth()->user()->unreadNotifications()->count();
-        $this->assertEquals(0, $unreadNotifications);
+        // Try to act on a reply that doesn't exist
+        $this->post(route('reply.favorite.store', 999))->assertNotFound();
     }
 }

@@ -4,9 +4,11 @@ namespace App\Providers;
 
 use App\Models\Reply;
 use App\Models\Thread;
+use App\Policies\NotificationPolicy;
 use App\Policies\ThreadPolicy;
 use App\Policies\ReplyPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Notifications\DatabaseNotification;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -17,7 +19,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Thread::class => ThreadPolicy::class,
-        Reply::class => ReplyPolicy::class
+        Reply::class => ReplyPolicy::class,
+        DatabaseNotification::class => NotificationPolicy::class
     ];
 
     /**
