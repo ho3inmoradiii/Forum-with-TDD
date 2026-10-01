@@ -24,7 +24,7 @@ It updates `config/topics.yaml` under `schedule."<date>"` and pushes. The next a
 
 Cloud agent tokens cannot create new repos. Do this once:
 
-1. On GitHub, create empty private repo `ho3inmoradiii/-youtube-viral-digest` (no README).
+1. On GitHub, create empty private repo `ho3inmoradiii/youtube-viral-digest` (no README).
 2. From this folder:
 
 ```bash
@@ -32,7 +32,7 @@ cd youtube-viral-digest
 git init -b main
 git add -A
 git commit -m "Initial commit: YouTube viral digest automation scaffold"
-git remote add origin https://github.com/ho3inmoradiii/-youtube-viral-digest.git
+git remote add origin https://github.com/ho3inmoradiii/youtube-viral-digest.git
 git push -u origin main
 ```
 

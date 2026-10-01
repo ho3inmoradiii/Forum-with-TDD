@@ -1,6 +1,6 @@
 # Push this package to the dedicated GitHub repo
 
-Target (created): https://github.com/ho3inmoradiii/-youtube-viral-digest
+Target (created): https://github.com/ho3inmoradiii/youtube-viral-digest
 
 The cloud agent cannot push to this repo (GitHub App only has access to Forum-with-TDD). Push once from your machine:
 
@@ -11,7 +11,7 @@ rm -rf .git
 git init -b main
 git add -A
 git commit -m "Initial commit: YouTube viral digest automation scaffold"
-git remote add origin https://github.com/ho3inmoradiii/-youtube-viral-digest.git
+git remote add origin https://github.com/ho3inmoradiii/youtube-viral-digest.git
 git push -u origin main
 ```
 
