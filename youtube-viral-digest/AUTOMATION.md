@@ -4,7 +4,7 @@ Create this automation in the **Agents Window** (Automations editor). This cloud
 
 ## Preferred repo
 
-Create an empty private GitHub repo: `ho3inmoradiii/youtube-viral-digest`, then push the contents of this folder as the repo root (see README). Point the automation `gitConfig` at that repo.
+Create an empty private GitHub repo: `ho3inmoradiii/-youtube-viral-digest`, then push the contents of this folder as the repo root (see README). Point the automation `gitConfig` at that repo.
 
 ## Interim (until separate repo exists)
 
@@ -18,7 +18,7 @@ You may point the automation at `ho3inmoradiii/Forum-with-TDD` / `main` (or this
 | Description | Twice daily: YouTube top videos → Persian digests → viral-style posts from topics.yaml |
 | Trigger | Cron `0 6,18 * * *` (06:00 and 18:00) |
 | Model | Cursor model of your choice |
-| Repo | `ho3inmoradiii/youtube-viral-digest` (preferred) or `ho3inmoradiii/Forum-with-TDD` |
+| Repo | `ho3inmoradiii/-youtube-viral-digest` (preferred) or `ho3inmoradiii/Forum-with-TDD` |
 | Branch | `main` |
 | Memory | On |
 | Tools | Default cloud agent only |
@@ -95,7 +95,7 @@ Also write `digests/RUN_ID/index.md` listing all videos processed.
     "agentOptions": { "skipInstall": false },
     "memoryEnabled": true,
     "gitConfig": {
-      "repo": "ho3inmoradiii/youtube-viral-digest",
+      "repo": "ho3inmoradiii/-youtube-viral-digest",
       "branch": "main"
     }
   }
