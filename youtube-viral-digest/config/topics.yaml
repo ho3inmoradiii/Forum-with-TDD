@@ -1,0 +1,15 @@
+# Dynamic YouTube search topics for the Cursor cloud automation.
+# - If today's date (YYYY-MM-DD, Asia/Tehran) exists under schedule, use that list.
+# - Otherwise use default.
+# To change topics: tell the agent "فردا موضوعات: ..." and it will commit an update here.
+
+default:
+  - "Clean Code"
+  - "Software Architecture"
+  - "Tech Leadership"
+
+schedule:
+  "2026-10-02":
+    - "Premature Optimization"
+    - "MVP Feature Creep"
+    - "Resume-Driven Development"
